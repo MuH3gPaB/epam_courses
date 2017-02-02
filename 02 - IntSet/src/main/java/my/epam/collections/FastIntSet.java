@@ -5,27 +5,32 @@ package my.epam.collections;
  */
 public class FastIntSet implements MyIntSet {
 
-    private long[] data;
+    private long[] posData;
+    private long[] negData;
     private int size;
 
     public FastIntSet() {
-        this(new long[]{});
+        this(new long[]{}, new long[]{});
         size = 0;
     }
 
-    private FastIntSet(long[] data) {
-        this.data = new long[data.length];
-        System.arraycopy(data, 0, this.data, 0, data.length);
+    private FastIntSet(long[] posData, long[] negData) {
+        this.posData = new long[posData.length];
+        System.arraycopy(posData, 0, this.posData, 0, posData.length);
+        this.negData = new long[negData.length];
+        System.arraycopy(negData, 0, this.negData, 0, negData.length);
+
     }
 
     @Override
     public void add(int value) {
         if (!contains(value)) {
-            int reqDataLength = getReqDataLength(value);
-            if (reqDataLength > data.length) {
-                setDataLength(reqDataLength);
+            long[] workData = (value >= 0) ? posData : negData;
+            int reqDataLength = getReqDataLength(Math.abs(value));
+            if (reqDataLength > workData.length) {
+                workData = setDataLength((value >= 0), reqDataLength);
             }
-            data[reqDataLength - 1] = data[reqDataLength - 1] | (1L << value % 64);
+            workData[reqDataLength - 1] = workData[reqDataLength - 1] | (1L << value % 64);
             size += 1;
         }
     }
@@ -33,20 +38,21 @@ public class FastIntSet implements MyIntSet {
     @Override
     public void remove(int value) {
         if (contains(value)) {
-            int reqDataLength = getReqDataLength(value);
-            if (reqDataLength > data.length) return;
+            long[] workData = (value >= 0) ? posData : negData;
+            int reqDataLength = getReqDataLength(Math.abs(value));
             long mask = ~(1L << value % 64);
-            data[reqDataLength - 1] = data[reqDataLength - 1] & mask;
+            workData[reqDataLength - 1] = workData[reqDataLength - 1] & mask;
             size -= 1;
         }
     }
 
     @Override
     public boolean contains(int value) {
-        int reqDataLength = getReqDataLength(value);
-        if (data.length < reqDataLength) return false;
+        long[] workData = (value >= 0) ? posData : negData;
+        int reqDataLength = getReqDataLength(Math.abs(value));
+        if (workData.length < reqDataLength) return false;
         long mask = 1L << value % 64;
-        return (data[reqDataLength - 1] & mask) == mask;
+        return (workData[reqDataLength - 1] & mask) == mask;
     }
 
     @Override
@@ -56,12 +62,12 @@ public class FastIntSet implements MyIntSet {
             FastIntSet fset = (FastIntSet) set;
             long[] dataOne;
             long[] dataTwo;
-            if (data.length > fset.data.length) {
-                dataOne = data;
-                dataTwo = fset.data;
+            if (posData.length > fset.posData.length) {
+                dataOne = posData;
+                dataTwo = fset.posData;
             } else {
-                dataOne = fset.data;
-                dataTwo = data;
+                dataOne = fset.posData;
+                dataTwo = posData;
             }
 
             long[] newData = new long[dataOne.length];
@@ -74,7 +80,7 @@ public class FastIntSet implements MyIntSet {
                 }
             }
 
-            result = new FastIntSet(newData);
+            result = new FastIntSet(newData, null);
 
         } else {
             for (int val : set.toArray()) {
@@ -91,10 +97,20 @@ public class FastIntSet implements MyIntSet {
     public int[] toArray() {
         int[] result = new int[size];
         int count = 0;
-        for (int i = 0; i < data.length; i++) {
-            int[] vals = getMarketBits(data[i]);
+        for (int i = 0; i < posData.length; i++) {
+            int[] vals = getMarketBits(posData[i]);
             for (int val : vals) {
                 val += 64 * i;
+                result[count] = val;
+                count++;
+            }
+        }
+
+        for (int i = 0; i < negData.length; i++) {
+            int[] vals = getMarketBits(negData[i]);
+            for (int val : vals) {
+                val += 64 * i;
+                val *= -1;
                 result[count] = val;
                 count++;
             }
@@ -103,7 +119,7 @@ public class FastIntSet implements MyIntSet {
     }
 
     private int[] getMarketBits(long value) {
-        if(value == 0L) return new int[0];
+        if (value == 0L) return new int[0];
         int[] res = new int[64];
         int counter = 0;
         for (int i = 0; i < 64; i++) {
@@ -131,12 +147,12 @@ public class FastIntSet implements MyIntSet {
             FastIntSet fset = (FastIntSet) set;
             long[] dataOne;
             long[] dataTwo;
-            if (data.length < fset.data.length) {
-                dataOne = data;
-                dataTwo = fset.data;
+            if (posData.length < fset.posData.length) {
+                dataOne = posData;
+                dataTwo = fset.posData;
             } else {
-                dataOne = fset.data;
-                dataTwo = data;
+                dataOne = fset.posData;
+                dataTwo = posData;
             }
 
             long[] newData = new long[dataOne.length];
@@ -145,7 +161,7 @@ public class FastIntSet implements MyIntSet {
                 newData[i] = dataOne[i] & dataTwo[i];
             }
 
-            result = new FastIntSet(newData);
+            result = new FastIntSet(newData, null);
 
         } else {
             for (int val : set.toArray()) {
@@ -164,12 +180,12 @@ public class FastIntSet implements MyIntSet {
             FastIntSet fset = (FastIntSet) set;
             long[] dataOne;
             long[] dataTwo;
-            if (data.length > fset.data.length) {
-                dataOne = data;
-                dataTwo = fset.data;
+            if (posData.length > fset.posData.length) {
+                dataOne = posData;
+                dataTwo = fset.posData;
             } else {
-                dataOne = fset.data;
-                dataTwo = data;
+                dataOne = fset.posData;
+                dataTwo = posData;
             }
 
             long[] newData = new long[dataOne.length];
@@ -182,7 +198,7 @@ public class FastIntSet implements MyIntSet {
                 }
             }
 
-            result = new FastIntSet(newData);
+            result = new FastIntSet(newData, null);
 
         } else {
             for (int val : set.toArray()) {
@@ -203,24 +219,30 @@ public class FastIntSet implements MyIntSet {
     public boolean isSubsetOf(MyIntSet set) {
         if (set instanceof FastIntSet) {
             FastIntSet fset = (FastIntSet) set;
-            if(this.data.length > fset.data.length) return false;
+            if (this.posData.length > fset.posData.length) return false;
 
-            for (int i = 0; i < this.data.length; i++) {
-                if((this.data[i] & fset.data[i]) != this.data[i]) return false;
+            for (int i = 0; i < this.posData.length; i++) {
+                if ((this.posData[i] & fset.posData[i]) != this.posData[i]) return false;
             }
 
         } else {
-            for(int val : this.toArray()){
-                if(!set.contains(val)) return false;
+            for (int val : this.toArray()) {
+                if (!set.contains(val)) return false;
             }
         }
         return true;
     }
 
-    private void setDataLength(int dataLength) {
+    private long[] setDataLength(boolean positive, int dataLength) {
         long[] newData = new long[dataLength];
-        System.arraycopy(data, 0, newData, 0, data.length);
-        data = newData;
+        long[] workData = (positive) ? posData : negData;
+        System.arraycopy(workData, 0, newData, 0, workData.length);
+        if (positive) {
+            posData = newData;
+        } else {
+            negData = newData;
+        }
+        return newData;
     }
 
     private int getReqDataLength(int value) {

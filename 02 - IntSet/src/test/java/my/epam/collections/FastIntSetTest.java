@@ -14,17 +14,22 @@ public class FastIntSetTest extends Assert {
 
     @Test
     public void add() throws Exception {
-        FastIntSet set = new FastIntSet();
+        int valuesCount = 200;
+//        int valueLimit = Integer.MAX_VALUE;
 
-        int[] checkedValues = {0, 5, 65536, Integer.MAX_VALUE, 123123};
-        for (int value : checkedValues) {
+        int[] values = new int[valuesCount];
+        FastIntSet set = new FastIntSet();
+        Random generator = new Random();
+        for (int i = 0; i < valuesCount; i++) {
+            int value = generator.nextInt();
+            set.add(value);
             set.add(value);
             assertTrue("Fails on add value = " + value, set.contains(value));
-            try {
-                set.add(value);
-            } catch (Exception ex) {
-                fail("Duplicate added exception.");
-            }
+            values[i] = value;
+        }
+
+        for (int value : values) {
+            assertTrue("Value = " + value + " not found.", set.contains(value));
         }
     }
 
@@ -59,21 +64,22 @@ public class FastIntSetTest extends Assert {
 
     @Test
     public void contains() throws Exception {
+        int valuesCount = 200;
+
+        int[] values = new int[valuesCount];
         FastIntSet set = new FastIntSet();
-
-        int[] checkedValues = {64, 0, 5, 32, 65536, Integer.MAX_VALUE, 123123};
-
-        for (int value : checkedValues) {
-            assertFalse("Wrong contains value = " + value, set.contains(value));
+        Random generator = new Random();
+        for (int i = 0; i < valuesCount; i++) {
+            int value = generator.nextInt();
             set.add(value);
-            assertTrue("Wrong NOT contains value = " + value, set.contains(value));
+            assertTrue("Fails on add value = " + value, set.contains(value));
+            values[i] = value;
         }
 
-        for (int value : checkedValues) {
+        for (int value : values) {
             set.remove(value);
             assertFalse("Wrong contains value = " + value, set.contains(value));
         }
-
     }
 
     @Test
@@ -163,7 +169,7 @@ public class FastIntSetTest extends Assert {
         FastIntSet resultSet = (FastIntSet) setOne.intersection(setTwo);
 
         for (int value : valuesOne) {
-            assertEquals("Value = " + value + " not found in intersection result",setTwo.contains(value), resultSet.contains(value));
+            assertEquals("Value = " + value + " not found in intersection result", setTwo.contains(value), resultSet.contains(value));
         }
 
         for (int value : valuesTwo) {
@@ -194,7 +200,7 @@ public class FastIntSetTest extends Assert {
         FastIntSet resultSet = (FastIntSet) setOne.difference(setTwo);
 
         for (int value : valuesOne) {
-            assertNotEquals("Value = " + value + " not found in intersection result",setTwo.contains(value), resultSet.contains(value));
+            assertNotEquals("Value = " + value + " not found in intersection result", setTwo.contains(value), resultSet.contains(value));
         }
 
         for (int value : valuesTwo) {
@@ -205,20 +211,28 @@ public class FastIntSetTest extends Assert {
 
     @Test
     public void isSubsetOf() throws Exception {
-        int valuesCount = 200;
-        int subsetCount = 100;
-        int valueLimit = Integer.MAX_VALUE;
+        int valuesCount = 20;
+        int subsetCount = 10;
+        int missedValues[] = new int[subsetCount/2];
 
         FastIntSet setOne = new FastIntSet();
         FastIntSet setTwo = new FastIntSet();
         Random generator = new Random();
         for (int i = 0; i < valuesCount; i++) {
-            int value = generator.nextInt(valueLimit);
+            int value = generator.nextInt();
             setOne.add(value);
-            if(i < subsetCount) setTwo.add(value);
+            if (i < subsetCount) {
+                setTwo.add(value);
+                if(i%2 == 0) missedValues[i/2] = value;
+            }
         }
 
         assertTrue("Subset error.", setTwo.isSubsetOf(setOne));
+        for(int val : missedValues){
+            setOne.remove(val);
+        }
+
+        assertFalse("Subset error. Missed value = ", setTwo.isSubsetOf(setOne));
     }
 
 }
