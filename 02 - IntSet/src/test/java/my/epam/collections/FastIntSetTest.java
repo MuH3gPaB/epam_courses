@@ -7,9 +7,6 @@ import org.junit.Test;
 import java.util.Random;
 import java.util.function.IntBinaryOperator;
 
-/**
- * Created by M.Figurin on 01-Feb-17.
- */
 public class FastIntSetTest extends Assert {
 
 

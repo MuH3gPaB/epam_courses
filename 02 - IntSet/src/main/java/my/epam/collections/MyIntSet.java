@@ -1,16 +1,75 @@
 package my.epam.collections;
 
 /**
- * Created by M.Figurin on 01-Feb-17.
+ * Simple interface for integer set implementations
  */
+
 public interface MyIntSet {
+    /**
+     * Add new value.
+     *
+     * @param value value to be added
+     */
     void add(int value);
+
+    /**
+     * Remove value.
+     *
+     * @param value value to be added
+     */
     void remove(int value);
+
+    /**
+     * Check if set contains value.
+     *
+     * @param value
+     * @return True if set contains value, otherwise - false.
+     */
     boolean contains(int value);
+
+    /**
+     * Union of two sets.
+     *
+     * @param set
+     * @return
+     */
     MyIntSet union(MyIntSet set);
+
+    /**
+     * Intersection of two sets.
+     *
+     * @param set
+     * @return
+     */
     MyIntSet intersection(MyIntSet set);
+
+    /**
+     * Difference of two sets.
+     *
+     * @param set
+     * @return
+     */
     MyIntSet difference(MyIntSet set);
+
+    /**
+     * Check if current set is subset of other set.
+     *
+     * @param set
+     * @return True if current set is subset of argument, otherwise - false
+     */
     boolean isSubsetOf(MyIntSet set);
+
+    /**
+     * Convert set to array of values.
+     *
+     * @return
+     */
     int[] toArray();
+
+    /**
+     * Get number of elements, stored in current set.
+     *
+     * @return
+     */
     int getSize();
 }

@@ -1,14 +1,25 @@
 package my.epam.collections;
 
 /**
- * Created by M.Figurin on 01-Feb-17.
+ *
+ * Experimental implementation of integer set collection.
+ *
+ * Stores values as bits indexes of long value.
+ * Use two arrays of longs for store positive and negative integer values.
+ *
+ * <p>Requiered heap memory for one instance = 8 bytes * (Max positive +  |Min negative|)</p>
+ *
  */
 public class FastIntSet implements MyIntSet {
+
 
     private long[] posData;
     private long[] negData;
     private int size;
 
+    /**
+     * Create empty FastIntSet
+     */
     public FastIntSet() {
         this(new long[]{}, new long[]{});
         size = 0;
@@ -22,6 +33,13 @@ public class FastIntSet implements MyIntSet {
 
     }
 
+    /**
+     * Add <code>int</code> value to set.
+     *
+     * Do nothing if current set already contains value.
+     *
+     * @param value value to be added
+     */
     @Override
     public void add(int value) {
         if (!contains(value)) {
@@ -35,6 +53,13 @@ public class FastIntSet implements MyIntSet {
         }
     }
 
+    /**
+     * Remove <code>int</code> value from set.
+     *
+     * Do nothing if current set does not contains value.
+     *
+     * @param value
+     */
     @Override
     public void remove(int value) {
         if (contains(value)) {
@@ -46,6 +71,13 @@ public class FastIntSet implements MyIntSet {
         }
     }
 
+    /**
+     * Check if current set contains <code>int</code> value
+     *
+     * @param value
+     *
+     * @return True if set contains value, otherwise - false.
+     */
     @Override
     public boolean contains(int value) {
         long[] workData = (value >= 0) ? posData : negData;
@@ -54,6 +86,16 @@ public class FastIntSet implements MyIntSet {
         long mask = 1L << Math.abs(value) % 64;
         return (workData[reqDataLength - 1] & mask) == mask;
     }
+
+    /**
+     * Union of two sets.
+     *
+     * Works faster with FastIntSet as argument.
+     *
+     * @param set May be any implementation of MyIntSet
+     *
+     * @return Union set as FastIntSet
+     */
 
     @Override
     public MyIntSet union(MyIntSet set) {
@@ -77,45 +119,11 @@ public class FastIntSet implements MyIntSet {
         return result;
     }
 
-    private long[] dataUnion(long[] data1, long[] data2){
-        int length = Math.max(data1.length, data2.length);
-        long[] result = new long[length];
-        for (int i = 0; i < length; i++) {
-            long val1 = 0;
-            long val2 = 0;
-            if(i < data1.length) val1 = data1[i];
-            if(i < data2.length) val2 = data2[i];
-            result[i] = val1 | val2;
-        }
-        return result;
-    }
-
-    private long[] dataIntersection(long[] data1, long[] data2){
-        int length = Math.min(data1.length, data2.length);
-        long[] result = new long[length];
-        for (int i = 0; i < length; i++) {
-            long val1 = 0;
-            long val2 = 0;
-            if(i < data1.length) val1 = data1[i];
-            if(i < data2.length) val2 = data2[i];
-            result[i] = val1 & val2;
-        }
-        return result;
-    }
-
-    private long[] dataDifference(long[] data1, long[] data2){
-        int length = Math.max(data1.length, data2.length);
-        long[] result = new long[length];
-        for (int i = 0; i < length; i++) {
-            long val1 = 0;
-            long val2 = 0;
-            if(i < data1.length) val1 = data1[i];
-            if(i < data2.length) val2 = data2[i];
-            result[i] = val1 ^ val2;
-        }
-        return result;
-    }
-
+    /**
+     * Convert set to array of <code>int</code> values.
+     *
+     * @return
+     */
     @Override
     public int[] toArray() {
         int[] result = new int[size];
@@ -141,28 +149,25 @@ public class FastIntSet implements MyIntSet {
         return result;
     }
 
-    private int[] getMarketBits(long value) {
-        if (value == 0L) return new int[0];
-        int[] res = new int[64];
-        int counter = 0;
-        for (int i = 0; i < 64; i++) {
-            if ((value & 1) == 1) {
-                res[counter] = i;
-                counter++;
-            }
-            value = value >> 1;
-        }
-
-        int[] result = new int[counter];
-        System.arraycopy(res, 0, result, 0, counter);
-        return result;
-    }
-
+    /**
+     * Get number of elements, stored in set.
+     *
+     * @return
+     */
     @Override
     public int getSize() {
         return size;
     }
 
+    /**
+     * Intersection of two sets.
+     *
+     * Works faster with FastIntSet as argument.
+     *
+     * @param set May be any implementation of MyIntSet
+     *
+     * @return Intersection set as FastIntSet
+     */
     @Override
     public MyIntSet intersection(MyIntSet set) {
         FastIntSet result = new FastIntSet();
@@ -183,6 +188,15 @@ public class FastIntSet implements MyIntSet {
         return result;
     }
 
+    /**
+     * Difference of two sets.
+     *
+     * Works faster with FastIntSet as argument.
+     *
+     * @param set May be any implementation of MyIntSet
+     *
+     * @return Difference set as FastIntSet
+     */
     @Override
     public MyIntSet difference(MyIntSet set) {
         FastIntSet result = new FastIntSet();
@@ -209,6 +223,15 @@ public class FastIntSet implements MyIntSet {
         return result;
     }
 
+    /**
+     * Check if current set is a subset of another.
+     *
+     * Works faster with FastIntSet as argument.
+     *
+     * @param set May be any implementation of MyIntSet
+     *
+     * @return True if current set is subset of argument, otherwise - false
+     */
     @Override
     public boolean isSubsetOf(MyIntSet set) {
         if (set instanceof FastIntSet) {
@@ -252,5 +275,61 @@ public class FastIntSet implements MyIntSet {
 
     private int getReqDataLength(int value) {
         return value / 64 + 1;
+    }
+
+    private long[] dataUnion(long[] data1, long[] data2){
+        int length = Math.max(data1.length, data2.length);
+        long[] result = new long[length];
+        for (int i = 0; i < length; i++) {
+            long val1 = 0;
+            long val2 = 0;
+            if(i < data1.length) val1 = data1[i];
+            if(i < data2.length) val2 = data2[i];
+            result[i] = val1 | val2;
+        }
+        return result;
+    }
+
+    private long[] dataIntersection(long[] data1, long[] data2){
+        int length = Math.min(data1.length, data2.length);
+        long[] result = new long[length];
+        for (int i = 0; i < length; i++) {
+            long val1 = 0;
+            long val2 = 0;
+            if(i < data1.length) val1 = data1[i];
+            if(i < data2.length) val2 = data2[i];
+            result[i] = val1 & val2;
+        }
+        return result;
+    }
+
+    private long[] dataDifference(long[] data1, long[] data2){
+        int length = Math.max(data1.length, data2.length);
+        long[] result = new long[length];
+        for (int i = 0; i < length; i++) {
+            long val1 = 0;
+            long val2 = 0;
+            if(i < data1.length) val1 = data1[i];
+            if(i < data2.length) val2 = data2[i];
+            result[i] = val1 ^ val2;
+        }
+        return result;
+    }
+
+    private int[] getMarketBits(long value) {
+        if (value == 0L) return new int[0];
+        int[] res = new int[64];
+        int counter = 0;
+        for (int i = 0; i < 64; i++) {
+            if ((value & 1) == 1) {
+                res[counter] = i;
+                counter++;
+            }
+            value = value >> 1;
+        }
+
+        int[] result = new int[counter];
+        System.arraycopy(res, 0, result, 0, counter);
+        return result;
     }
 }
