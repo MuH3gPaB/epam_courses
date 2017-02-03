@@ -5,6 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Random;
+import java.util.function.IntBinaryOperator;
 
 /**
  * Created by M.Figurin on 01-Feb-17.
@@ -15,7 +16,6 @@ public class FastIntSetTest extends Assert {
     @Test
     public void add() throws Exception {
         int valuesCount = 200;
-//        int valueLimit = Integer.MAX_VALUE;
 
         int[] values = new int[valuesCount];
         FastIntSet set = new FastIntSet();
@@ -96,16 +96,13 @@ public class FastIntSetTest extends Assert {
     @Test
     public void toArray() throws Exception {
         int valuesCount = 200;
-        int valueLimit = Integer.MAX_VALUE;
 
-        int[] values = new int[valuesCount];
         FastIntSet set = new FastIntSet();
 
         Random generator = new Random();
         for (int i = 0; i < valuesCount; i++) {
-            int value = generator.nextInt(valueLimit);
+            int value = generator.nextInt();
             set.add(value);
-            values[i] = value;
         }
 
         int[] array = set.toArray();
@@ -118,7 +115,6 @@ public class FastIntSetTest extends Assert {
     @Test
     public void union() throws Exception {
         int valuesCount = 200;
-        int valueLimit = Integer.MAX_VALUE;
 
         int[] valuesOne = new int[valuesCount];
         int[] valuesTwo = new int[valuesCount];
@@ -126,11 +122,11 @@ public class FastIntSetTest extends Assert {
         FastIntSet setTwo = new FastIntSet();
         Random generator = new Random();
         for (int i = 0; i < valuesCount; i++) {
-            int value = generator.nextInt(valueLimit);
+            int value = generator.nextInt();
             setOne.add(value);
             valuesOne[i] = value;
 
-            value = generator.nextInt(valueLimit);
+            value = generator.nextInt();
             setTwo.add(value);
             valuesTwo[i] = value;
         }
@@ -149,7 +145,6 @@ public class FastIntSetTest extends Assert {
     @Test
     public void intersection() throws Exception {
         int valuesCount = 200;
-        int valueLimit = Integer.MAX_VALUE;
 
         int[] valuesOne = new int[valuesCount];
         int[] valuesTwo = new int[valuesCount];
@@ -157,11 +152,11 @@ public class FastIntSetTest extends Assert {
         FastIntSet setTwo = new FastIntSet();
         Random generator = new Random();
         for (int i = 0; i < valuesCount; i++) {
-            int value = generator.nextInt(valueLimit);
+            int value = generator.nextInt();
             setOne.add(value);
             valuesOne[i] = value;
 
-            value = generator.nextInt(valueLimit);
+            value = generator.nextInt();
             setTwo.add(value);
             valuesTwo[i] = value;
         }
@@ -180,7 +175,6 @@ public class FastIntSetTest extends Assert {
     @Test
     public void difference() throws Exception {
         int valuesCount = 200;
-        int valueLimit = Integer.MAX_VALUE;
 
         int[] valuesOne = new int[valuesCount];
         int[] valuesTwo = new int[valuesCount];
@@ -188,11 +182,11 @@ public class FastIntSetTest extends Assert {
         FastIntSet setTwo = new FastIntSet();
         Random generator = new Random();
         for (int i = 0; i < valuesCount; i++) {
-            int value = generator.nextInt(valueLimit);
+            int value = generator.nextInt();
             setOne.add(value);
             valuesOne[i] = value;
 
-            value = generator.nextInt(valueLimit);
+            value = generator.nextInt();
             setTwo.add(value);
             valuesTwo[i] = value;
         }
@@ -213,7 +207,7 @@ public class FastIntSetTest extends Assert {
     public void isSubsetOf() throws Exception {
         int valuesCount = 20;
         int subsetCount = 10;
-        int missedValues[] = new int[subsetCount/2];
+        int missedValues[] = new int[subsetCount / 2];
 
         FastIntSet setOne = new FastIntSet();
         FastIntSet setTwo = new FastIntSet();
@@ -223,16 +217,44 @@ public class FastIntSetTest extends Assert {
             setOne.add(value);
             if (i < subsetCount) {
                 setTwo.add(value);
-                if(i%2 == 0) missedValues[i/2] = value;
+                if (i % 2 == 0) missedValues[i / 2] = value;
             }
         }
 
         assertTrue("Subset error.", setTwo.isSubsetOf(setOne));
-        for(int val : missedValues){
+        for (int val : missedValues) {
             setOne.remove(val);
         }
 
         assertFalse("Subset error. Missed value = ", setTwo.isSubsetOf(setOne));
+
+        // simple test for negatives
+        {
+            FastIntSet s1 = new FastIntSet();
+            FastIntSet s2 = new FastIntSet();
+            int[] v1 = {-1, 0};
+            int[] v2 = {-2, 0, 1, 2};
+            for (int v : v1) s1.add(v);
+            for (int v : v2) s2.add(v);
+
+            assertFalse("Negatives test fails", s1.isSubsetOf(s2));
+        }
+
+        // Set with removed endings test
+        {
+            FastIntSet s1 = new FastIntSet();
+            FastIntSet s2 = new FastIntSet();
+            int[] v1 = {0, 1, Integer.MAX_VALUE};
+            int[] v2 = {0, 1, 2};
+            for (int v : v1) s1.add(v);
+            for (int v : v2) s2.add(v);
+
+            assertFalse("Big subset data test fails", s1.isSubsetOf(s2));
+            s1.remove(Integer.MAX_VALUE);
+            assertTrue("Removed endings test fails", s1.isSubsetOf(s2));
+
+        }
+
     }
 
 }

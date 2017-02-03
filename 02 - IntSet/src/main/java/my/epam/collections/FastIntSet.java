@@ -30,7 +30,7 @@ public class FastIntSet implements MyIntSet {
             if (reqDataLength > workData.length) {
                 workData = setDataLength((value >= 0), reqDataLength);
             }
-            workData[reqDataLength - 1] = workData[reqDataLength - 1] | (1L << value % 64);
+            workData[reqDataLength - 1] = workData[reqDataLength - 1] | (1L << Math.abs(value) % 64);
             size += 1;
         }
     }
@@ -40,7 +40,7 @@ public class FastIntSet implements MyIntSet {
         if (contains(value)) {
             long[] workData = (value >= 0) ? posData : negData;
             int reqDataLength = getReqDataLength(Math.abs(value));
-            long mask = ~(1L << value % 64);
+            long mask = ~(1L << Math.abs(value) % 64);
             workData[reqDataLength - 1] = workData[reqDataLength - 1] & mask;
             size -= 1;
         }
@@ -51,7 +51,7 @@ public class FastIntSet implements MyIntSet {
         long[] workData = (value >= 0) ? posData : negData;
         int reqDataLength = getReqDataLength(Math.abs(value));
         if (workData.length < reqDataLength) return false;
-        long mask = 1L << value % 64;
+        long mask = 1L << Math.abs(value) % 64;
         return (workData[reqDataLength - 1] & mask) == mask;
     }
 
@@ -60,27 +60,11 @@ public class FastIntSet implements MyIntSet {
         FastIntSet result = new FastIntSet();
         if (set instanceof FastIntSet) {
             FastIntSet fset = (FastIntSet) set;
-            long[] dataOne;
-            long[] dataTwo;
-            if (posData.length > fset.posData.length) {
-                dataOne = posData;
-                dataTwo = fset.posData;
-            } else {
-                dataOne = fset.posData;
-                dataTwo = posData;
-            }
 
-            long[] newData = new long[dataOne.length];
+            long[] newPosData = dataUnion(this.posData, fset.posData);
+            long[] newNegData = dataUnion(this.negData, fset.negData);
 
-            for (int i = 0; i < dataOne.length; i++) {
-                if (i < dataTwo.length) {
-                    newData[i] = dataOne[i] | dataTwo[i];
-                } else {
-                    newData[i] = dataOne[i];
-                }
-            }
-
-            result = new FastIntSet(newData, null);
+            result = new FastIntSet(newPosData, newNegData);
 
         } else {
             for (int val : set.toArray()) {
@@ -89,6 +73,45 @@ public class FastIntSet implements MyIntSet {
             for (int val : this.toArray()) {
                 result.add(val);
             }
+        }
+        return result;
+    }
+
+    private long[] dataUnion(long[] data1, long[] data2){
+        int length = Math.max(data1.length, data2.length);
+        long[] result = new long[length];
+        for (int i = 0; i < length; i++) {
+            long val1 = 0;
+            long val2 = 0;
+            if(i < data1.length) val1 = data1[i];
+            if(i < data2.length) val2 = data2[i];
+            result[i] = val1 | val2;
+        }
+        return result;
+    }
+
+    private long[] dataIntersection(long[] data1, long[] data2){
+        int length = Math.min(data1.length, data2.length);
+        long[] result = new long[length];
+        for (int i = 0; i < length; i++) {
+            long val1 = 0;
+            long val2 = 0;
+            if(i < data1.length) val1 = data1[i];
+            if(i < data2.length) val2 = data2[i];
+            result[i] = val1 & val2;
+        }
+        return result;
+    }
+
+    private long[] dataDifference(long[] data1, long[] data2){
+        int length = Math.max(data1.length, data2.length);
+        long[] result = new long[length];
+        for (int i = 0; i < length; i++) {
+            long val1 = 0;
+            long val2 = 0;
+            if(i < data1.length) val1 = data1[i];
+            if(i < data2.length) val2 = data2[i];
+            result[i] = val1 ^ val2;
         }
         return result;
     }
@@ -110,7 +133,7 @@ public class FastIntSet implements MyIntSet {
             int[] vals = getMarketBits(negData[i]);
             for (int val : vals) {
                 val += 64 * i;
-                val *= -1;
+                val = -val;
                 result[count] = val;
                 count++;
             }
@@ -145,24 +168,11 @@ public class FastIntSet implements MyIntSet {
         FastIntSet result = new FastIntSet();
         if (set instanceof FastIntSet) {
             FastIntSet fset = (FastIntSet) set;
-            long[] dataOne;
-            long[] dataTwo;
-            if (posData.length < fset.posData.length) {
-                dataOne = posData;
-                dataTwo = fset.posData;
-            } else {
-                dataOne = fset.posData;
-                dataTwo = posData;
-            }
 
-            long[] newData = new long[dataOne.length];
+            long[] newPosData = dataIntersection(this.posData, fset.posData);
+            long[] newNegData = dataIntersection(this.negData, fset.negData);
 
-            for (int i = 0; i < dataOne.length; i++) {
-                newData[i] = dataOne[i] & dataTwo[i];
-            }
-
-            result = new FastIntSet(newData, null);
-
+            result = new FastIntSet(newPosData, newNegData);
         } else {
             for (int val : set.toArray()) {
                 if (this.contains(val)) {
@@ -178,27 +188,11 @@ public class FastIntSet implements MyIntSet {
         FastIntSet result = new FastIntSet();
         if (set instanceof FastIntSet) {
             FastIntSet fset = (FastIntSet) set;
-            long[] dataOne;
-            long[] dataTwo;
-            if (posData.length > fset.posData.length) {
-                dataOne = posData;
-                dataTwo = fset.posData;
-            } else {
-                dataOne = fset.posData;
-                dataTwo = posData;
-            }
 
-            long[] newData = new long[dataOne.length];
+            long[] newPosData = dataDifference(this.posData, fset.posData);
+            long[] newNegData = dataDifference(this.negData, fset.negData);
 
-            for (int i = 0; i < dataOne.length; i++) {
-                if (i < dataTwo.length) {
-                    newData[i] = dataOne[i] ^ dataTwo[i];
-                } else {
-                    newData[i] = dataOne[i];
-                }
-            }
-
-            result = new FastIntSet(newData, null);
+            result = new FastIntSet(newPosData, newNegData);
 
         } else {
             for (int val : set.toArray()) {
@@ -219,10 +213,21 @@ public class FastIntSet implements MyIntSet {
     public boolean isSubsetOf(MyIntSet set) {
         if (set instanceof FastIntSet) {
             FastIntSet fset = (FastIntSet) set;
-            if (this.posData.length > fset.posData.length) return false;
-
             for (int i = 0; i < this.posData.length; i++) {
-                if ((this.posData[i] & fset.posData[i]) != this.posData[i]) return false;
+                if (i < fset.posData.length) {
+                    if ((this.posData[i] & fset.posData[i]) != this.posData[i]) return false;
+                } else {
+                    if (this.posData[i] != 0) return false;
+                }
+            }
+
+            for (int i = 0; i < this.negData.length; i++) {
+                if (i < fset.negData.length) {
+                    if ((this.negData[i] & fset.negData[i]) != this.negData[i]) return false;
+                } else {
+                    if(this.negData[i] != 0) return false;
+                }
+
             }
 
         } else {
