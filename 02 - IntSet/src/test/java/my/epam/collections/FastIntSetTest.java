@@ -1,17 +1,28 @@
 package my.epam.collections;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Random;
-import java.util.function.IntBinaryOperator;
 
 public class FastIntSetTest extends Assert {
+    private static final Logger logger = Logger.getLogger(FastIntSetTest.class);
 
+    static {
+        BasicConfigurator.configure();
+    }
+
+    @BeforeClass
+    public static void logStart(){
+        logger.info("FastIntSet test started...");
+    }
 
     @Test
     public void add() throws Exception {
+        logger.info("   Testing FastIntSet.add...");
         int valuesCount = 200;
 
         int[] values = new int[valuesCount];
@@ -32,6 +43,7 @@ public class FastIntSetTest extends Assert {
 
     @Test
     public void remove() throws Exception {
+        logger.info("   Testing FastIntSet.remove...");
         FastIntSet set = new FastIntSet();
 
         int[] checkedValues = {0, 5, 65536, Integer.MAX_VALUE, 123123};
@@ -61,6 +73,7 @@ public class FastIntSetTest extends Assert {
 
     @Test
     public void contains() throws Exception {
+        logger.info("   Testing FastIntSet.contains...");
         int valuesCount = 200;
 
         int[] values = new int[valuesCount];
@@ -81,7 +94,10 @@ public class FastIntSetTest extends Assert {
 
     @Test
     public void getSize() throws Exception {
+        logger.info("   Testing FastIntSet.getSize...");
         FastIntSet set = new FastIntSet();
+        assertEquals("Zero set size fails.", 0, set.getSize());
+
         Random generator = new Random();
         int valuesCount = generator.nextInt(1000);
         for (int i = 0; i < valuesCount; i++) {
@@ -92,9 +108,17 @@ public class FastIntSetTest extends Assert {
 
     @Test
     public void toArray() throws Exception {
+        logger.info("   Testing FastIntSet.toArray...");
         int valuesCount = 200;
 
         FastIntSet set = new FastIntSet();
+        assertEquals("Empty set to array fails.", 0, set.toArray().length);
+
+        set.add(1212);
+        assertEquals("One element set to array fails.", 1, set.toArray().length);
+
+        set.remove(1212);
+        assertEquals("After remove empty set to array fails.", 0, set.toArray().length);
 
         Random generator = new Random();
         for (int i = 0; i < valuesCount; i++) {
@@ -111,7 +135,8 @@ public class FastIntSetTest extends Assert {
 
     @Test
     public void union() throws Exception {
-        int valuesCount = 200;
+        logger.info("   Testing FastIntSet.union...");
+        int valuesCount = 20;
 
         int[] valuesOne = new int[valuesCount];
         int[] valuesTwo = new int[valuesCount];
@@ -129,7 +154,6 @@ public class FastIntSetTest extends Assert {
         }
 
         FastIntSet resultSet = (FastIntSet) setOne.union(setTwo);
-
         for (int value : valuesOne) {
             assertTrue("Value = " + value + " from first set not found.", resultSet.contains(value));
         }
@@ -137,11 +161,27 @@ public class FastIntSetTest extends Assert {
         for (int value : valuesTwo) {
             assertTrue("Value = " + value + " from second set not found.", resultSet.contains(value));
         }
+
+        // Self union check
+        FastIntSet selfUnionSet = (FastIntSet) setOne.union(setOne);
+        for (int val : selfUnionSet.toArray()) {
+            assertTrue("Self union unexpected value = " + val, setOne.contains(val));
+        }
+
+        for (int val : setOne.toArray()) {
+            assertTrue("Self union cant find value = " + val, selfUnionSet.contains(val));
+        }
+
+        // Empty set union check
+        FastIntSet emptySet = new FastIntSet();
+        assertEquals("Empty union check fails.", setOne.getSize(), emptySet.union(setOne).getSize());
+
     }
 
     @Test
     public void intersection() throws Exception {
-        int valuesCount = 200;
+        logger.info("   Testing FastIntSet.intersection...");
+        int valuesCount = 20;
 
         int[] valuesOne = new int[valuesCount];
         int[] valuesTwo = new int[valuesCount];
@@ -167,11 +207,26 @@ public class FastIntSetTest extends Assert {
         for (int value : valuesTwo) {
             assertEquals("Value = " + value + " not found in intersection result", setOne.contains(value), resultSet.contains(value));
         }
+
+        // Self intersection check
+        FastIntSet selfIntersectionSet = (FastIntSet) setOne.intersection(setOne);
+        for (int val : selfIntersectionSet.toArray()) {
+            assertTrue("Self intersection unexpected value = " + val, setOne.contains(val));
+        }
+
+        for (int val : setOne.toArray()) {
+            assertTrue("Self intersection cant find value = " + val, selfIntersectionSet.contains(val));
+        }
+
+        // Empty set union check
+        FastIntSet emptySet = new FastIntSet();
+        assertEquals("Empty intersection check fails.", 0, emptySet.intersection(setOne).getSize());
     }
 
     @Test
     public void difference() throws Exception {
-        int valuesCount = 200;
+        logger.info("   Testing FastIntSet.difference...");
+        int valuesCount = 20;
 
         int[] valuesOne = new int[valuesCount];
         int[] valuesTwo = new int[valuesCount];
@@ -198,10 +253,14 @@ public class FastIntSetTest extends Assert {
             assertNotEquals("Value = " + value + " not found in intersection result", setOne.contains(value), resultSet.contains(value));
         }
 
+        FastIntSet resultEmptySet = (FastIntSet) setOne.difference(setOne);
+        assertEquals("Self difference fails.", 0, resultEmptySet.getSize());
+
     }
 
     @Test
     public void isSubsetOf() throws Exception {
+        logger.info("   Testing FastIntSet.isSubsetOf...");
         int valuesCount = 20;
         int subsetCount = 10;
         int missedValues[] = new int[subsetCount / 2];
@@ -223,7 +282,8 @@ public class FastIntSetTest extends Assert {
             setOne.remove(val);
         }
 
-        assertFalse("Subset error. Missed value = ", setTwo.isSubsetOf(setOne));
+        assertFalse("Subset error.", setTwo.isSubsetOf(setOne));
+        assertTrue("Self subset fails.", setTwo.isSubsetOf(setTwo));
 
         // simple test for negatives
         {
@@ -253,5 +313,4 @@ public class FastIntSetTest extends Assert {
         }
 
     }
-
 }
