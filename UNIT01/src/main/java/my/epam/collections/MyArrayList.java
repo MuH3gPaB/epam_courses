@@ -2,7 +2,6 @@ package my.epam.collections;
 
 /**
  * Experimental arrayList implementation.
- *
  */
 
 import java.util.Arrays;
@@ -67,6 +66,10 @@ public class MyArrayList {
         mergeSort(data, 0, getSize(), new int[getSize()]);
     }
 
+    public void sortUpStream() {
+        mergeSortUpStream(data, 1, new int[getSize()]);
+    }
+
 
     /**
      * Expects collection to be sorted.
@@ -124,6 +127,19 @@ public class MyArrayList {
         mergeSort(data, mid, endExclusive, free);
 
         merger(data, startInclusive, mid, endExclusive, free);
+    }
+
+    private static void mergeSortUpStream(int[] data, int cellSize, int[] free) {
+        if (cellSize >= data.length) return;
+
+        for (int i = 0; i < (data.length/cellSize+1)/2; i++) {
+            int startInclusive = i * cellSize * 2;
+            int endExclusive = Math.min(startInclusive + cellSize * 2, data.length);
+            int mid = startInclusive + cellSize;
+            merger(data, startInclusive, mid, endExclusive, free);
+        }
+
+        mergeSortUpStream(data, cellSize * 2, free);
     }
 
     private static void merger(int[] data, int startInclusive, int mid, int endExclusive, int[] free) {

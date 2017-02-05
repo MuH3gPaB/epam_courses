@@ -23,13 +23,30 @@ public class MyArrayListTest extends Assert {
     @Test
     public void sort() throws Exception {
         logger.info("   Testing MyArrayListTest.sort...");
-        final int[] ints = {12, 0, -13, 666, 2, 56, 56, 56, 120, -1, 1, 0, Integer.MAX_VALUE, Integer.MIN_VALUE};
+        final int[] ints = {12, 0, -13, 666, 2, 56, 56, 56 , 120, -1, 1, 0, Integer.MAX_VALUE, Integer.MIN_VALUE};
         final int[] expected = Arrays.copyOf(ints, ints.length);
         Arrays.sort(expected);
 
         final MyArrayList list = new MyArrayList(ints);
 
         list.sort();
+
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals("i = " + i, expected[i], list.get(i));
+        }
+    }
+
+    @Test
+    public void sortUpStream() throws Exception {
+        logger.info("   Testing MyArrayListTest.sortUpStresm...");
+        final int[] ints = {12, 0, -13, 666, 2, 56, 56, 56 , 120, -1, 1, 0, Integer.MAX_VALUE, Integer.MIN_VALUE};
+        final int[] expected = Arrays.copyOf(ints, ints.length);
+        Arrays.sort(expected);
+
+        final MyArrayList list = new MyArrayList(ints);
+
+        list.sortUpStream();
+
 
         for (int i = 0; i < expected.length; i++) {
             assertEquals("i = " + i, expected[i], list.get(i));
