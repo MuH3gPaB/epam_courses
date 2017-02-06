@@ -11,10 +11,6 @@ import java.util.Random;
 public class FastIntSetTest extends Assert {
     private static final Logger logger = Logger.getLogger(FastIntSetTest.class);
 
-    static {
-        BasicConfigurator.configure();
-    }
-
     @BeforeClass
     public static void logStart(){
         logger.info("FastIntSet test started...");

@@ -10,11 +10,6 @@ import org.junit.Test;
 public class Task3Test extends Assert{
     private static final Logger logger = Logger.getLogger(Task3Test.class);
 
-    static {
-        BasicConfigurator.configure();
-    }
-
-
     @BeforeClass
     public static void logStart(){
         logger.info("Task3 test started...");

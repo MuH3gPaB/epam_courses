@@ -11,10 +11,6 @@ import java.util.Arrays;
 public class MyArrayListTest extends Assert {
     private static final Logger logger = Logger.getLogger(MyArrayListTest.class);
 
-    static {
-        BasicConfigurator.configure();
-    }
-
     @BeforeClass
     public static void logStart(){
         logger.info("MyArrayList test started...");
