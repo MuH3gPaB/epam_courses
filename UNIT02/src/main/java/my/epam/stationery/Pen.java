@@ -3,7 +3,31 @@ package my.epam.stationery;
 import java.awt.*;
 
 /**
- * Created by M.Figurin on 22-Feb-17.
+ * Pen entity class
+ *
+ * Pen class represents simple instance of pen.
+ * Pens are constant (immutable).
+ *
+ * You can create new Pen with one of two constructors.
+ *
+ * <blockquote><pre>
+ * Pen penOne = new Pen(Color.black, Color.green, "BIC", Pen.BALLPOINT_PEN_TYPE, "RollerBall");
+ * Pen penTwo = new Pen(Color.black, Color.green);
+ * </pre></blockquote>
+ *
+ * If use short constructor undefined fields set to default values.
+ * Default values for brandName, type and label accessable as public constants.
+ *
+ * Also, some types of pens are available as public String constants:
+ * <blockquote><pre>
+ * FOUNTAIN_PEN_TYPE
+ * BALLPOINT_PEN_TYPE
+ * FIBER_TIP_PEN_TYPE
+ * ROLLER_BALL_PEN_TYPE
+ * GEL_INK_PEN_TYPE
+ * </pre></blockquote>
+ *
+ * @author M.Figurin
  */
 public class Pen {
     private final Color brushColor;
@@ -25,7 +49,6 @@ public class Pen {
     public static final Pen DEFAULT_BLACK_PEN = new Pen(Color.BLACK, Color.BLACK, DEFAULT_BRAND_NAME, DEFAULT_TYPE, DEFAULT_LABEL);
     public static final Pen DEFAULT_BLUE_PEN = new Pen(Color.BLUE, Color.BLUE, DEFAULT_BRAND_NAME, DEFAULT_TYPE, DEFAULT_LABEL);
     public static final Pen DEFAULT_RED_PEN = new Pen(Color.RED, Color.RED, DEFAULT_BRAND_NAME, DEFAULT_TYPE, DEFAULT_LABEL);
-
 
     public Pen(Color brushColor, Color shellColor, String brandName, String type, String label) {
         if (brushColor == null || shellColor == null) {
