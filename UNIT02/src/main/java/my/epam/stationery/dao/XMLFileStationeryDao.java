@@ -5,37 +5,35 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 
-public class XMLFileStationeryDao implements StationeryDao {
-    Logger logger = Logger.getLogger(XMLFileStationeryDao.class);
+public class XMLFileStationeryDao extends XMLFileDao<Stationery> {
 
-    private File xmlFile;
 
     public XMLFileStationeryDao(File xmlFile) {
-        this.xmlFile = xmlFile;
+        super(xmlFile);
     }
 
     @Override
     public Stationery[] getAll() {
-        return new Stationery[0];
+        return super.getAll();
     }
 
     @Override
     public Stationery getById(long id) {
-        return null;
+        return super.getById(id);
     }
 
     @Override
     public void remove(long id) {
-
+        super.remove(id);
     }
 
     @Override
     public void remove(Stationery st) {
-
+        super.remove(st);
     }
 
     @Override
     public void saveOrUpdate(Stationery st) {
-
+        super.saveOrUpdate(st);
     }
 }
