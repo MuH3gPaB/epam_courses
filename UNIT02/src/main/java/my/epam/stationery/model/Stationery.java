@@ -1,6 +1,8 @@
 package my.epam.stationery.model;
 
-public class Stationery {
+import my.epam.stationery.dao.HasId;
+
+public class Stationery implements HasId {
     private long Id;
     private final String brandName;
     private final String type;
