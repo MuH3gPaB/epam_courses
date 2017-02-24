@@ -1,5 +1,8 @@
 package my.epam.task6;
 
+
+import javafx.scene.paint.Color;
+
 /**
  * Note class.
  *

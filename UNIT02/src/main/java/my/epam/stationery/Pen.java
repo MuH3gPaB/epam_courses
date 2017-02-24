@@ -3,7 +3,7 @@ package my.epam.stationery;
 import java.awt.*;
 
 /**
- * Pen entity class
+ * Pen class.
  *
  * Pen class represents simple instance of pen.
  * Pens are constant (immutable).
@@ -25,6 +25,13 @@ import java.awt.*;
  * FIBER_TIP_PEN_TYPE
  * ROLLER_BALL_PEN_TYPE
  * GEL_INK_PEN_TYPE
+ * </pre></blockquote>
+ *
+ * Three pens are available by default:
+ * <blockquote><pre>
+ * DEFAULT_BLACK_PEN
+ * DEFAULT_BLUE_PEN
+ * DEFAULT_RED_PEN
  * </pre></blockquote>
  *
  * @author M.Figurin
@@ -60,6 +67,10 @@ public class Pen {
         this.type = type == null ? DEFAULT_TYPE : type;
         this.label = label == null ? DEFAULT_LABEL : label;
     }
+
+    /**
+     * <u>Note:</u> If use this short constructor undefined fields set to default values.
+     */
 
     public Pen(Color brushColor, Color shellColor) {
         this(brushColor, shellColor, DEFAULT_BRAND_NAME, DEFAULT_TYPE, DEFAULT_LABEL);
