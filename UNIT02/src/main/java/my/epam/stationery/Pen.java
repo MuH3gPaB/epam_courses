@@ -28,11 +28,14 @@ public class Pen {
 
 
     public Pen(Color brushColor, Color shellColor, String brandName, String type, String label) {
+        if (brushColor == null || shellColor == null) {
+            throw new IllegalArgumentException();
+        }
         this.brushColor = brushColor;
         this.shellColor = shellColor;
-        this.brandName = brandName;
-        this.type = type;
-        this.label = label;
+        this.brandName = brandName == null ? DEFAULT_BRAND_NAME : brandName;
+        this.type = type == null ? DEFAULT_TYPE : type;
+        this.label = label == null ? DEFAULT_LABEL : label;
     }
 
     public Pen(Color brushColor, Color shellColor) {
