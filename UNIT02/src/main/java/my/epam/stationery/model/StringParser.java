@@ -4,19 +4,22 @@ import my.epam.stationery.entity.AbstractEntity;
 import my.epam.stationery.entity.EntityManager;
 import org.apache.log4j.Logger;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class StringParser<T> {
     private Logger logger = Logger.getLogger(StringParser.class);
     private Class objClass;
     private static char ROOT_SEPARATOR = 1;
-    private int depth = 2;
+    private int depth = 5;
 
     public StringParser(Class objClass) {
-        if (!objClass.isPrimitive() && !objClass.equals(String.class)) {
+        if (!isPrimitiveOrBoxed(objClass) && !objClass.equals(String.class) && !objClass.isArray()) {
             if (EntityManager.getEntity(objClass) == null) {
                 throw new IllegalArgumentException("Could not found entity for class " + objClass.getName());
             }
@@ -29,60 +32,91 @@ public class StringParser<T> {
     }
 
     private String parseToBySeparator(Object obj, char separator) {
-        if (objClass.isPrimitive() || objClass.equals(String.class)) {
-            return parsePrimitive(obj);
+        if (isPrimitiveOrBoxed(objClass) || objClass.equals(String.class)) {
+            return parsePrimitive(obj, separator);
         }
+
+        if (objClass.isArray()) {
+            return parseArray(obj, separator);
+        }
+
         StringBuilder sb = new StringBuilder();
         try {
             sb.append("class=").append(objClass.getName()).append(separator);
-            Field[] fields = getAllDeclaredFields(objClass);
+
+            Field[] fields = getAllNonStaticDeclaredFields(objClass);
             for (Field field : fields) {
-                if (!Modifier.isStatic(field.getModifiers())) {
-                    if (!field.isAccessible()) field.setAccessible(true);
-                    Object fieldValue = field.get(obj);
-                    sb.append(field.getName()).append("={");
-                    if (fieldValue == null) {
-                        sb.append("null}");
-                        sb.append(separator);
-                        continue;
-                    }
-                    if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
-                        sb.append(fieldValue.toString()).append("}");
-                        sb.append(separator);
-                    } else if (field.getType().isArray()) {
-                        System.out.println("array");
-                    } else {
-                        if (separator - ROOT_SEPARATOR > depth) {
-                            sb.append(fieldValue.toString()).append("}");
-                        } else {
-                            StringParser localParser = new StringParser(field.getType());
-                            sb.append(localParser.parseToBySeparator(fieldValue, (char) (separator + 1)));
-                            sb.append("}").append(separator);
-                        }
-                    }
+                Object fieldValue = field.get(obj);
+                sb.append(field.getName()).append("={");
+
+                if (fieldValue == null) {
+                    sb.append("null}").append(separator);
+                    continue;
+                }
+
+                if (isPrimitiveOrBoxed(field.getType()) || field.getType().equals(String.class)) {
+                    sb.append(fieldValue.toString()).append("}").append(separator);
+                } else if (field.getType().isArray()) {
+                    appendArray(separator, sb, field.getType(), fieldValue).append("}").append(separator);
+                } else {
+                    appendObject(separator, sb, field, fieldValue).append("}").append(separator);
                 }
             }
-        } catch (
-                IllegalAccessException e)
-
-        {
+        } catch (IllegalAccessException e) {
             logger.error("Error parsing object to string " + e.getMessage());
         }
         return sb.toString();
     }
 
-    private Field[] getAllDeclaredFields(Class objClass) {
+    private String parseArray(Object obj, char separator) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class=").append(objClass.getName()).append(separator).append("{");
+        appendArray((char) (separator + 1), sb, objClass, obj).append("}").append(separator);
+        return sb.toString();
+    }
+
+    private StringBuilder appendObject(char separator, StringBuilder sb, Field field, Object fieldValue) {
+        if (separator - ROOT_SEPARATOR > depth) {
+            sb.append(fieldValue.toString()).append("}");
+        } else {
+            StringParser localParser = new StringParser(field.getType());
+            sb.append(localParser.parseToBySeparator(fieldValue, (char) (separator + 1)));
+        }
+        return sb;
+    }
+
+    private StringBuilder appendArray(char separator, StringBuilder sb, Class fieldClass, Object fieldValue) {
+        if (separator - ROOT_SEPARATOR > depth) sb.append("null");
+        else {
+            Class elementClass = fieldClass.getComponentType();
+            StringParser localParser = new StringParser(elementClass);
+
+            Object[] array = (Object[]) fieldValue;
+            for (Object object : array) {
+                sb.append(localParser.parseToBySeparator(object, (char) (separator + 1))).append(separator);
+            }
+        }
+        return sb;
+    }
+
+    private Field[] getAllNonStaticDeclaredFields(Class objClass) {
         ArrayList<Field> fields = new ArrayList<>();
         Class clazz = objClass;
         do {
-            Stream.of(clazz.getDeclaredFields()).forEach(fields::add);
+            Stream.of(clazz.getDeclaredFields())
+                    .forEach((field) -> {
+                        if (!Modifier.isStatic(field.getModifiers())) {
+                            if (!field.isAccessible()) field.setAccessible(true);
+                            fields.add(field);
+                        }
+                    });
             clazz = clazz.getSuperclass();
         } while (!clazz.equals(Object.class));
         return fields.toArray(new Field[0]);
     }
 
-    private String parsePrimitive(Object obj) {
-        return objClass.getName() + ROOT_SEPARATOR + obj.toString();
+    private String parsePrimitive(Object obj, char separator) {
+        return objClass.getName() + separator + obj.toString();
     }
 
     public void setDepth(int depth) {
@@ -93,7 +127,32 @@ public class StringParser<T> {
         return parseFromBySeparator(str, ROOT_SEPARATOR);
     }
 
+    private boolean isPrimitiveOrBoxed(Class clazz) {
+        return clazz.isPrimitive() ||
+                clazz.equals(Byte.class) ||
+                clazz.equals(Short.class) ||
+                clazz.equals(Integer.class) ||
+                clazz.equals(Long.class) ||
+                clazz.equals(Float.class) ||
+                clazz.equals(Double.class) ||
+                clazz.equals(Character.class) ||
+                clazz.equals(Boolean.class);
+    }
+
     private T parseFromBySeparator(String str, char separator) throws IllegalArgumentException {
+        try {
+            if (isPrimitiveOrBoxed(objClass) || objClass.equals(String.class)) {
+                return parsePrimitive(str, separator);
+            }
+
+            if (objClass.isArray()) {
+                return parseArray(objClass.getComponentType(), str, separator);
+            }
+        } catch (InstantiationException | IllegalAccessException e) {
+            logger.error("Could not parse string = " + str + " Exception = " + e.getMessage());
+            throw new IllegalArgumentException();
+        }
+
         String sepString = "" + separator;
         String[] strings = str.split(sepString);
         AbstractEntity<T> entityObject;
@@ -104,29 +163,20 @@ public class StringParser<T> {
             entityObject = (AbstractEntity<T>) entityClass.newInstance();
 
             for (String localString : strings) {
+
                 String fieldName = parseFieldName(localString);
 
                 if (fieldName.equals("class")) continue;
 
                 Field field = entityClass.getDeclaredField(fieldName);
-                if(!field.isAccessible()) field.setAccessible(true);
+                if (!field.isAccessible()) field.setAccessible(true);
 
-                if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
-                    field.set(entityObject, parseValue(localString, field.getType()));
+                if (isPrimitiveOrBoxed(field.getType()) || field.getType().equals(String.class)) {
+                    parseAndSetPrimitive(entityObject, field, localString);
                 } else if (field.getType().isArray()) {
-                    System.out.println("array");
+                    parseAndSetArray(separator, entityObject, field, localString);
                 } else {
-                    if (separator - ROOT_SEPARATOR < depth) {
-                        String toParse = localString.substring(fieldName.length() + 2, localString.length() - 1);
-                        if (toParse.equals("null")) {
-                            field.set(entityObject, null);
-                        } else {
-                            StringParser localParser = new StringParser(field.getType());
-                            field.set(entityObject, localParser.parseFromBySeparator(toParse, (char) (separator + 1)));
-                        }
-                    } else {
-                        field.set(entityObject, null);
-                    }
+                    parseAndSetObject(separator, entityObject, localString, field);
                 }
             }
         } catch (NoSuchFieldException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
@@ -136,36 +186,89 @@ public class StringParser<T> {
         return entityObject.build();
     }
 
+    private T parseArray(Class type, String str, char separator) {
+        if (!str.contains("" + separator)) return null;
+        String strWithoutClassName = str.split("" + separator)[1];
+        String strWithoutBrackets = strWithoutClassName.substring(1, strWithoutClassName.length() - 1);
+        String[] effStrings = strWithoutBrackets.split("" + (char) (separator + 1));
+        StringParser localParser = new StringParser(type);
+        Object[] result = (Object[]) Array.newInstance(type, effStrings.length);
+        for (int i = 0; i < effStrings.length; i++) {
+            result[i] = localParser.parseFromBySeparator(effStrings[i], (char) (separator + 2));
+        }
+        return (T) result;
+    }
+
+    private T parsePrimitive(String str, char separator) throws InstantiationException, IllegalAccessException {
+        str = str.substring(str.indexOf(separator) + 1);
+        return (T) parseValue(str, objClass);
+    }
+
+    private void parseAndSetObject(char separator, AbstractEntity<T> entityObject, String localString, Field field)
+            throws IllegalAccessException {
+        String fieldName = field.getName();
+        if (separator - ROOT_SEPARATOR < depth) {
+            String toParse = localString.substring(fieldName.length() + 2, localString.length() - 1);
+            if (toParse.equals("null")) {
+                field.set(entityObject, null);
+            } else {
+                StringParser localParser = new StringParser(field.getType());
+                field.set(entityObject, localParser.parseFromBySeparator(toParse, (char) (separator + 1)));
+            }
+        } else {
+            field.set(entityObject, null);
+        }
+    }
+
+    private void parseAndSetArray(char separator, AbstractEntity<T> entityObject, Field field, String str)
+            throws IllegalAccessException {
+        Object value = parseArray(field.getType().getComponentType(), str, separator);
+        field.set(entityObject, value);
+    }
+
+    private void parseAndSetPrimitive(AbstractEntity<T> entityObject, Field field, String str)
+            throws IllegalAccessException, InstantiationException {
+        field.set(entityObject, parseValue(str.substring(str.indexOf('=') + 2, str.length() - 1), field.getType()));
+    }
+
     private Object parseValue(String str, Class type) throws IllegalAccessException, InstantiationException {
-        String effStr = str.substring(str.indexOf('=') + 2, str.length() - 1);
+        if (str.equals("null")) return null;
         Object result = null;
         switch (type.getName()) {
             case "byte":
-                result = Byte.parseByte(effStr);
+            case "java.lang.Byte":
+                result = Byte.parseByte(str);
                 break;
             case "short":
-                result = Short.parseShort(effStr);
+            case "java.lang.Short":
+                result = Short.parseShort(str);
                 break;
             case "int":
-                result = Integer.parseInt(effStr);
+            case "java.lang.Integer":
+                result = Integer.parseInt(str);
                 break;
             case "long":
-                result = Long.parseLong(effStr);
+            case "java.lang.Long":
+                result = Long.parseLong(str);
                 break;
             case "double":
-                result = Double.parseDouble(effStr);
+            case "java.lang.Double":
+                result = Double.parseDouble(str);
                 break;
             case "float":
-                result = Float.parseFloat(effStr);
+            case "java.lang.Float":
+                result = Float.parseFloat(str);
                 break;
             case "char":
-                result = effStr.charAt(0);
+            case "java.lang.Character":
+                result = str.charAt(0);
                 break;
             case "boolean":
-                result = Boolean.parseBoolean(effStr);
+            case "java.lang.Boolean":
+                result = Boolean.parseBoolean(str);
                 break;
-            case "String":
-                result = effStr;
+            case "java.lang.String":
+                result = str;
                 break;
             default:
                 result = null;

@@ -15,14 +15,29 @@ public class StringParserTest {
     }
 
     @Test
-    public void penParseTo() throws Exception {
-        Pen pen = Pen.DEFAULT_BLACK_PEN;
-        StringParser<Pen> penParser = new StringParser<>(Pen.class);
-        assertEquals("class=my.epam.stationery.model.Pen\u0001brushColor={class=java.awt.Color\u0002value={-16777216}" +
-                        "\u0002frgbvalue={null}\u0002fvalue={null}\u0002falpha={0.0}\u0002cs={null}\u0002}" +
-                        "\u0001shellColor={class=java.awt.Color\u0002value={-16777216}\u0002frgbvalue={null}" +
-                        "\u0002fvalue={null}\u0002falpha={0.0}\u0002cs={null}\u0002}\u0001",
-                penParser.parseTo(pen));
+    public void stringParseFrom() {
+        String str = "hello";
+        StringParser<String> strParser = new StringParser<>(String.class);
+        String parsed = strParser.parseTo(str);
+        String unparsed = strParser.parseFrom(parsed);
+        assertEquals(str, unparsed);
+    }
+
+    @Test
+    public void integerParseFrom() {
+        Integer val = 123;
+        StringParser<Integer> strParser = new StringParser<>(Integer.class);
+        String parsed = strParser.parseTo(val);
+        Integer unparsed = strParser.parseFrom(parsed);
+        assertEquals(val, unparsed);
+    }
+
+    @Test
+    public void booleanParseFrom() {
+        StringParser<Boolean> strParser = new StringParser<>(Boolean.class);
+        String parsed = strParser.parseTo(true);
+        Boolean unparsed = strParser.parseFrom(parsed);
+        assertEquals(true, unparsed);
     }
 
     @Test
@@ -32,6 +47,24 @@ public class StringParserTest {
         String parsed = penParser.parseTo(pen);
         Pen unparsed = penParser.parseFrom(parsed);
         assertEquals(pen, unparsed);
+    }
+
+    @Test
+    public void stringsArrayParseTest() {
+        String[] strings = {"hello", "from", "array"};
+        StringParser<String[]> strParser = new StringParser<>(String[].class);
+        String parsed = strParser.parseTo(strings);
+        String[] unparsed = strParser.parseFrom(parsed);
+        assertArrayEquals(strings, unparsed);
+    }
+
+    @Test
+    public void penArrayParseTest() {
+        Pen[] pens = {Pen.DEFAULT_RED_PEN, Pen.DEFAULT_BLUE_PEN, Pen.DEFAULT_BLACK_PEN};
+        StringParser<Pen[]> strParser = new StringParser<>(Pen[].class);
+        String parsed = strParser.parseTo(pens);
+        Pen[] unparsed = strParser.parseFrom(parsed);
+        assertArrayEquals(pens, unparsed);
     }
 
 }
