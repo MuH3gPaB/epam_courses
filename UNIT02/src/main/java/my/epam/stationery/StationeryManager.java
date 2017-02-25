@@ -3,7 +3,10 @@ package my.epam.stationery;
 import my.epam.stationery.model.Employee;
 import my.epam.stationery.model.Stationery;
 
+import java.util.ArrayList;
+
 public class StationeryManager {
+    private Assign[] assigns = {new Assign(10L,10L)};
 
     public Stationery[] getForEmployee(Employee employee){
         return null;
@@ -25,7 +28,17 @@ public class StationeryManager {
 
     }
 
+    public void loadData(ArrayList<Assign> assigns) {
 
+    }
 
+    public static class Assign{
+        final Long stationeryId;
+        final Long employeeId;
 
+        public Assign(Long stationeryId, Long employeeId) {
+            this.stationeryId = stationeryId;
+            this.employeeId = employeeId;
+        }
+    }
 }

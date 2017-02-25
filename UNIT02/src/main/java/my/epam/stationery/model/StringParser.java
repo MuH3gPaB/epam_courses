@@ -28,10 +28,14 @@ public class StringParser<T> {
     }
 
     public String parseTo(T obj) {
-        return parseToBySeparator(obj, ROOT_SEPARATOR);
+        return parseToBySeparator(obj, ROOT_SEPARATOR, null);
     }
 
-    private String parseToBySeparator(Object obj, char separator) {
+    public String parseToWithId(T obj, Long id){
+        return parseToBySeparator(obj, ROOT_SEPARATOR, id);
+    }
+
+    private String parseToBySeparator(Object obj, char separator, Long id) {
         if (isPrimitiveOrBoxed(objClass) || objClass.equals(String.class)) {
             return parsePrimitive(obj, separator);
         }
@@ -48,6 +52,11 @@ public class StringParser<T> {
             for (Field field : fields) {
                 Object fieldValue = field.get(obj);
                 sb.append(field.getName()).append("={");
+
+                if(id != null && field.getName().equals("id") && field.getType().equals(Long.class)){
+                    sb.append(id).append("}").append(separator);
+                    continue;
+                }
 
                 if (fieldValue == null) {
                     sb.append("null}").append(separator);
@@ -80,7 +89,7 @@ public class StringParser<T> {
             sb.append(fieldValue.toString()).append("}");
         } else {
             StringParser localParser = new StringParser(field.getType());
-            sb.append(localParser.parseToBySeparator(fieldValue, (char) (separator + 1)));
+            sb.append(localParser.parseToBySeparator(fieldValue, (char) (separator + 1), null));
         }
         return sb;
     }
@@ -93,7 +102,7 @@ public class StringParser<T> {
 
             Object[] array = (Object[]) fieldValue;
             for (Object object : array) {
-                sb.append(localParser.parseToBySeparator(object, (char) (separator + 1))).append(separator);
+                sb.append(localParser.parseToBySeparator(object, (char) (separator + 1), null)).append(separator);
             }
         }
         return sb;

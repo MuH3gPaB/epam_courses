@@ -1,5 +1,6 @@
 package my.epam.stationery.utils;
 
+import my.epam.stationery.StationeryManager;
 import my.epam.stationery.model.Pen;
 import my.epam.stationery.model.StringParser;
 import org.junit.Test;
@@ -65,6 +66,23 @@ public class StringParserTest {
         String parsed = strParser.parseTo(pens);
         Pen[] unparsed = strParser.parseFrom(parsed);
         assertArrayEquals(pens, unparsed);
+    }
+
+    @Test
+    public void parseWithIdTest(){
+        Pen pen = Pen.DEFAULT_BLACK_PEN;
+        StringParser<Pen> parser = new StringParser<>(Pen.class);
+        String parsed = parser.parseToWithId(pen, 123L);
+        Pen unparsed = parser.parseFrom(parsed);
+        assertEquals(new Long(123), unparsed.getId());
+    }
+
+    @Test
+    public void stationeryManagerParseTest(){
+        StationeryManager manager = new StationeryManager();
+        StringParser<StationeryManager> parser = new StringParser<>(StationeryManager.class);
+        String parsed = parser.parseTo(manager);
+        System.out.println(parsed);
     }
 
 }
