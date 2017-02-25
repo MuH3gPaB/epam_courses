@@ -1,23 +1,25 @@
 package my.epam.stationery.model;
 
+import my.epam.stationery.entity.AbstractEntity;
+
 import java.awt.*;
 
 /**
  * Pen class.
- *
+ * <p>
  * Pen class represents simple instance of pen.
  * Pens are constant (immutable).
- *
+ * <p>
  * You can create new Pen with one of two constructors.
- *
+ * <p>
  * <blockquote><pre>
  * Pen penOne = new Pen(Color.black, Color.green, "BIC", Pen.BALLPOINT_PEN_TYPE, "RollerBall");
  * Pen penTwo = new Pen(Color.black, Color.green);
  * </pre></blockquote>
- *
+ * <p>
  * If use short constructor undefined fields set to default values.
  * Default values for brandName, type and label accessable as public constants.
- *
+ * <p>
  * Also, some types of pens are available as public String constants:
  * <blockquote><pre>
  * FOUNTAIN_PEN_TYPE
@@ -26,7 +28,7 @@ import java.awt.*;
  * ROLLER_BALL_PEN_TYPE
  * GEL_INK_PEN_TYPE
  * </pre></blockquote>
- *
+ * <p>
  * Three pens are available by default:
  * <blockquote><pre>
  * DEFAULT_BLACK_PEN
@@ -67,6 +69,15 @@ public class Pen extends Stationery {
         this(brushColor, shellColor, DEFAULT_BRAND_NAME, DEFAULT_TYPE, DEFAULT_LABEL);
     }
 
+    Pen(Long id, Color brushColor, Color shellColor, String brandName, String type, String label) {
+        super(id, brandName, type, label);
+        if (brushColor == null || shellColor == null) {
+            throw new IllegalArgumentException();
+        }
+        this.brushColor = brushColor;
+        this.shellColor = shellColor;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -103,5 +114,22 @@ public class Pen extends Stationery {
 
     public Color getShellColor() {
         return shellColor;
+    }
+
+    static class Entity implements AbstractEntity<Pen> {
+        private Long id;
+        private Color brushColor;
+        private Color shellColor;
+        private String brandName;
+        private String type;
+        private String label;
+
+        public Entity() {
+        }
+
+        @Override
+        public Pen build() {
+            return new Pen(id, brushColor, shellColor, brandName, type, label);
+        }
     }
 }

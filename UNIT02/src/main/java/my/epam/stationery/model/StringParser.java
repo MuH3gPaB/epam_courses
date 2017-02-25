@@ -1,4 +1,4 @@
-package my.epam.stationery.utils;
+package my.epam.stationery.model;
 
 import my.epam.stationery.entity.AbstractEntity;
 import my.epam.stationery.entity.EntityManager;
@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.stream.Stream;
 
 public class StringParser<T> {
     private Logger logger = Logger.getLogger(StringParser.class);
@@ -33,7 +35,7 @@ public class StringParser<T> {
         StringBuilder sb = new StringBuilder();
         try {
             sb.append("class=").append(objClass.getName()).append(separator);
-            Field[] fields = objClass.getDeclaredFields();
+            Field[] fields = getAllDeclaredFields(objClass);
             for (Field field : fields) {
                 if (!Modifier.isStatic(field.getModifiers())) {
                     if (!field.isAccessible()) field.setAccessible(true);
@@ -69,8 +71,18 @@ public class StringParser<T> {
         return sb.toString();
     }
 
+    private Field[] getAllDeclaredFields(Class objClass) {
+        ArrayList<Field> fields = new ArrayList<>();
+        Class clazz = objClass;
+        do {
+            Stream.of(clazz.getDeclaredFields()).forEach(fields::add);
+            clazz = clazz.getSuperclass();
+        } while (!clazz.equals(Object.class));
+        return fields.toArray(new Field[0]);
+    }
+
     private String parsePrimitive(Object obj) {
-        return objClass.getName() + ";" + obj.toString();
+        return objClass.getName() + ROOT_SEPARATOR + obj.toString();
     }
 
     public void setDepth(int depth) {
@@ -84,39 +96,44 @@ public class StringParser<T> {
     private T parseFromBySeparator(String str, char separator) throws IllegalArgumentException {
         String sepString = "" + separator;
         String[] strings = str.split(sepString);
-        Class realObjClass;
-        AbstractEntity<T> object;
+        AbstractEntity<T> entityObject;
         try {
-            realObjClass = EntityManager.getEntity(parseClass(strings[0]));
-            object = (AbstractEntity<T>) realObjClass.newInstance();
+            Class realObjClass = parseClass(strings[0]);
+            Class entityClass = EntityManager.getEntity(realObjClass);
+
+            entityObject = (AbstractEntity<T>) entityClass.newInstance();
+
             for (String localString : strings) {
                 String fieldName = parseFieldName(localString);
+
                 if (fieldName.equals("class")) continue;
-                Field field = realObjClass.getDeclaredField(fieldName);
+
+                Field field = entityClass.getDeclaredField(fieldName);
+                if(!field.isAccessible()) field.setAccessible(true);
+
                 if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
-                    field.set(object, parseValue(localString, field.getType()));
+                    field.set(entityObject, parseValue(localString, field.getType()));
                 } else if (field.getType().isArray()) {
                     System.out.println("array");
                 } else {
                     if (separator - ROOT_SEPARATOR < depth) {
                         String toParse = localString.substring(fieldName.length() + 2, localString.length() - 1);
                         if (toParse.equals("null")) {
-                            field.set(object, null);
+                            field.set(entityObject, null);
                         } else {
                             StringParser localParser = new StringParser(field.getType());
-                            field.set(object, localParser.parseFromBySeparator(toParse, (char) (separator + 1)));
+                            field.set(entityObject, localParser.parseFromBySeparator(toParse, (char) (separator + 1)));
                         }
                     } else {
-                        field.set(object, null);
+                        field.set(entityObject, null);
                     }
                 }
             }
-        } catch (NoSuchFieldException
-                | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+        } catch (NoSuchFieldException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             logger.error("Could not parse string = " + str + " Exception = " + e.getMessage());
             throw new IllegalArgumentException();
         }
-        return object.build();
+        return entityObject.build();
     }
 
     private Object parseValue(String str, Class type) throws IllegalAccessException, InstantiationException {

@@ -14,11 +14,25 @@ public class EntityManager {
     }
 
     public static Class getEntity(Class clazz) {
+        return getInnerEntity(clazz);
+    }
+
+    private static Class getInnerEntity(Class clazz) {
+        Class result;
+        try {
+            result = Class.forName(clazz.getName() + "$Entity");
+        } catch (ClassNotFoundException e) {
+            result = getPropertiesEntity(clazz);
+        }
+        return result;
+    }
+
+    private static Class getPropertiesEntity(Class clazz) {
         Class result = null;
         try {
             result = Class.forName(resourceBundle.getString(clazz.getName()));
         } catch (MissingResourceException | ClassNotFoundException e) {
-            logger.error("Could not load entity for class " + clazz.getName());
+            logger.error("Could not load entity for class " + clazz.getName() + " from properties file.");
         }
         return result;
     }

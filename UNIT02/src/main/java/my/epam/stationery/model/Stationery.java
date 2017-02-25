@@ -1,9 +1,10 @@
 package my.epam.stationery.model;
 
 import my.epam.stationery.dao.HasId;
+import my.epam.stationery.entity.AbstractEntity;
 
 public class Stationery implements HasId {
-    private long Id;
+    private final Long id;
     private final String brandName;
     private final String type;
     private final String label;
@@ -13,6 +14,14 @@ public class Stationery implements HasId {
     public static final String DEFAULT_LABEL = "";
 
     public Stationery(String brandName, String type, String label) {
+        this.id = null;
+        this.brandName = brandName == null ? DEFAULT_BRAND_NAME : brandName;
+        this.type = type == null ? DEFAULT_TYPE : type;
+        this.label = label == null ? DEFAULT_LABEL : label;
+    }
+
+    Stationery(Long id, String brandName, String type, String label) {
+        this.id = id;
         this.brandName = brandName == null ? DEFAULT_BRAND_NAME : brandName;
         this.type = type == null ? DEFAULT_TYPE : type;
         this.label = label == null ? DEFAULT_LABEL : label;
@@ -51,11 +60,22 @@ public class Stationery implements HasId {
         return label;
     }
 
-    public long getId() {
-        return Id;
+    public Long getId() {
+        return id;
     }
 
-    public void setId(long id) {
-        Id = id;
+    static class Entity implements AbstractEntity<Stationery> {
+        Long id;
+        String brandName;
+        String type;
+        String label;
+
+        public Entity() {
+        }
+
+        @Override
+        public Stationery build() {
+            return new Stationery(id, brandName, type, label);
+        }
     }
 }

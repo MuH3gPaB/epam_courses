@@ -1,7 +1,7 @@
 package my.epam.stationery.utils;
 
-import my.epam.stationery.entity.PenEntity;
 import my.epam.stationery.model.Pen;
+import my.epam.stationery.model.StringParser;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -11,7 +11,7 @@ public class StringParserTest {
     public void stringParseTo() throws Exception {
         String str = "hello";
         StringParser<String> strParser = new StringParser<>(String.class);
-        assertEquals("java.lang.String;hello", strParser.parseTo(str));
+        assertEquals("java.lang.String\u0001hello", strParser.parseTo(str));
     }
 
     @Test
