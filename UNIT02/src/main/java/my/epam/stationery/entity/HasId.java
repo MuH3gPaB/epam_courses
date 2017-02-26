@@ -1,4 +1,4 @@
-package my.epam.stationery.dao;
+package my.epam.stationery.entity;
 
 public interface HasId {
     Long getId();

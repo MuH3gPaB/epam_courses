@@ -1,9 +1,7 @@
 package my.epam.stationery.model;
 
-import my.epam.stationery.dao.HasId;
+import my.epam.stationery.entity.HasId;
 import my.epam.stationery.entity.AbstractEntity;
-
-import java.awt.*;
 
 public class Employee implements HasId{
     private final Long id;

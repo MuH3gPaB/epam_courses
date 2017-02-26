@@ -2,18 +2,20 @@ package my.epam.stationery.dao;
 
 import my.epam.stationery.model.Pen;
 import my.epam.stationery.model.Stationery;
+import my.epam.stationery.model.StringParser;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class StationeryFileDaoTest extends Assert {
 
-    private static StationeryFileDao stDao;
+    private static FiledDao<Stationery> stDao;
     private static final String FILE_PATH = "./stationery.txt";
 
     @BeforeClass
@@ -32,7 +34,7 @@ public class StationeryFileDaoTest extends Assert {
         } catch (IOException e) {
             fail(e.getMessage());
         }
-        stDao = new StationeryFileDao(file);
+        stDao = new FiledDao<>(file, new StringParser<>(Stationery.class));
     }
 
     @Test
@@ -42,18 +44,13 @@ public class StationeryFileDaoTest extends Assert {
         pens[1] = new Pen(Color.CYAN, Color.WHITE, "Parker", Pen.GEL_INK_PEN_TYPE, "Parker");
         pens[2] = new Pen(Color.RED, Color.RED, "Erich Krauze", Pen.FIBER_TIP_PEN_TYPE, "EK");
 
-        for(Stationery st : pens){
+        for (Stationery st : pens) {
             stDao.saveOrUpdate(st);
         }
 
-        Stationery[] sts = stDao.getAll();
-        assertEquals(pens.length, sts.length);
-        for(int i = 0; i < sts.length; i++){
-            boolean present = false;
-            for (Stationery st : sts) {
-                if (pens[i].equals(st)) present = true;
-            }
-            assertTrue(pens[i] + " NOT FOUND in getAll() results.", present);
+        List<Stationery> sts = stDao.getAll();
+        for (Pen pen : pens) {
+            assertTrue(pen + " NOT FOUND in getAll() results.", sts.contains(pen));
         }
     }
 
@@ -75,21 +72,16 @@ public class StationeryFileDaoTest extends Assert {
         long id2 = stDao.saveOrUpdate(p2);
         long id3 = stDao.saveOrUpdate(p3);
 
-        assertEquals(3, stDao.getAll().length);
-
         stDao.remove(id1);
 
-        assertEquals(2, stDao.getAll().length);
         assertEquals(null, stDao.getById(id1));
 
         stDao.remove(id2);
 
-        assertEquals(1, stDao.getAll().length);
         assertEquals(null, stDao.getById(id2));
 
         stDao.remove(id3);
 
-        assertEquals(0, stDao.getAll().length);
         assertEquals(null, stDao.getById(id3));
     }
 
@@ -104,7 +96,7 @@ public class StationeryFileDaoTest extends Assert {
     }
 
     @Test
-    public void updateRecordTest(){
+    public void updateRecordTest() {
         Pen pen = Pen.DEFAULT_BLACK_PEN;
         Pen pen1 = Pen.DEFAULT_BLUE_PEN;
         Pen pen2 = Pen.DEFAULT_RED_PEN;

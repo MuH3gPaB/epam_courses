@@ -1,6 +1,6 @@
 package my.epam.stationery.dao;
 
-import my.epam.stationery.model.Stationery;
+import my.epam.stationery.entity.HasId;
 import my.epam.stationery.model.StringParser;
 import org.apache.log4j.Logger;
 
@@ -10,31 +10,30 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class StationeryFileDao implements AbstractDao<Stationery> {
-    Logger logger = Logger.getLogger(StationeryFileDao.class);
+public class FiledDao<T extends HasId> implements AbstractDao<T> {
+    Logger logger = Logger.getLogger(FiledDao.class);
     private long currentId = 0;
     private File dataFile;
     private final static char ID_SEPARATOR = '\u0099';
+    private StringParser<T> parser;
 
-    public StationeryFileDao(File dataFile) {
+    public FiledDao (File dataFile, StringParser<T> parser) {
+        this.parser = parser;
         this.dataFile = dataFile;
         currentId = readCurrentId();
     }
 
     @Override
-    public Stationery[] getAll() {
+    public List<T> getAll() {
         return readAllRecords();
     }
 
     @Override
-    public Stationery getById(long id) {
+    public T getById(long id) {
         return findRecordById(id);
     }
 
@@ -43,28 +42,9 @@ public class StationeryFileDao implements AbstractDao<Stationery> {
         removeRecord(id);
     }
 
-    private void removeRecord(long id) {
-        try {
-            List<String> lines = getAllLinesExceptId(id);
-            Files.write(dataFile.toPath(), lines);
-        } catch (IOException e) {
-            logger.error("Error writing to file " + dataFile.getName());
-            throw new RuntimeException("Could not write data to file");
-        }
-    }
-
-    private List<String> getAllLinesExceptId(long id) throws IOException {
-        return Files.lines(dataFile.toPath())
-                .filter(line -> {
-                    if (!line.contains("" + ID_SEPARATOR)) return true;
-                    long recordId = Long.parseLong(line.substring(0, line.indexOf(ID_SEPARATOR)));
-                    return recordId != id;
-                })
-                .collect(Collectors.toList());
-    }
-
     @Override
-    public void remove(Stationery obj) {
+    public void remove(T obj) {
+        parser = new StringParser<>(obj.getClass());
         if (obj.getId() != null) {
             remove(obj.getId());
         } else {
@@ -74,12 +54,12 @@ public class StationeryFileDao implements AbstractDao<Stationery> {
     }
 
     @Override
-    public long saveOrUpdate(Stationery obj) {
+    public long saveOrUpdate(T obj) {
+        parser = new StringParser<>(obj.getClass());
         boolean isNew = (obj.getId() == null);
         long id = (isNew) ? currentId++ : obj.getId();
         StringBuilder sb = new StringBuilder().append(id).append(ID_SEPARATOR);
 
-        StringParser<Stationery> parser = new StringParser<>(obj.getClass());
         sb.append(parser.parseToWithId(obj, id));
         if (isNew) {
             writeNewRecord(sb.toString());
@@ -89,8 +69,6 @@ public class StationeryFileDao implements AbstractDao<Stationery> {
         }
         return id;
     }
-
-
 
     private void rewriteRecord(String str, long id) {
         try {
@@ -103,7 +81,7 @@ public class StationeryFileDao implements AbstractDao<Stationery> {
         }
     }
 
-    private Stationery findRecordById(long id) {
+    private T findRecordById(long id) {
         try (BufferedReader br = Files.newBufferedReader(dataFile.toPath())) {
             String line = br.readLine();    // Skip first line with current id
             while ((line = br.readLine()) != null) {
@@ -111,8 +89,6 @@ public class StationeryFileDao implements AbstractDao<Stationery> {
                     String idStr = line.substring(0, line.indexOf(ID_SEPARATOR));
                     long recordId = Long.parseLong(idStr);
                     if (recordId == id) {
-                        StringParser<Stationery> parser = new StringParser<>(Stationery.class);
-
                         String toUnparse = line.substring(line.indexOf(ID_SEPARATOR) + 1);
 
                         return parser.parseFrom(toUnparse);
@@ -126,22 +102,19 @@ public class StationeryFileDao implements AbstractDao<Stationery> {
         return null;
     }
 
-    private Stationery[] readAllRecords() {
-        ArrayList<Stationery> list = new ArrayList<>();
-        StringParser<Stationery> parser = new StringParser<>(Stationery.class);
-        try (BufferedReader br = Files.newBufferedReader(dataFile.toPath())) {
-            String line = br.readLine();        // Skip first line with current id
-            while ((line = br.readLine()) != null) {
-                if (line.contains("" + ID_SEPARATOR)) {
-                    String toUnparse = line.substring(line.indexOf(ID_SEPARATOR) + 1);
-                    list.add(parser.parseFrom(toUnparse));
-                }
-            }
+    private List<T> readAllRecords() {
+        try {
+            return Files.lines(dataFile.toPath())
+                    .filter((line) -> line.contains("" + ID_SEPARATOR))
+                    .map(line -> {
+                        String toUnparse = line.substring(line.indexOf(ID_SEPARATOR) + 1);
+                        return parser.parseFrom(toUnparse);
+                    })
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             logger.error("Error reading data from file " + dataFile.getName());
             throw new RuntimeException("Wrong data file format");
         }
-        return list.toArray(new Stationery[0]);
     }
 
     private long readCurrentId() {
@@ -175,5 +148,25 @@ public class StationeryFileDao implements AbstractDao<Stationery> {
             logger.error("Error writing to file " + dataFile.getName());
             throw new RuntimeException("Could not write data to file");
         }
+    }
+
+    private void removeRecord(long id) {
+        try {
+            List<String> lines = getAllLinesExceptId(id);
+            Files.write(dataFile.toPath(), lines);
+        } catch (IOException e) {
+            logger.error("Error writing to file " + dataFile.getName());
+            throw new RuntimeException("Could not write data to file");
+        }
+    }
+
+    private List<String> getAllLinesExceptId(long id) throws IOException {
+        return Files.lines(dataFile.toPath())
+                .filter(line -> {
+                    if (!line.contains("" + ID_SEPARATOR)) return true;
+                    long recordId = Long.parseLong(line.substring(0, line.indexOf(ID_SEPARATOR)));
+                    return recordId != id;
+                })
+                .collect(Collectors.toList());
     }
 }
