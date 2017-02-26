@@ -23,13 +23,13 @@ public class StationeryFileDaoTest extends Assert {
         File file = new File(FILE_PATH);
         try {
             if (!file.createNewFile()) {
-//                if (!file.delete()) {
-//                    fail("File " + FILE_PATH + " already exist. Could not delete the file.");
-//                } else {
-//                    if (!file.createNewFile()) {
-//                        fail("Could not create the file " + FILE_PATH);
-//                    }
-//                }
+                if (!file.delete()) {
+                    fail("File " + FILE_PATH + " already exist. Could not delete the file.");
+                } else {
+                    if (!file.createNewFile()) {
+                        fail("Could not create the file " + FILE_PATH);
+                    }
+                }
             }
         } catch (IOException e) {
             fail(e.getMessage());
@@ -87,14 +87,27 @@ public class StationeryFileDaoTest extends Assert {
 
     @Test
     public void removeByInstance() {
+        Pen p1 = Pen.DEFAULT_BLACK_PEN;
+        Pen p2 = Pen.DEFAULT_RED_PEN;
+        Pen p3 = Pen.DEFAULT_BLUE_PEN;
 
+        long id1 = stDao.saveOrUpdate(p1);
+        long id2 = stDao.saveOrUpdate(p2);
+        long id3 = stDao.saveOrUpdate(p3);
+
+        stDao.remove(stDao.getById(id1));
+
+        assertEquals(null, stDao.getById(id1));
+
+        stDao.remove(stDao.getById(id2));
+
+        assertEquals(null, stDao.getById(id2));
+
+        stDao.remove(stDao.getById(id3));
+
+        assertEquals(null, stDao.getById(id3));
     }
-
-    @Test
-    public void saveOrUpdate() {
-
-    }
-
+    
     @Test
     public void updateRecordTest() {
         Pen pen = Pen.DEFAULT_BLACK_PEN;
@@ -110,9 +123,9 @@ public class StationeryFileDaoTest extends Assert {
     @AfterClass
     public static void clearDao() {
         File file = new File(FILE_PATH);
-//        if (!file.delete()) {
-//            fail("Could not delete file " + FILE_PATH + " after tests.");
-//        }
+        if (!file.delete()) {
+            fail("Could not delete file " + FILE_PATH + " after tests.");
+        }
     }
 }
 
