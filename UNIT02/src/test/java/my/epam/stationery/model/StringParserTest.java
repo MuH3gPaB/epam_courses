@@ -77,12 +77,4 @@ public class StringParserTest {
         assertEquals(new Long(123), unparsed.getId());
     }
 
-    @Test
-    public void stationeryManagerParseTest(){
-        StationeryManager manager = new StationeryManager();
-        StringParser<StationeryManager> parser = new StringParser<>(StationeryManager.class);
-        String parsed = parser.parseTo(manager);
-        System.out.println(parsed);
-    }
-
 }

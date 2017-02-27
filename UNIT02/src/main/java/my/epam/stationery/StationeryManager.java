@@ -54,19 +54,25 @@ public class StationeryManager implements HasId {
     }
 
     public void addStationery(Stationery[] stationeries, Employee employee) {
-
+        for(Stationery st : stationeries){
+            addStationery(st, employee);
+        }
     }
 
     public void removeStationery(Stationery stationery) {
-
+        Assign a = assignDao.getAssignByStationeryId(stationery.getId());
+        assignDao.remove(a);
     }
 
     public void moveStationery(Stationery stationery, Employee newEmployee) {
-
+        removeStationery(stationery);
+        addStationery(stationery, newEmployee);
     }
 
-    public void loadData(ArrayList<Assign> assigns) {
-
+    public Employee getEmployeeOfStationery(Stationery st){
+        if(st.getId() == null) throw new IllegalArgumentException("Record not found.");
+        Long emplId = assignDao.getAssignByStationeryId(st.getId()).getEmployeeId();
+        return emplDao.getById(emplId);
     }
 
     public AbstractDao<Stationery> getStDao() {

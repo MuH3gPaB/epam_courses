@@ -47,7 +47,7 @@ public class AssignDao extends FiledDao<Assign>{
 
     public Assign getAssignByStationeryId(Long stId){
         List<Assign> result = getAll().stream()
-                .filter((a)->a.getEmployeeId().equals(stId))
+                .filter((a)->a.getStationeryId().equals(stId))
                 .collect(Collectors.toList());
         if(result.size() != 0) return result.get(0);
         else return null;

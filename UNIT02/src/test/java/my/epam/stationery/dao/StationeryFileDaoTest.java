@@ -21,19 +21,6 @@ public class StationeryFileDaoTest extends Assert {
     @BeforeClass
     public static void createDao() {
         File file = new File(FILE_PATH);
-        try {
-            if (!file.createNewFile()) {
-                if (!file.delete()) {
-                    fail("File " + FILE_PATH + " already exist. Could not delete the file.");
-                } else {
-                    if (!file.createNewFile()) {
-                        fail("Could not create the file " + FILE_PATH);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            fail(e.getMessage());
-        }
         stDao = new FiledDao<>(file, new StringParser<>(Stationery.class));
     }
 
