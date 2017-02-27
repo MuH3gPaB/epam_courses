@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 
 public class EntityManager {
     private static Logger logger = Logger.getLogger(EntityManager.class.getName());
-    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("entityMapping");
+    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("my.epam.stationery.entityMapping");
 
     private EntityManager() {
     }
