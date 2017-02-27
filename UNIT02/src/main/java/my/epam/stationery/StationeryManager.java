@@ -1,30 +1,67 @@
 package my.epam.stationery;
 
+import my.epam.stationery.dao.AbstractDao;
+import my.epam.stationery.dao.AssignDao;
+import my.epam.stationery.dao.FiledDao;
+import my.epam.stationery.entity.HasId;
+import my.epam.stationery.model.Assign;
 import my.epam.stationery.model.Employee;
 import my.epam.stationery.model.Stationery;
 
 import java.util.ArrayList;
 
-public class StationeryManager {
-    private Assign[] assigns = {new Assign(10L,10L)};
+public class StationeryManager implements HasId {
+    private Long id;
+    private int size = 0;
+    private AbstractDao<Stationery> stDao;
+    private AbstractDao<Employee> emplDao;
+    private AssignDao assignDao;
 
-    public Stationery[] getForEmployee(Employee employee){
-        return null;
+    public StationeryManager() {
     }
 
-    public void addStationery(Stationery stationery, Employee employee){
+    public StationeryManager(AbstractDao<Stationery> stDao, AbstractDao<Employee> emplDao, AssignDao assignDao) {
+        this.stDao = stDao;
+        this.emplDao = emplDao;
+        this.assignDao = assignDao;
+    }
+
+    public Stationery[] getForEmployee(Employee employee) {
+        if (employee.getId() == null)
+            throw new IllegalArgumentException("Employee " + employee.toString() + " not found.");
+        else {
+            Assign[] assigns = assignDao.getAssignsForEmployeeId(employee.getId());
+            Stationery[] result = new Stationery[assigns.length];
+            for (int i = 0; i < result.length; i++) {
+                result[i] = stDao.getById(assigns[i].getId());
+            }
+            return result;
+        }
+    }
+
+    public void addStationery(Stationery stationery, Employee employee) {
+        if (employee.getId() == null) throw new IllegalArgumentException("Employee not found.");
+        if (stationery.getId() == null) throw new IllegalArgumentException("Stationery not found");
+
+        Long emplId = employee.getId();
+        Long stId = stationery.getId();
+        Assign exists = assignDao.getAssignByStationeryId(stId);
+        if (exists != null) {
+            throw new IllegalArgumentException("Stationery with id = " + stId + " already assigned for employee " + exists.getEmployeeId());
+        } else {
+            assignDao.saveOrUpdate(new Assign(stId, emplId));
+        }
+    }
+
+    public void addStationery(Stationery[] stationeries, Employee employee) {
 
     }
 
-    public void addStationery(Stationery[] stationeries, Employee employee){
+    public void removeStationery(Stationery stationery) {
 
     }
 
-    public void removeStationery(Stationery stationery){
-
-    }
-
-    public void moveStationery(Stationery stationery, Employee newEmployee){
+    public void moveStationery(Stationery stationery, Employee newEmployee) {
 
     }
 
@@ -32,13 +69,25 @@ public class StationeryManager {
 
     }
 
-    public static class Assign{
-        final Long stationeryId;
-        final Long employeeId;
-
-        public Assign(Long stationeryId, Long employeeId) {
-            this.stationeryId = stationeryId;
-            this.employeeId = employeeId;
-        }
+    public AbstractDao<Stationery> getStDao() {
+        return stDao;
     }
+
+    public void setStDao(AbstractDao<Stationery> stDao) {
+        this.stDao = stDao;
+    }
+
+    public AbstractDao<Employee> getEmplDao() {
+        return emplDao;
+    }
+
+    public void setEmplDao(AbstractDao<Employee> emplDao) {
+        this.emplDao = emplDao;
+    }
+
+    @Override
+    public Long getId() {
+        return this.id;
+    }
+
 }

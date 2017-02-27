@@ -1,4 +1,4 @@
-package my.epam.stationery.utils;
+package my.epam.stationery.model;
 
 import my.epam.stationery.StationeryManager;
 import my.epam.stationery.model.Pen;

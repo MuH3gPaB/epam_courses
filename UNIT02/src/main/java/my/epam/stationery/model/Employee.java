@@ -40,6 +40,29 @@ public class Employee implements HasId{
         return department;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Employee employee = (Employee) o;
+
+        if (id != null ? !id.equals(employee.id) : employee.id != null) return false;
+        if (firstName != null ? !firstName.equals(employee.firstName) : employee.firstName != null) return false;
+        if (secondName != null ? !secondName.equals(employee.secondName) : employee.secondName != null) return false;
+        return department != null ? department.equals(employee.department) : employee.department == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (secondName != null ? secondName.hashCode() : 0);
+        result = 31 * result + (department != null ? department.hashCode() : 0);
+        return result;
+    }
+
     static class Entity implements AbstractEntity<Employee> {
         private Long id;
         private String firstName;

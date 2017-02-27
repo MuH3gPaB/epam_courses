@@ -293,4 +293,8 @@ public class StringParser<T> {
         String className = str.substring(str.indexOf('=') + 1);
         return Class.forName(className);
     }
+
+    public Class getCurrentObjectClass(){
+        return objClass;
+    }
 }

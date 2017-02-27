@@ -21,10 +21,15 @@ public class FiledDao<T extends HasId> implements AbstractDao<T> {
     private final static char ID_SEPARATOR = '\u0099';
     private StringParser<T> parser;
 
-    public FiledDao (File dataFile, StringParser<T> parser) {
+    public FiledDao(File dataFile, StringParser<T> parser) {
         this.parser = parser;
         this.dataFile = dataFile;
         currentId = readCurrentId();
+        if (currentId == 0) try {
+            Files.createFile(dataFile.toPath());
+        } catch (IOException e) {
+            logger.error("Could not create the file " + dataFile.getName());
+        }
     }
 
     @Override
@@ -130,7 +135,7 @@ public class FiledDao<T extends HasId> implements AbstractDao<T> {
     }
 
     private void writeCurrentId() {
-        try (BufferedWriter bw = Files.newBufferedWriter(dataFile.toPath(), StandardOpenOption.WRITE)) {
+        try (BufferedWriter bw = Files.newBufferedWriter(dataFile.toPath(), StandardOpenOption.WRITE, StandardOpenOption.CREATE)) {
             bw.write(Long.toString(currentId));
             bw.flush();
         } catch (IOException e) {
@@ -140,7 +145,7 @@ public class FiledDao<T extends HasId> implements AbstractDao<T> {
     }
 
     private void writeNewRecord(String str) {
-        try (BufferedWriter bw = Files.newBufferedWriter(dataFile.toPath(), StandardOpenOption.APPEND)) {
+        try (BufferedWriter bw = Files.newBufferedWriter(dataFile.toPath(), StandardOpenOption.APPEND, StandardOpenOption.CREATE)) {
             bw.newLine();
             bw.write(str);
             bw.flush();
@@ -168,5 +173,9 @@ public class FiledDao<T extends HasId> implements AbstractDao<T> {
                     return recordId != id;
                 })
                 .collect(Collectors.toList());
+    }
+
+    protected Class getParserClass(){
+        return parser.getCurrentObjectClass();
     }
 }
