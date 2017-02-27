@@ -10,9 +10,8 @@ import my.epam.stationery.model.Stationery;
 
 import java.util.ArrayList;
 
-public class StationeryManager implements HasId {
-    private Long id;
-    private int size = 0;
+public class StationeryManager {
+
     private AbstractDao<Stationery> stDao;
     private AbstractDao<Employee> emplDao;
     private AssignDao assignDao;
@@ -90,10 +89,4 @@ public class StationeryManager implements HasId {
     public void setEmplDao(AbstractDao<Employee> emplDao) {
         this.emplDao = emplDao;
     }
-
-    @Override
-    public Long getId() {
-        return this.id;
-    }
-
 }

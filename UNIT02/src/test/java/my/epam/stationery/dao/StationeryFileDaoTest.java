@@ -3,24 +3,26 @@ package my.epam.stationery.dao;
 import my.epam.stationery.model.Pen;
 import my.epam.stationery.model.Stationery;
 import my.epam.stationery.model.StringParser;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 public class StationeryFileDaoTest extends Assert {
 
-    private static FiledDao<Stationery> stDao;
-    private static final String FILE_PATH = "./stationery.txt";
+    private FiledDao<Stationery> stDao;
+    private String filePath;
 
-    @BeforeClass
-    public static void createDao() {
-        File file = new File(FILE_PATH);
+    @Before
+    public void createDao() {
+        Random rnd = new Random();
+        filePath = "./stationery_" + rnd.nextInt(1000) + ".txt";
+        File file = new File(filePath);
         stDao = new FiledDao<>(file, new StringParser<>(Stationery.class));
     }
 
@@ -107,11 +109,11 @@ public class StationeryFileDaoTest extends Assert {
         stDao.saveOrUpdate(readedPen);
     }
 
-    @AfterClass
-    public static void clearDao() {
-        File file = new File(FILE_PATH);
+    @After
+    public void clearDao() {
+        File file = new File(filePath);
         if (!file.delete()) {
-            fail("Could not delete file " + FILE_PATH + " after tests.");
+            fail("Could not delete file " + filePath + " after tests.");
         }
     }
 }

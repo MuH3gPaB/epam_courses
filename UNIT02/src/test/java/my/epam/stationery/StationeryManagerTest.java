@@ -8,22 +8,27 @@ import org.junit.*;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Random;
 
 public class StationeryManagerTest extends Assert {
-    private static StationeryDao stationeryDao;
-    private final static String STATIONERY_FILE = "./stationery.txt";
+    private StationeryDao stationeryDao;
+    private String stationeryFile;
 
-    private static EmployeeDao employeeDao;
-    private final static String EMPLOYEE_FILE = "./employee.txt";
+    private EmployeeDao employeeDao;
+    private String employeeFile;
 
-    private static AssignDao assignDao;
-    private final static String ASSIGN_FILE = "./assign.txt";
+    private AssignDao assignDao;
+    private String assignFile;
 
     @Before
     public void loadDao() {
-        stationeryDao = new StationeryDao(new File(STATIONERY_FILE), new StringParser<>(Stationery.class));
-        employeeDao = new EmployeeDao(new File(EMPLOYEE_FILE), new StringParser<>(Employee.class));
-        assignDao = new AssignDao(new File(ASSIGN_FILE), new StringParser<>(Assign.class));
+        Random rnd = new Random();
+        stationeryFile = "./stationery_" + rnd.nextInt(1000) + ".txt";
+        employeeFile = "./employee_" + rnd.nextInt(1000) + ".txt";
+        assignFile = "./assign_" + rnd.nextInt(1000) + ".txt";
+        stationeryDao = new StationeryDao(new File(stationeryFile), new StringParser<>(Stationery.class));
+        employeeDao = new EmployeeDao(new File(employeeFile), new StringParser<>(Employee.class));
+        assignDao = new AssignDao(new File(assignFile), new StringParser<>(Assign.class));
     }
 
     @Test
@@ -130,19 +135,19 @@ public class StationeryManagerTest extends Assert {
 
     @After
     public void clearDao() {
-        File file = new File(ASSIGN_FILE);
+        File file = new File(assignFile);
         if (!file.delete()) {
-            fail("Could not delete file " + ASSIGN_FILE + " after tests.");
+            fail("Could not delete file " + assignFile + " after test.");
         }
 
-        file = new File(STATIONERY_FILE);
+        file = new File(stationeryFile);
         if (!file.delete()) {
-            fail("Could not delete file " + STATIONERY_FILE + " after tests.");
+            fail("Could not delete file " + stationeryFile + " after test.");
         }
 
-        file = new File(EMPLOYEE_FILE);
+        file = new File(employeeFile);
         if (!file.delete()) {
-            fail("Could not delete file " + EMPLOYEE_FILE + " after tests.");
+            fail("Could not delete file " + employeeFile + " after test.");
         }
     }
 }
