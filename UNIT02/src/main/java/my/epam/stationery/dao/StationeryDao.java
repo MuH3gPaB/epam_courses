@@ -5,6 +5,7 @@ import my.epam.stationery.model.StringParser;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 public class StationeryDao extends FiledDao<Stationery>{
     public StationeryDao(File dataFile, StringParser<Stationery> parser) {
@@ -34,5 +35,15 @@ public class StationeryDao extends FiledDao<Stationery>{
     @Override
     public long saveOrUpdate(Stationery obj) {
         return super.saveOrUpdate(obj);
+    }
+
+    @Override
+    public Stationery saveOrUpdateAndReturn(Stationery obj) {
+        return super.saveOrUpdateAndReturn(obj);
+    }
+
+    @Override
+    public List<Stationery> findBy(Map<String, String> valMap) {
+        return super.findBy(valMap);
     }
 }

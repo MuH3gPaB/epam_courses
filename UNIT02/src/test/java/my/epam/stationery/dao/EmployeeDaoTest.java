@@ -7,10 +7,7 @@ import my.epam.stationery.model.StringParser;
 import org.junit.*;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class EmployeeDaoTest extends Assert {
 
@@ -31,8 +28,8 @@ public class EmployeeDaoTest extends Assert {
         Map<String, String> query = new HashMap<>();
         query.put("firstName", "Vladimir");
 
-        Employee[] founded = employeeDao.findBy(query);
-        assertTrue(Arrays.asList(founded).contains(vova));
+        List<Employee> founded = employeeDao.findBy(query);
+        assertTrue(founded.contains(vova));
     }
 
     @After

@@ -39,7 +39,7 @@ public class StationeryManagerTest extends Assert {
 
         Employee ivanov = new Employee("Ivan", "Ivanov", "0920");
         ivanov = employeeDao.getById(employeeDao.saveOrUpdate(ivanov));
-        manager.addStationery(pen, ivanov);
+        manager.assignStationery(pen, ivanov);
 
         Stationery[] ivanovs = manager.getForEmployee(ivanov);
         assertTrue(Arrays.asList(ivanovs).contains(pen));
@@ -53,10 +53,10 @@ public class StationeryManagerTest extends Assert {
 
         Employee ivanov = new Employee("Ivan", "Ivanov", "0920");
         ivanov = employeeDao.getById(employeeDao.saveOrUpdate(ivanov));
-        manager.addStationery(pen, ivanov);
+        manager.assignStationery(pen, ivanov);
 
         try {
-            manager.addStationery(pen, ivanov);
+            manager.assignStationery(pen, ivanov);
         } catch (Exception e) {
             assertEquals(IllegalArgumentException.class, e.getClass());
             return;
@@ -79,10 +79,10 @@ public class StationeryManagerTest extends Assert {
 
         Employee ivanov = new Employee("Ivan", "Ivanov", "0920");
         ivanov = employeeDao.getById(employeeDao.saveOrUpdate(ivanov));
-        manager.addStationery(pens[0], ivanov);
+        manager.assignStationery(pens[0], ivanov);
 
         try {
-            manager.addStationery(pens, ivanov);
+            manager.assignStationeries(pens, ivanov);
         } catch (Exception e) {
             assertEquals(IllegalArgumentException.class, e.getClass());
             return;
@@ -105,7 +105,7 @@ public class StationeryManagerTest extends Assert {
 
         Employee ivanov = new Employee("Ivan", "Ivanov", "0920");
         ivanov = employeeDao.getById(employeeDao.saveOrUpdate(ivanov));
-        manager.addStationery(pens, ivanov);
+        manager.assignStationeries(pens, ivanov);
 
         Stationery[] ivanovs = manager.getForEmployee(ivanov);
         assertTrue(Arrays.asList(ivanovs).contains(pens[0]));
@@ -127,7 +127,7 @@ public class StationeryManagerTest extends Assert {
         Employee dima = new Employee("Dmitry", "Petrov", "FSB");
         dima = employeeDao.getById(employeeDao.saveOrUpdate(dima));
 
-        manager.addStationery(pen, vova);
+        manager.assignStationery(pen, vova);
         assertEquals(vova, manager.getEmployeeOfStationery(pen));
         manager.moveStationery(pen, dima);
         assertEquals(dima, manager.getEmployeeOfStationery(pen));

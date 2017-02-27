@@ -38,8 +38,7 @@ import java.awt.*;
  *
  * @author M.Figurin
  */
-public class Pen extends Stationery {
-    private final Color brushColor;
+public class Pen extends Writer {
     private final Color shellColor;
 
     public static final String FOUNTAIN_PEN_TYPE = "FOUNTAIN";
@@ -53,11 +52,10 @@ public class Pen extends Stationery {
     public static final Pen DEFAULT_RED_PEN = new Pen(Color.RED, Color.RED, DEFAULT_BRAND_NAME, DEFAULT_TYPE, DEFAULT_LABEL);
 
     public Pen(Color brushColor, Color shellColor, String brandName, String type, String label) {
-        super(brandName, type, label);
+        super(brushColor, brandName, type, label);
         if (brushColor == null || shellColor == null) {
             throw new IllegalArgumentException();
         }
-        this.brushColor = brushColor;
         this.shellColor = shellColor;
     }
 
@@ -69,12 +67,11 @@ public class Pen extends Stationery {
         this(brushColor, shellColor, DEFAULT_BRAND_NAME, DEFAULT_TYPE, DEFAULT_LABEL);
     }
 
-    Pen(Long id, Color brushColor, Color shellColor, String brandName, String type, String label) {
-        super(id, brandName, type, label);
+    Pen(Long id, Color brushColor, Color shellColor, String brandName, String type, String label, Long price) {
+        super(id, brushColor, brandName, type, label, price);
         if (brushColor == null || shellColor == null) {
             throw new IllegalArgumentException();
         }
-        this.brushColor = brushColor;
         this.shellColor = shellColor;
     }
 
@@ -87,15 +84,13 @@ public class Pen extends Stationery {
 
         Pen pen = (Pen) o;
 
-        return brushColor.equals(pen.brushColor)
-                && shellColor.equals(pen.shellColor)
-                && super.equals(pen);
+        return shellColor.equals(pen.shellColor)
+                        && super.equals(pen);
     }
 
     @Override
     public int hashCode() {
-        int result = brushColor.hashCode();
-        result = 31 * result + shellColor.hashCode();
+        int result = shellColor.hashCode();
         result = 31 * result + super.hashCode();
         return result;
     }
@@ -103,13 +98,8 @@ public class Pen extends Stationery {
     @Override
     public String toString() {
         return "Pen{" +
-                "brushColor=" + brushColor +
-                ", shellColor=" + shellColor +
+                "shellColor=" + shellColor +
                 '}' + super.toString();
-    }
-
-    public Color getBrushColor() {
-        return brushColor;
     }
 
     public Color getShellColor() {
@@ -123,13 +113,14 @@ public class Pen extends Stationery {
         private String brandName;
         private String type;
         private String label;
+        private Long price;
 
         public Entity() {
         }
 
         @Override
         public Pen build() {
-            return new Pen(id, brushColor, shellColor, brandName, type, label);
+            return new Pen(id, brushColor, shellColor, brandName, type, label, price);
         }
     }
 }

@@ -1,6 +1,7 @@
 package my.epam.stationery.dao;
 
 import my.epam.stationery.entity.HasId;
+import my.epam.stationery.model.Employee;
 import my.epam.stationery.model.StringParser;
 import org.apache.log4j.Logger;
 
@@ -8,9 +9,12 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -73,6 +77,42 @@ public class FiledDao<T extends HasId> implements AbstractDao<T> {
             rewriteRecord(sb.toString(), id);
         }
         return id;
+    }
+
+    @Override
+    public T saveOrUpdateAndReturn(T obj) {
+        return getById(saveOrUpdate(obj));
+    }
+
+    @Override
+    public List<T> findBy(Map<String, String> valMap) {
+        ArrayList<Field> fields = new ArrayList<>();
+        for (String fieldName : valMap.keySet()) {
+            try {
+                Field field = getParserClass().getDeclaredField(fieldName);
+                if (!field.isAccessible()) field.setAccessible(true);
+                fields.add(field);
+            } catch (NoSuchFieldException e) {
+                logger.error("Field with name " + fieldName + " not found.");
+                throw new IllegalArgumentException("Field with name " + fieldName + " not found.");
+            }
+        }
+
+        return getAll().stream()
+                .filter((obj) -> {
+                    boolean ok = true;
+                    for (Field field : fields) {
+                        try {
+                            Object actual = field.get(obj);
+                            Object expected = valMap.get(field.getName());
+                            ok = actual.equals(expected);
+                        } catch (IllegalAccessException e) {
+                            logger.error(e.getMessage());
+                        }
+                    }
+                    return ok;
+                })
+                .collect(Collectors.toList());
     }
 
     private void rewriteRecord(String str, long id) {

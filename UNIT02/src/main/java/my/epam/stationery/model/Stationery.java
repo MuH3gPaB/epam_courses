@@ -8,6 +8,7 @@ public class Stationery implements HasId {
     private final String brandName;
     private final String type;
     private final String label;
+    private Long price;
 
     public static final String DEFAULT_BRAND_NAME = "UNBRANDED";
     public static final String DEFAULT_TYPE = "UNDEFINED";
@@ -20,11 +21,12 @@ public class Stationery implements HasId {
         this.label = label == null ? DEFAULT_LABEL : label;
     }
 
-    Stationery(Long id, String brandName, String type, String label) {
+    Stationery(Long id, String brandName, String type, String label, Long price) {
         this.id = id;
         this.brandName = brandName == null ? DEFAULT_BRAND_NAME : brandName;
         this.type = type == null ? DEFAULT_TYPE : type;
         this.label = label == null ? DEFAULT_LABEL : label;
+        this.price = price;
     }
 
     @Override
@@ -48,6 +50,16 @@ public class Stationery implements HasId {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "Stationery{" +
+                "brandName='" + brandName + '\'' +
+                ", type='" + type + '\'' +
+                ", label='" + label + '\'' +
+                ", price=" + price +
+                '}';
+    }
+
     public String getBrandName() {
         return brandName;
     }
@@ -64,18 +76,27 @@ public class Stationery implements HasId {
         return id;
     }
 
+    public long getPrice() {
+        return price;
+    }
+
+    public void setPrice(long price) {
+        this.price = price;
+    }
+
     static class Entity implements AbstractEntity<Stationery> {
         Long id;
         String brandName;
         String type;
         String label;
+        Long price;
 
         public Entity() {
         }
 
         @Override
         public Stationery build() {
-            return new Stationery(id, brandName, type, label);
+            return new Stationery(id, brandName, type, label, price);
         }
     }
 }

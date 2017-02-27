@@ -40,34 +40,13 @@ public class EmployeeDao extends FiledDao<Employee> {
         return super.saveOrUpdate(obj);
     }
 
-    public Employee[] findBy(Map<String, String> valMap) {
-        ArrayList<Field> fields = new ArrayList<>();
-        for (String fieldName : valMap.keySet()) {
-            try {
-                Field field = Employee.class.getDeclaredField(fieldName);
-                if (!field.isAccessible()) field.setAccessible(true);
-                fields.add(field);
-            } catch (NoSuchFieldException e) {
-                logger.error("Field with name " + fieldName + " not found.");
-                throw new IllegalArgumentException("Field with name " + fieldName + " not found.");
-            }
-        }
+    @Override
+    public Employee saveOrUpdateAndReturn(Employee obj) {
+        return super.saveOrUpdateAndReturn(obj);
+    }
 
-        return getAll().stream()
-                .filter((employee) -> {
-                    boolean ok = true;
-                    for (Field field : fields) {
-                        try {
-                            Object actual = field.get(employee);
-                            Object expected = valMap.get(field.getName());
-                            ok = actual.equals(expected);
-                        } catch (IllegalAccessException e) {
-                            logger.error(e.getMessage());
-                        }
-                    }
-                    return ok;
-                })
-                .collect(Collectors.toList())
-                .toArray(new Employee[0]);
+    @Override
+    public List<Employee> findBy(Map<String, String> valMap) {
+        return super.findBy(valMap);
     }
 }

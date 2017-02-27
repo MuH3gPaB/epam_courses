@@ -5,6 +5,7 @@ import my.epam.stationery.model.StringParser;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +37,16 @@ public class AssignDao extends FiledDao<Assign>{
     @Override
     public long saveOrUpdate(Assign obj) {
         return super.saveOrUpdate(obj);
+    }
+
+    @Override
+    public Assign saveOrUpdateAndReturn(Assign obj) {
+        return super.saveOrUpdateAndReturn(obj);
+    }
+
+    @Override
+    public List<Assign> findBy(Map<String, String> valMap) {
+        return super.findBy(valMap);
     }
 
     public Assign[] getAssignsForEmployeeId(Long emplId){
