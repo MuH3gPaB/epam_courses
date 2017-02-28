@@ -1,8 +1,11 @@
 package my.epam.unit02.task05;
 
+import my.epam.unit02.task07.Unit02;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Unit02(taskNumber = 5)
 public class Student {
     private String name;
     private Map<Discipline, Number> marks = new HashMap<>();
