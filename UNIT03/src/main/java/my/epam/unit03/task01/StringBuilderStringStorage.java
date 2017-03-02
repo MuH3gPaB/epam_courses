@@ -3,12 +3,12 @@ package my.epam.unit03.task01;
 import java.util.Arrays;
 
 public class StringBuilderStringStorage implements AbstractStringStorage{
+    private static final char SEPARATOR = 1;
     private final StringBuilder stringBuilder = new StringBuilder();
-
 
     @Override
     public void addString(String string) {
-        stringBuilder.append(string);
+        stringBuilder.append(string).append(SEPARATOR);
     }
 
     @Override
