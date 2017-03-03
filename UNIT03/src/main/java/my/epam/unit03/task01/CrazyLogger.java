@@ -3,9 +3,8 @@ package my.epam.unit03.task01;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.lang.reflect.Array;
-import java.util.Arrays;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class CrazyLogger {
@@ -17,7 +16,16 @@ public class CrazyLogger {
     }
 
     public void addMessage(String message) {
-        stringStorage.addString(message);
+        String messageWithHeader = addHeader(message);
+        stringStorage.addString(messageWithHeader);
+    }
+
+    private String addHeader(String message) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-YYYY : HH-mm");
+        String header = formatter.format(localDateTime);
+
+        return header + " - " + message;
     }
 
     public void showMessageTo(String pattern, OutputStream out) throws IOException {
