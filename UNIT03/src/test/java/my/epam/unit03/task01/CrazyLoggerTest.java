@@ -5,8 +5,13 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class CrazyLoggerTest extends Assert{
+    private final static String HEADER_REGEXP = "(([0-3][0-9])-([0-1][0-9])-([0-9]{4}) : ([0-2][0-9]-[0-5][0-9] - ))";
 
     @Test
     public void addAndReadSimpleMessageShouldOk() throws IOException {
@@ -85,12 +90,9 @@ public class CrazyLoggerTest extends Assert{
         String[] actualFindAll = findAllMessages(logger, "Some text");
         String[] actualGetAll = readAllMessages(logger);
 
-        // TODO: 03-Mar-17 Finish test 
-    }
-
-    @Test
-    public void messageFormatCheckTest(){
-
+        assertTrue("Find one in empty logger fails", actualFindOne.isEmpty());
+        assertEquals("Find all in empty logger fails", 0, actualFindAll.length);
+        assertEquals("Get all from empty logger fails", 0, actualGetAll.length);
     }
 
     private String[] checkAndClearMessageHeader(String[] message){
@@ -102,12 +104,14 @@ public class CrazyLoggerTest extends Assert{
     }
 
     private String checkAndClearMessageHeader(String message){
-        checkMessageHeaderFormat();
-        return message.substring(21);
+        checkMessageHeaderFormat(message);
+        // Should clear header (0-21) and "\n\r" (2 last symbols) cause they was taken from OutputStream
+        return message.substring(21, message.length() - 2);
     }
 
-    private void checkMessageHeaderFormat() {
-        assertTrue(true);
+    private void checkMessageHeaderFormat(String message) {
+        String header = message.substring(0, 21);
+        assertTrue("Header ["+ header +"] does not match pattern.", Pattern.matches(HEADER_REGEXP, header));
     }
 
     private String[] readAllMessages(CrazyLogger logger) throws IOException {
@@ -115,8 +119,7 @@ public class CrazyLoggerTest extends Assert{
         logger.showAllMessagesTo(bOut);
 
         String buffer = bOut.toString();
-        // TODO: HERE SHOULD BE REGEXP FOR HEADER!!!
-        return buffer.split(System.getProperty("line.separator"));
+        return buffer.split("(?=" + HEADER_REGEXP + ")");
     }
 
     private String[] findAllMessages(CrazyLogger logger, String pattern) throws IOException {
@@ -124,8 +127,8 @@ public class CrazyLoggerTest extends Assert{
         logger.showMessagesTo(pattern, bOut);
 
         String buffer = bOut.toString();
-        // TODO: HERE SHOULD BE REGEXP FOR HEADER!!!
-        return buffer.split(System.getProperty("line.separator"));
+
+        return buffer.split("(?=" + HEADER_REGEXP + ")");
     }
 
     private String findOneMessage(CrazyLogger logger, String pattern) throws IOException {
@@ -134,6 +137,4 @@ public class CrazyLoggerTest extends Assert{
 
         return bOut.toString();
     }
-
-
 }
