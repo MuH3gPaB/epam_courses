@@ -95,6 +95,20 @@ public class CrazyLoggerTest extends Assert{
         assertEquals("Get all from empty logger fails", 0, actualGetAll.length);
     }
 
+    @Test
+    public void clearLoggerTest() throws IOException {
+        CrazyLogger logger = new CrazyLogger(new StringBuilderStringStorage());
+
+        logger.addMessage("Hello there one");
+        logger.addMessage("Hello there two");
+
+        logger.clear();
+
+        String[] actualGetAll = readAllMessages(logger);
+
+        assertEquals("Get all from empty logger fails", 0, actualGetAll.length);
+    }
+
     private String[] checkAndClearMessageHeader(String[] message){
         String[] result = new String[message.length];
         for (int i = 0; i < message.length; i++) {
@@ -119,6 +133,9 @@ public class CrazyLoggerTest extends Assert{
         logger.showAllMessagesTo(bOut);
 
         String buffer = bOut.toString();
+
+        if(buffer.isEmpty()) return new String[0];
+
         return buffer.split("(?=" + HEADER_REGEXP + ")");
     }
 
@@ -127,6 +144,8 @@ public class CrazyLoggerTest extends Assert{
         logger.showMessagesTo(pattern, bOut);
 
         String buffer = bOut.toString();
+
+        if(buffer.isEmpty()) return new String[0];
 
         return buffer.split("(?=" + HEADER_REGEXP + ")");
     }

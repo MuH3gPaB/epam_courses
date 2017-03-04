@@ -7,15 +7,32 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class CrazyLogger {
-    private AbstractStringStorage stringStorage;
+/**
+ * Simple logger class.
+ *
+ * Uses StringStorage implementations for storing log messages.
+ *
+ * Messages format looks like:
+ * "dd-mm- YYYY : hh-mm – message"
+ *
+ * Messages should not be empty strings or null.
+ *
+ * You can print out all log, or some finded messages
+ * to any OutputStream you like. Just use showMessages method.
+ *
+ * @see StringStorage
+ */
 
-    public CrazyLogger(AbstractStringStorage stringStorage) {
+public class CrazyLogger {
+    private StringStorage stringStorage;
+
+    public CrazyLogger(StringStorage stringStorage) {
         Objects.requireNonNull(stringStorage);
         this.stringStorage = stringStorage;
     }
 
     public void addMessage(String message) {
+        if (message.isEmpty()) throw new IllegalArgumentException();
         String messageWithHeader = addHeader(message);
         stringStorage.addString(messageWithHeader);
     }
@@ -36,7 +53,12 @@ public class CrazyLogger {
     }
 
     public void showMessagesTo(String pattern, OutputStream out) throws IOException {
-
+        String[] founded = stringStorage.findAll(pattern);
+        if (founded != null) {
+            for (String str : founded) {
+                printOutMessage(str, out);
+            }
+        }
     }
 
     public void showAllMessagesTo(OutputStream out) throws IOException {
@@ -45,7 +67,11 @@ public class CrazyLogger {
         }
     }
 
-    private void printOutMessage(String message, OutputStream out){
+    public void clear(){
+        stringStorage.clear();
+    }
+
+    private void printOutMessage(String message, OutputStream out) {
         PrintStream ps = new PrintStream(out, true);
         ps.println(message);
     }

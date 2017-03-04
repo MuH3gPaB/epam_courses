@@ -4,7 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StringBuilderStringStorage implements AbstractStringStorage {
+/**
+ * StringStorage implementation.
+ *
+ * Uses StringBuilder class for storing Strings.
+ *
+ */
+
+public class StringBuilderStringStorage implements StringStorage {
     private static final char SEPARATOR = 1;
     private final StringBuilder stringBuilder = new StringBuilder();
 
