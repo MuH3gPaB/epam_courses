@@ -68,16 +68,14 @@ public class Questionarium extends JFrame {
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 
         JComboBox<String> locales = new JComboBox<>();
-        locales.addItem(menuBundle.getString("en_us"));
-        locales.addItem(menuBundle.getString("ru_ru"));
+        for (String localeName : getAvailableLocales()) {
+            locales.addItem(menuBundle.getString(localeName));
+        }
         locales.setSelectedItem(menuBundle.getString(currentLocale.getDisplayName()));
 
-        locales.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    onLocaleChanged((String) locales.getSelectedItem());
-                }
+        locales.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                onLocaleChanged((String) locales.getSelectedItem());
             }
         });
 
@@ -88,16 +86,22 @@ public class Questionarium extends JFrame {
     }
 
     private void onLocaleChanged(String selectedItem) {
-        for (String item : menuBundle.keySet()) {
-            String value = menuBundle.getString(item);
-            if (Pattern.matches("(^[a-zA-Z]{2}_[a-zA-Z]{2}$)", item) &&
-                    selectedItem.equals(value)) {
-                currentLocale = new Locale(item);
+        for (String localeName : getAvailableLocales()) {
+            String localeTitle = menuBundle.getString(localeName);
+            if (selectedItem.equals(localeTitle)) {
+                currentLocale = new Locale(localeName);
                 questionsBundle = ResourceBundle.getBundle("my.epam.unit03.task02.properties.questions", currentLocale);
                 menuBundle = ResourceBundle.getBundle("my.epam.unit03.task02.properties.menuItems", currentLocale);
                 refreshPanels();
             }
         }
+    }
+
+    private String[] getAvailableLocales() {
+        return menuBundle.keySet().stream()
+                .filter(s -> Pattern.matches("(^[a-zA-Z]{2}_[a-zA-Z]{2}$)", s))
+                .collect(Collectors.toList())
+                .toArray(new String[0]);
     }
 
     private void refreshPanels() {
@@ -127,12 +131,7 @@ public class Questionarium extends JFrame {
 
         questionsList = new JList<>();
         questionsList.setListData(loadQuestions());
-        questionsList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                onSelected(questionsList.getSelectedValue());
-            }
-        });
+        questionsList.addListSelectionListener(e -> onSelected(questionsList.getSelectedValue()));
         questionsList.setSelectedValue(currentQuestion, true);
 
         questionsPanel.add(getjScrollPane(questionsList), BorderLayout.CENTER);
