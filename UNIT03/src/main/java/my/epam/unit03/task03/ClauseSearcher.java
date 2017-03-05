@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 /**
- * Nested "." after "Рис" inside brackets was hardcoded =(
+ * Clause searcher for string.
+ * <p>
+ * Split string with clausePattern, after that filter only
+ * clauses matches searchPattern.
  */
 
 public class ClauseSearcher {

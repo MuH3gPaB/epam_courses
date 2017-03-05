@@ -24,8 +24,29 @@ public class App {
 
         boolean isValid = checkTheFile(filePath);
         System.out.println("File " + filePath.getFileName() + " is " + ((isValid)?"valid":"invalid")+".");
+        System.out.println("________________________________________");
 
+        String searchPattern = "(.*(\\(Рис. [0-9]{1,9}\\)).*)";
+        String clausePattern = "( *[А-Я0-9]).*?([.]{3}|(?<!Рис)[.]|[?!])";
+        String[] clauses = getClausesFromFile(searchPattern, clausePattern, filePath);
 
+        for (int i = 0; i < clauses.length; i++) {
+            System.out.println((i+1) + " -- " + clauses[i]);
+        }
+    }
+
+    private static String[] getClausesFromFile(String searchPattern, String clausePattern, Path filePath) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            Files.lines(filePath, Charset.forName("cp1251"))
+                    .forEach(sb::append);
+
+            ClauseSearcher searcher = new ClauseSearcher(searchPattern, clausePattern);
+            return searcher.search(sb.toString());
+        } catch (IOException e) {
+            logger.error("Error reading the file " + filePath.getFileName() + "[" + e.getMessage() + "]");
+            return new String[0];
+        }
     }
 
     private static boolean checkTheFile(Path filePath) {
@@ -38,7 +59,6 @@ public class App {
             }
         } catch (IOException e) {
             logger.error("Error reading the file " + filePath.getFileName() + "[" + e.getMessage() + "]");
-            e.printStackTrace();
         } catch (StringCheckFailException e) {
             logger.info("File " + filePath.getFileName() + " - " + e.getMessage());
             return false;
