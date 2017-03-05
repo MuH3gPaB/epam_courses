@@ -1,6 +1,6 @@
 package my.epam.unit03.task03;
 
-public class StringCheckFailException extends Exception{
+public class StringCheckFailException extends Exception {
     public StringCheckFailException() {
     }
 

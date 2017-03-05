@@ -54,7 +54,7 @@ public class StringChecker {
         if (matcher.find()) {
             return Integer.parseInt(matcher.group());
         } else {
-            throw new StringCheckFailException();
+            throw new StringCheckFailException("Wrong string format.");
         }
 
     }
