@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 
 public class App {
     private static Logger logger = Logger.getLogger(App.class);
-    private static String pattern = "(.*(\\([Рр]ис. \\d(, \\d)*\\)).*)";
+    private static String pattern = "(.*(\\([Рр]ис. [0-9]{1,9}\\)).*)";
 
 
     public static void main(String[] args) throws URISyntaxException {
