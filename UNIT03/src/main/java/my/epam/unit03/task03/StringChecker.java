@@ -10,8 +10,9 @@ import java.util.regex.Pattern;
  * The goal is to analyse the order of some integer values in the string.
  * Class use regexp pattern to find integer values.
  * <p>
- * Pattern could contain only one integer value mark, represented by
+ * Pattern could contain only ONE integer value mark, represented by
  * "[0-9]{1,9}" sub-pattern.
+ * Multimarks do not supported.
  * <p>
  * If pattern is wrong illegal argument exception will thrown.
  * <p>

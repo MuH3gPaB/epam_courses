@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 
 public class App {
     private static Logger logger = Logger.getLogger(App.class);
-    private static String pattern = "(\\(Рис. [0-9]{1,9}\\))";
+    private static String pattern = "(.*(\\([Рр]ис. \\d(, \\d)*\\)).*)";
 
 
     public static void main(String[] args) throws URISyntaxException {
@@ -26,8 +26,8 @@ public class App {
         System.out.println("File " + filePath.getFileName() + " is " + ((isValid)?"valid":"invalid")+".");
         System.out.println("________________________________________");
 
-        String searchPattern = "(.*(\\(Рис. [0-9]{1,9}\\)).*)";
-        String clausePattern = "( *[А-Я0-9]).*?([.]{3}|(?<!Рис)[.]|[?!])";
+        String searchPattern = "(.*(\\([Рр]ис. [0-9]{1,9}\\)).*)";
+        String clausePattern = "( *[А-Я0-9]).*?([.]{3}|(?<![Рр]ис)[.]|[?!])";
         String[] clauses = getClausesFromFile(searchPattern, clausePattern, filePath);
 
         for (int i = 0; i < clauses.length; i++) {
