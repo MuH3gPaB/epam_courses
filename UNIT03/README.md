@@ -20,6 +20,8 @@ different locales.
 
 Switch locales with combobox at the bottom panel.
 
+Screenshot:
+
 ![screenshot](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/unit03task02screenshot.png)
 
 
