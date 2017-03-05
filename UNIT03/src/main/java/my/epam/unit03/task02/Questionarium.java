@@ -13,6 +13,13 @@ import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Questions and answer application with i18n.
+ * <p>
+ * Simple one class swing application.
+ * Switch questions, take answers, use locale change to switch language.
+ */
+
 public class Questionarium extends JFrame {
     private static final Questionarium instance = new Questionarium();
     private JPanel mainPanel;
@@ -159,5 +166,84 @@ public class Questionarium extends JFrame {
         scrollPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         return scrollPane;
     }
+
+    /**
+     * Question class, associate question with answer by property key.
+     * <p>
+     * Only questionKey and answerKey take part to equality.
+     * <p>
+     * Question and answer text should depends on current locale.
+     */
+
+    private class Question {
+        private String questionKey;
+        private String questionText;
+        private String answerKey;
+        private String answerText;
+
+        Question(String questionKey, String questionText, String answerKey) {
+            this.questionKey = questionKey;
+            this.questionText = questionText;
+            this.answerKey = answerKey;
+        }
+
+        public String getQuestionKey() {
+            return questionKey;
+        }
+
+        public void setQuestionKey(String questionKey) {
+            this.questionKey = questionKey;
+        }
+
+        public String getQuestionText() {
+            return questionText;
+        }
+
+        public void setQuestionText(String questionText) {
+            this.questionText = questionText;
+        }
+
+        public String getAnswerKey() {
+            return answerKey;
+        }
+
+        public void setAnswerKey(String answerKey) {
+            this.answerKey = answerKey;
+        }
+
+        public String getAnswerText() {
+            return answerText;
+        }
+
+        public void setAnswerText(String answerText) {
+            this.answerText = answerText;
+        }
+
+        @Override
+        public String toString() {
+            return questionText;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Question question = (Question) o;
+
+            if (questionKey != null ? !questionKey.equals(question.questionKey) : question.questionKey != null)
+                return false;
+            return answerKey != null ? answerKey.equals(question.answerKey) : question.answerKey == null;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = questionKey != null ? questionKey.hashCode() : 0;
+            result = 31 * result + (answerKey != null ? answerKey.hashCode() : 0);
+            return result;
+        }
+    }
+
 
 }
