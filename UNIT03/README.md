@@ -25,5 +25,12 @@ Screenshot:
 ![screenshot](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/unit03task02screenshot.png)
 
 
-Task03 [(source)]()
--------------------
+Task03 [(source)]() [(test)]() [(app)]()
+----------------------------------------
+Regular expressions example application.
+
+Checks proper order of pictures links "(Рис. №)" inside html document
+using [StringChecker]() class.
+
+Uses [ClauseSearcher]() to find all sentences, which contains pictures
+lincs, and print them out to system console.
