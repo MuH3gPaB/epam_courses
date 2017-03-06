@@ -1,5 +1,6 @@
 package my.epam.unit04.task01;
 
+import my.epam.unit04.StringWordsCounter;
 import org.junit.Assert;
 import org.junit.Test;
 

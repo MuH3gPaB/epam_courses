@@ -1,4 +1,4 @@
-package my.epam.unit04.task01;
+package my.epam.unit04;
 
 import java.util.Arrays;
 import java.util.HashMap;
