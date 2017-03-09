@@ -1,4 +1,4 @@
-package my.epam.unit04;
+package my.epam.unit04.words_calculator;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,15 +34,23 @@ public class StringWordsCounter {
     }
 
     public Map<String, Integer> calculateWords(String string) {
+        return calculateWords(string, true);
+    }
+
+    public Map<String, Integer> calculateWords(String string, boolean includeAbsent) {
         Map<String, Integer> result = new HashMap<>();
         Arrays.stream(words)
                 .filter((s) -> s != null && !s.isEmpty())
                 .forEach((s) -> {
+                    Integer count;
                     try {
                         Pattern pattern = Pattern.compile(s, Pattern.MULTILINE);
-                        result.put(s, calculatePattern(pattern, string));
+                        count = calculatePattern(pattern, string);
                     } catch (PatternSyntaxException e) {
-                        result.put(s, calculateWord(s, string));
+                        count = calculateWord(s, string);
+                    }
+                    if (count != 0 || includeAbsent) {
+                        result.put(s, count);
                     }
                 });
         return result;

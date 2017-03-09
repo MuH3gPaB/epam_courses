@@ -1,6 +1,6 @@
 package my.epam.unit04.task01;
 
-import my.epam.unit04.StringWordsCounter;
+import my.epam.unit04.words_calculator.StringWordsCounter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -113,9 +113,7 @@ public class StringWordsCounterTest extends Assert {
 
         StringWordsCounter counter = new StringWordsCounter(words);
 
-        String toCount = null;
-
-        counter.calculateWords(toCount);
+        counter.calculateWords(null, false);
     }
 
     @Test

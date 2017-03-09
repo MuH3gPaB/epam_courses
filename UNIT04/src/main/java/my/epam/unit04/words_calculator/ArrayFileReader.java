@@ -1,9 +1,9 @@
-package my.epam.unit04;
+package my.epam.unit04.words_calculator;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-public interface FileReader {
+public interface ArrayFileReader {
     Stream<String> getLines();
 }
