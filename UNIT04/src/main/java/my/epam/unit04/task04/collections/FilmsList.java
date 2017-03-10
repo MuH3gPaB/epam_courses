@@ -8,6 +8,12 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Simple collection example.
+ *
+ * Storing films with main actors.
+ */
+
 public class FilmsList implements Serializable {
     private ArrayList<Film> data = new ArrayList<>();
 

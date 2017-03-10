@@ -6,6 +6,14 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
+/**
+ * Implementation of single object storage.
+ *
+ * Store serializable object into file.
+ *
+ * @param <T> Type of storing ibject. Should be serializable.
+ */
+
 public class SerialisedFileSingleStorage<T extends Serializable> implements SingleObjectDao<T> {
     private static Logger logger = Logger.getLogger(SerialisedFileSingleStorage.class);
     private final File file;

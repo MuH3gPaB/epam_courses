@@ -4,6 +4,12 @@ import my.epam.unit04.task04.collections.FilmsList;
 
 import java.util.Objects;
 
+/**
+ * Class for storing one Films collection object.
+ *
+ * Uses single object dao for storing object.
+ */
+
 public class FilmsListDao implements SingleObjectDao<FilmsList> {
 
     private final SingleObjectDao<FilmsList> dao;
