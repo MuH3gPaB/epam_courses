@@ -1,28 +1,27 @@
 package my.epam.unit05.task02;
 
 import org.apache.log4j.Logger;
+import sun.reflect.Reflection;
 import sun.util.ResourceBundleEnumeration;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.ParseException;
 import java.util.*;
 
-public class PropertiesFileReader extends ResourceBundle {
-    private static final PropertiesFileReader EMPTY_PROPERTIES_HOLDER = new PropertiesFileReader(new HashMap<>());
+public class PropertiesFileBundle extends ResourceBundle {
+    private static final PropertiesFileBundle EMPTY_PROPERTIES_HOLDER = new PropertiesFileBundle(new HashMap<>());
 
-    private static Logger logger = Logger.getLogger(PropertiesFileReader.class);
+    private static Logger logger = Logger.getLogger(PropertiesFileBundle.class);
 
     private Map<String, Object> properties;
 
-    private PropertiesFileReader(Map<String, Object> properties) {
+    private PropertiesFileBundle(Map<String, Object> properties) {
         this.properties = properties;
     }
 
-
-    public static PropertiesFileReader getReader(File file) {
+    public static PropertiesFileBundle getBundle(File file) {
         try {
             Path path = file.toPath();
             Map<String, Object> values = new HashMap<>();
@@ -31,7 +30,7 @@ public class PropertiesFileReader extends ResourceBundle {
                 parseStringToMap(values, s);
             });
 
-            return new PropertiesFileReader(values);
+            return new PropertiesFileBundle(values);
         } catch (IOException e) {
             logger.error("Could not read the file [" + file.getName() + "]. " + e.getMessage());
         }
@@ -67,9 +66,9 @@ public class PropertiesFileReader extends ResourceBundle {
 
     private static Object parseValue(String valueString) {
         Object value;
-        if (valueString.matches("(^[0-9](1-9)[.][0-9](1-20)$)")) {
+        if (valueString.matches("(^[0-9]{1,9}[.][0-9]{1,20}$)")) {
             value = Double.parseDouble(valueString);
-        } else if (valueString.matches("(^[0-9](1-18)$)")) {
+        } else if (valueString.matches("(^[0-9]{1,18}$)")) {
             value = Integer.parseInt(valueString);
         } else {
             value = valueString;
