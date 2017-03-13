@@ -55,8 +55,25 @@ public class PropertiesFileBundle extends ResourceBundle {
         return EMPTY_PROPERTIES_HOLDER;
     }
 
+    /**
+     * Get size of current properties bundle.
+     *
+     * @return Number of elements stored in bundle.
+     */
     public int size() {
         return properties.entrySet().size();
+    }
+
+    /**
+     * Get keys enumeration.
+     *
+     * @return Keys enumeration.
+     */
+    @Override
+    public Enumeration<String> getKeys() {
+        ResourceBundle parent = this.parent;
+        return new ResourceBundleEnumeration(properties.keySet(),
+                (parent != null) ? parent.getKeys() : null);
     }
 
     @Override
@@ -68,21 +85,6 @@ public class PropertiesFileBundle extends ResourceBundle {
             if (isStringArrayRequired()) return new String[0];
             else return "";
         }
-    }
-
-    private boolean isStringArrayRequired() {
-        try {
-            throw new RuntimeException();
-        } catch (Exception e) {
-            return e.getStackTrace()[3].getMethodName().equals("getStringArray");
-        }
-    }
-
-    @Override
-    public Enumeration<String> getKeys() {
-        ResourceBundle parent = this.parent;
-        return new ResourceBundleEnumeration(properties.keySet(),
-                (parent != null) ? parent.getKeys() : null);
     }
 
     private static void parseStringToMap(Map<String, Object> values, String s) {
@@ -113,5 +115,13 @@ public class PropertiesFileBundle extends ResourceBundle {
         String[] pair = s.split("=");
         if (pair.length != 2) throw new IllegalArgumentException("Wrong line format. Should be one '=' symbol inside.");
         return pair;
+    }
+
+    private boolean isStringArrayRequired() {
+        try {
+            throw new RuntimeException();
+        } catch (Exception e) {
+            return e.getStackTrace()[3].getMethodName().equals("getStringArray");
+        }
     }
 }
