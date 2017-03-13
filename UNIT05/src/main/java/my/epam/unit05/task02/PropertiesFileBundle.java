@@ -10,6 +10,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * Properties file custom resource bundle.
+ *
+ * Reads properties file to inner map.
+ *
+ * Does not throws any exceptions if file or
+ * property not found. Instead of exception, write
+ * warning into log, and return empty value.
+ *
+ */
+
 public class PropertiesFileBundle extends ResourceBundle {
     private static final PropertiesFileBundle EMPTY_PROPERTIES_HOLDER = new PropertiesFileBundle(new HashMap<>());
 
@@ -21,6 +32,13 @@ public class PropertiesFileBundle extends ResourceBundle {
         this.properties = properties;
     }
 
+    /**
+     * General PropertiesFileBundle fabric method.
+     *
+     * @param file Properties file.
+     * @return New instance of PropertiesFileBundle initialized with values from file, OR
+     * empty PropertiesFileBundle if file not exist, or any errors while parsing.
+     */
     public static PropertiesFileBundle getBundle(File file) {
         try {
             Path path = file.toPath();
