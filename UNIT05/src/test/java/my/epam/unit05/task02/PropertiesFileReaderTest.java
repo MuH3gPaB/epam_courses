@@ -36,7 +36,7 @@ public class PropertiesFileReaderTest extends Assert {
 
     @Test
     public void getStringArrayTest() {
-        File propFile = new File("/my/epam/unit05/task02/test-properties-02.properties");
+        File propFile = new File(getClass().getResource("/my/epam/unit05/task02/test-properties-02.properties").getFile());
         PropertiesFileBundle bundle = PropertiesFileBundle.getBundle(propFile);
 
         String[] expected = {"element1", "element2"};

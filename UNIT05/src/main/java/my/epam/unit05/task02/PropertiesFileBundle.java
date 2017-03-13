@@ -71,38 +71,10 @@ public class PropertiesFileBundle extends ResourceBundle {
         try {
             String[] pair = checkPropertyLine(s);
             Object value = parseValue(pair[1]);
-            if (values.containsKey(pair[0])) {
-                Object newValue = addElementTo(values.get(pair[0]), value);
-                values.put(pair[0], newValue);
-            } else {
-                values.put(pair[0], value);
-            }
+            values.put(pair[0], value);
         } catch (IllegalArgumentException e) {
             logger.warn("Parse error at line: [" + s + "]" + e.getMessage());
         }
-    }
-
-    private static Object addElementTo(Object o, Object value) {
-        if (o.getClass().isArray()) {
-            checkClassesEquality(o.getClass().getComponentType(), value.getClass());
-            Object[] objArray = (Object[]) o;
-            Object[] newArray = (Object[]) Array.newInstance(value.getClass(), objArray.length + 1);
-            System.arraycopy(objArray, 0, newArray, 0, objArray.length);
-            newArray[objArray.length] = value;
-            return newArray;
-        } else {
-            checkClassesEquality(o.getClass(), value.getClass());
-            Object[] newArray = (Object[]) Array.newInstance(o.getClass(), 2);
-            newArray[0] = o;
-            newArray[1] = value;
-            return newArray;
-        }
-    }
-
-    private static void checkClassesEquality(Class o, Class value) {
-        if (!o.equals(value))
-            throw new IllegalArgumentException("Two properties with different types: " +
-                    "[" + o.getClass().getComponentType() + "] [" + value.getClass() + "]");
     }
 
     private static Object parseValue(String valueString) {
@@ -112,7 +84,9 @@ public class PropertiesFileBundle extends ResourceBundle {
         } else if (valueString.matches("(^[0-9]{1,18}$)")) {
             value = Integer.parseInt(valueString);
         } else {
-            value = valueString;
+            String[] values = valueString.split(",");
+            if (values.length == 1) return values[0];
+            return values;
         }
         return value;
     }
