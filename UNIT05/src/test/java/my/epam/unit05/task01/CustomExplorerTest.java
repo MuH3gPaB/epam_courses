@@ -95,4 +95,26 @@ public class CustomExplorerTest extends Assert {
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void getExistingFile(){
+        CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
+
+        File expected = new File(TEST_DIR_PATH+"/fileOne.txt");
+        File actual = explorer.getFile("fileOne.txt");
+
+        assertEquals(expected, actual);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void getNotExistingFileShouldThrowNoSuchElement(){
+        CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
+        explorer.getFile("some_not_existing");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getNullFileShouldThrowNPE(){
+        CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
+        explorer.getFile(null);
+    }
 }

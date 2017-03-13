@@ -71,4 +71,15 @@ public class CustomExplorer {
             currentPath = currentPath.getParentFile();
         }
     }
+
+    public File getFile(String fileName){
+        if(fileName.isEmpty()) throw new IllegalArgumentException("File name should not be empty.");
+
+        for (String file : getFilesNames()) {
+            if (file.equals(fileName)) {
+                return new File(currentPath.getPath() + File.separator + file);
+            }
+        }
+        throw new NoSuchElementException("File [" + fileName + "] not found.");
+    }
 }
