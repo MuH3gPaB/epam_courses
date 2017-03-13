@@ -1,10 +1,12 @@
 package my.epam.unit05.task01;
 
+import my.epam.unit05.task01.exceptions.AlreadyExistException;
+import my.epam.unit05.task01.exceptions.DoesNotExistException;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.NoSuchElementException;
+import java.io.IOException;
 
 /**
  * Test folder structure should be:
@@ -23,7 +25,7 @@ public class CustomExplorerTest extends Assert {
     public void createOnValidPath() {
         try {
             CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
-            assertEquals("folderOne", explorer.getDirsNames()[0]);
+            assertEquals("folderOne", explorer.getFoldersNames()[0]);
         } catch (Exception e) {
             fail();
         }
@@ -52,32 +54,32 @@ public class CustomExplorerTest extends Assert {
     }
 
     @Test
-    public void moveCurrentPathToExistingSubfolder() {
+    public void moveCurrentPathToExistingSubfolder() throws DoesNotExistException {
         CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
         explorer.goTo("folderOne");
 
-        assertEquals("subFolderOne", explorer.getDirsNames()[0]);
+        assertEquals("subFolderOne", explorer.getFoldersNames()[0]);
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void moveCurrentPathToNonExistingSubfolder() {
+    @Test(expected = DoesNotExistException.class)
+    public void moveCurrentPathToNonExistingSubfolder() throws DoesNotExistException {
         CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
         explorer.goTo("unexisted_folder");
     }
 
     @Test
-    public void moveCurrentPathToUpperLevel() {
+    public void moveCurrentPathToUpperLevel() throws DoesNotExistException {
         CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
         explorer.goTo("..");
 
         String[] splitedFolder = TEST_DIR_PATH.split("/");
         String expected = splitedFolder[splitedFolder.length - 1];
 
-        assertEquals(expected, explorer.getDirsNames()[0]);
+        assertEquals(expected, explorer.getFoldersNames()[0]);
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void moveCurrentPathToNull(){
+    @Test(expected = DoesNotExistException.class)
+    public void moveCurrentPathToNull() throws DoesNotExistException {
         CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
         explorer.goTo(null);
     }
@@ -97,7 +99,7 @@ public class CustomExplorerTest extends Assert {
     }
 
     @Test
-    public void getExistingFile(){
+    public void getExistingFile() throws DoesNotExistException {
         CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
 
         File expected = new File(TEST_DIR_PATH+"/fileOne.txt");
@@ -106,15 +108,53 @@ public class CustomExplorerTest extends Assert {
         assertEquals(expected, actual);
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void getNotExistingFileShouldThrowNoSuchElement(){
+    @Test(expected = DoesNotExistException.class)
+    public void getNotExistingFileShouldThrowNoSuchElement() throws DoesNotExistException {
         CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
         explorer.getFile("some_not_existing");
     }
 
-    @Test(expected = NullPointerException.class)
-    public void getNullFileShouldThrowNPE(){
+    @Test(expected = IllegalArgumentException.class)
+    public void getNullFileShouldThrowIAE() throws DoesNotExistException {
         CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
         explorer.getFile(null);
+    }
+
+    @Test
+    public void fileCreateDeleteTest() throws IOException, AlreadyExistException, DoesNotExistException {
+        CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
+        String[] original = explorer.getFilesNames();
+
+        String fileName = "new_file.txt";
+        explorer.createFile(fileName);
+
+        String[] afterCreatingExpected = new String[original.length+1];
+        System.arraycopy(original, 0, afterCreatingExpected, 0, original.length);
+        afterCreatingExpected[original.length] = fileName;
+
+        assertArrayEquals(afterCreatingExpected, explorer.getFilesNames());
+
+        explorer.deleteFile(fileName);
+
+        assertArrayEquals(original, explorer.getFilesNames());
+    }
+
+    @Test
+    public void folderCreateDeleteTest() throws IOException, AlreadyExistException, DoesNotExistException {
+        CustomExplorer explorer = new CustomExplorer(TEST_DIR_PATH);
+        String[] original = explorer.getFoldersNames();
+
+        String folderName = "new_folder";
+        explorer.createFolder(folderName);
+
+        String[] afterCreatingExpected = new String[original.length+1];
+        System.arraycopy(original, 0, afterCreatingExpected, 0, original.length);
+        afterCreatingExpected[original.length] = folderName;
+
+        assertArrayEquals(afterCreatingExpected, explorer.getFoldersNames());
+
+        explorer.deleteFolder(folderName);
+
+        assertArrayEquals(original, explorer.getFoldersNames());
     }
 }
