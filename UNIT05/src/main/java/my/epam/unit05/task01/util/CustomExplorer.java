@@ -66,7 +66,7 @@ public class CustomExplorer {
                 return;
             }
         }
-        throw new DoesNotExistException("Folder [" + folder + "] not found.");
+        throw new DoesNotExistException("Folder [" + folder + "] does not exist.");
     }
 
     public void goToUpper() {
@@ -84,7 +84,7 @@ public class CustomExplorer {
                 return new File(currentPath.getPath() + File.separator + file);
             }
         }
-        throw new DoesNotExistException("File [" + fileName + "] not found.");
+        throw new DoesNotExistException("File [" + fileName + "] does not exist.");
     }
 
     public void createFile(String fileName) throws AlreadyExistException, IOException {
@@ -102,6 +102,8 @@ public class CustomExplorer {
             throw new IllegalArgumentException("File name should not be empty.");
 
         File file = getFile(fileName);
+
+        if(!file.exists()) throw new DoesNotExistException("File ["+fileName+"] does not exist.");
 
         if (!file.delete()) {
             throw new IOException("Could not delete file [" + fileName + "]");

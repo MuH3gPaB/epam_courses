@@ -1,6 +1,7 @@
 package my.epam.unit05.task01.processor;
 
 import my.epam.unit05.task01.MainAppClass;
+import my.epam.unit05.task01.exceptions.AlreadyExistException;
 import my.epam.unit05.task01.exceptions.DoesNotExistException;
 import my.epam.unit05.task01.util.CustomExplorer;
 
@@ -15,7 +16,11 @@ public class ConsoleCommandProcessor extends CommandProcessor {
     public enum Commands {
         DIR("dir"),
         CD("cd"),
-        EXIT("exit");
+        EXIT("exit"),
+        MKDIR("mkdir"),
+        RMDIR("rmdir"),
+        MKFILE("mkfile"),
+        RMFILE("rmfile");
 
         String value;
 
@@ -51,6 +56,18 @@ public class ConsoleCommandProcessor extends CommandProcessor {
 
     private void proceedCommand(Commands commands, String[] arguments) throws IOException {
         switch (commands) {
+            case MKFILE:
+                onMkfile(arguments);
+                break;
+            case RMFILE:
+                onRmfile(arguments);
+                break;
+            case MKDIR:
+                onMkdir(arguments);
+                break;
+            case RMDIR:
+                onRmdir(arguments);
+                break;
             case DIR:
                 onDir(arguments);
                 break;
@@ -59,6 +76,46 @@ public class ConsoleCommandProcessor extends CommandProcessor {
                 break;
             case EXIT:
                 onExit(arguments);
+        }
+    }
+
+    protected void onRmfile(String[] arguments) throws IOException {
+        try {
+            explorer.deleteFile(arguments[0]);
+            printPreamble();
+        } catch (DoesNotExistException e) {
+            printOut(e.getMessage());
+            printPreamble();
+        }
+    }
+
+    protected void onMkfile(String[] arguments) throws IOException {
+        try {
+            explorer.createFile(arguments[0]);
+            printPreamble();
+        } catch (AlreadyExistException e) {
+            printOut(e.getMessage());
+            printPreamble();
+        }
+    }
+
+    protected void onRmdir(String[] arguments) throws IOException {
+        try {
+            explorer.deleteFolder(arguments[0]);
+            printPreamble();
+        } catch (DoesNotExistException e) {
+            printOut(e.getMessage());
+            printPreamble();
+        }
+    }
+
+    protected void onMkdir(String[] arguments) throws IOException {
+        try {
+            explorer.createFolder(arguments[0]);
+            printPreamble();
+        } catch (AlreadyExistException e) {
+            printOut(e.getMessage());
+            printPreamble();
         }
     }
 
@@ -71,7 +128,7 @@ public class ConsoleCommandProcessor extends CommandProcessor {
             explorer.goTo(arguments[0]);
             printPreamble();
         } catch (DoesNotExistException e) {
-            printOut("Folder [" + arguments[0] + "] does not exist.");
+            printOut(e.getMessage());
             printPreamble();
         }
     }
