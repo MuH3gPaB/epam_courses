@@ -1,4 +1,4 @@
-package my.epam.unit05.task01;
+package my.epam.unit05.task01.util;
 
 import my.epam.unit05.task01.exceptions.DoesNotExistException;
 

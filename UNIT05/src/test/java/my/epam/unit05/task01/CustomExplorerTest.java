@@ -2,6 +2,7 @@ package my.epam.unit05.task01;
 
 import my.epam.unit05.task01.exceptions.AlreadyExistException;
 import my.epam.unit05.task01.exceptions.DoesNotExistException;
+import my.epam.unit05.task01.util.CustomExplorer;
 import org.junit.Assert;
 import org.junit.Test;
 
