@@ -1,12 +1,15 @@
 package my.epam.unit05.task01;
 
 import my.epam.unit05.task01.processor.CommandProcessor;
+import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class MainAppClass extends Thread {
+    private static Logger logger = Logger.getLogger(MainAppClass.class);
 
     private static MainAppClass instance;
     private final Scanner scanner;
@@ -37,7 +40,15 @@ public class MainAppClass extends Thread {
     public void run() {
         running = true;
         while (running) {
-            System.out.println(scanner.nextLine());
+            try {
+                processor.proceed(scanner.nextLine());
+            }catch (IOException e){
+                logger.error(e.getMessage());
+            }
         }
+    }
+
+    public static void stopApp(){
+        instance.running = false;
     }
 }
