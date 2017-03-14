@@ -38,6 +38,11 @@ public class ConsoleCommandProcessor extends CommandProcessor {
 
     @Override
     public void proceed(String commandString) throws IOException {
+        if (commandString.trim().isEmpty()) {
+            printPreamble();
+            return;
+        }
+
         String[] commandStrings = commandString.trim().split(" ");
         String commandName = commandStrings[0].toUpperCase();
         try {
