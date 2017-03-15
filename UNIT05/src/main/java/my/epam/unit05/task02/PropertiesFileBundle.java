@@ -12,13 +12,12 @@ import java.util.*;
 
 /**
  * Properties file custom resource bundle.
- *
+ * <p>
  * Reads properties file to inner map.
- *
+ * <p>
  * Does not throws any exceptions if file or
  * property not found. Instead of exception, write
  * warning into log, and return empty value.
- *
  */
 
 public class PropertiesFileBundle extends ResourceBundle {
@@ -40,19 +39,28 @@ public class PropertiesFileBundle extends ResourceBundle {
      * empty PropertiesFileBundle if file not exist, or any errors while parsing.
      */
     public static PropertiesFileBundle getBundle(File file) {
-        try {
-            Path path = file.toPath();
-            Map<String, Object> values = new HashMap<>();
 
+        Map<String, Object> values = readValues(file);
+
+        if (!values.isEmpty()) {
+            return new PropertiesFileBundle(values);
+        } else {
+            return EMPTY_PROPERTIES_HOLDER;
+        }
+    }
+
+    private static Map<String, Object> readValues(File file) {
+        Path path = file.toPath();
+        Map<String, Object> values = new HashMap<>();
+        try {
             Files.lines(path).forEach((s) -> {
                 parseStringToMap(values, s);
             });
-
-            return new PropertiesFileBundle(values);
         } catch (IOException e) {
             logger.warn("Could not read the file [" + file.getName() + "]. " + e.getMessage());
+            return Collections.emptyMap();
         }
-        return EMPTY_PROPERTIES_HOLDER;
+        return values;
     }
 
     /**
