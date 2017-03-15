@@ -12,7 +12,7 @@ public class PropertiesFileReaderTest extends Assert {
         File propFile = new File(getClass().getResource("/my/epam/unit05/task02/test-properties-01.properties").getFile());
         PropertiesFileBundle bundle = PropertiesFileBundle.getBundle(propFile);
 
-        assertEquals("text", bundle.getString("text_propery"));
+        assertEquals("text", bundle.getString("text_property"));
         assertEquals(10.12, bundle.getObject("double_property"));
         assertEquals(11, bundle.getObject("int_property"));
     }
