@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+    <appender name="stringAppender" class="my.epam.unit07.task02.LogAppender"/>
+
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="stringAppender"/>
+    </root>
+
+</log4j:configuration>

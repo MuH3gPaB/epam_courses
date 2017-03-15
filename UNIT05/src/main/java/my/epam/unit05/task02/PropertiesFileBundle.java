@@ -27,7 +27,7 @@ public class PropertiesFileBundle extends ResourceBundle {
 
     private Map<String, Object> properties;
 
-    private PropertiesFileBundle(Map<String, Object> properties) {
+    protected PropertiesFileBundle(Map<String, Object> properties) {
         this.properties = properties;
     }
 
@@ -53,6 +53,7 @@ public class PropertiesFileBundle extends ResourceBundle {
         Path path = file.toPath();
         Map<String, Object> values = new HashMap<>();
         try {
+            logger.info("Reading properties from file [" + file.getCanonicalPath() + "].");
             Files.lines(path).forEach((s) -> {
                 parseStringToMap(values, s);
             });
