@@ -16,7 +16,7 @@ public class SynchronizedPropertiesFileBundleTest extends Assert {
 
     @Test
     public void parallelReadingFileTestShouldReadOnce() throws InterruptedException {
-        int bundlesCount = 50;
+        int bundlesCount = 20;
         File testPropsFile = new File(getClass().getResource("/" + TEST_PROPS_FILE_NAME).getFile());
 
         readBundles(bundlesCount, testPropsFile);
@@ -31,9 +31,13 @@ public class SynchronizedPropertiesFileBundleTest extends Assert {
         String logString = new String(logBytes, Charset.defaultCharset());
         String[] logStrings = logString.split(System.getProperty("line.separator"));
 
-        return Arrays.stream(logStrings)
+        long count = Arrays.stream(logStrings)
                 .filter((s) -> s.matches("((Reading).*" + TEST_PROPS_FILE_NAME + ".*)"))
                 .count();
+
+        LogAppender.clear();
+
+        return count;
     }
 
     private void readBundles(int bundlesCount, File testPropsFile) throws InterruptedException {
@@ -44,5 +48,7 @@ public class SynchronizedPropertiesFileBundleTest extends Assert {
 
         ex.shutdown();
         ex.awaitTermination(10, TimeUnit.SECONDS);
+        SynchronizedPropertiesFileBundle.clearBundlesCache();
     }
+
 }

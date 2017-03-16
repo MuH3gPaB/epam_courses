@@ -29,4 +29,10 @@ public class LogAppender extends WriterAppender {
             return new byte[0];
         }
     }
+
+    public static void clear(){
+        if (firstInstance != null) {
+            firstInstance.out.reset();
+        }
+    }
 }
