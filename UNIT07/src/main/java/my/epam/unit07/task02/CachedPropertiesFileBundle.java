@@ -41,7 +41,7 @@ public class CachedPropertiesFileBundle {
     /**
      * Clear bundles cache.
      */
-    
+
     public static synchronized void clearBundlesCache() {
         bundles = new HashMap<>();
     }
