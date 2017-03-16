@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class SynchronizedPropertiesFileBundleTest extends Assert {
+public class CachedPropertiesFileBundleTest extends Assert {
 
     private static final String TEST_PROPS_FILE_NAME = "test.properties";
 
@@ -43,12 +43,12 @@ public class SynchronizedPropertiesFileBundleTest extends Assert {
     private void readBundles(int bundlesCount, File testPropsFile) throws InterruptedException {
         ExecutorService ex = Executors.newCachedThreadPool();
         for (int i = 0; i < bundlesCount; i++) {
-            ex.execute(() -> SynchronizedPropertiesFileBundle.getBundle(testPropsFile));
+            ex.execute(() -> CachedPropertiesFileBundle.getBundle(testPropsFile));
         }
 
         ex.shutdown();
         ex.awaitTermination(10, TimeUnit.SECONDS);
-        SynchronizedPropertiesFileBundle.clearBundlesCache();
+        CachedPropertiesFileBundle.clearBundlesCache();
     }
 
 }

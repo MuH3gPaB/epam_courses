@@ -6,16 +6,28 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SynchronizedPropertiesFileBundle extends PropertiesFileBundle {
+/**
+ * Wrapper on PropertiesFileBundle class.
+ * <p>
+ * If PropertiesFileBundle was once loaded, it stores into
+ * CachedPropertiesFileBundle inner cache.
+ * <p>
+ * If any thread invokes getBundle(File file), it get value
+ * from cache, or, if no value found, load it from file.
+ *
+ */
+public class CachedPropertiesFileBundle {
     private static Map<File, PropertiesFileBundle> bundles = new HashMap<>();
 
-    protected SynchronizedPropertiesFileBundle(Map<String, Object> properties) {
-        super(properties);
-    }
-
+    /**
+     * Get bundle from cache, or read new bundle if not found.
+     *
+     * @param file Properties file for bundle
+     * @return Loaded bundle
+     */
     public static PropertiesFileBundle getBundle(File file) {
         if (!bundles.containsKey(file)) {
-            synchronized (SynchronizedPropertiesFileBundle.class) {
+            synchronized (CachedPropertiesFileBundle.class) {
                 if (!bundles.containsKey(file)) {
                     PropertiesFileBundle bundle = PropertiesFileBundle.getBundle(file);
                     bundles.put(file, bundle);
@@ -26,8 +38,11 @@ public class SynchronizedPropertiesFileBundle extends PropertiesFileBundle {
         return bundles.get(file);
     }
 
-
+    /**
+     * Clear bundles cache.
+     */
+    
     public static synchronized void clearBundlesCache() {
-        bundles.clear();
+        bundles = new HashMap<>();
     }
 }
