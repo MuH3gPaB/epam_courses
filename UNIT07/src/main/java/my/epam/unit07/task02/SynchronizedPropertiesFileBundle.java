@@ -14,12 +14,20 @@ public class SynchronizedPropertiesFileBundle extends PropertiesFileBundle {
     }
 
     public static PropertiesFileBundle getBundle(File file) {
-        if (bundles.containsKey(file)) {
-            return bundles.get(file);
-        } else {
-            PropertiesFileBundle bundle = PropertiesFileBundle.getBundle(file);
-            bundles.put(file, bundle);
-            return bundle;
+        if (!bundles.containsKey(file)) {
+            synchronized (SynchronizedPropertiesFileBundle.class) {
+                if (!bundles.containsKey(file)) {
+                    PropertiesFileBundle bundle = PropertiesFileBundle.getBundle(file);
+                    bundles.put(file, bundle);
+                }
+            }
         }
+
+        return bundles.get(file);
+    }
+
+
+    public static synchronized void clearBundlesCache() {
+        bundles.clear();
     }
 }
