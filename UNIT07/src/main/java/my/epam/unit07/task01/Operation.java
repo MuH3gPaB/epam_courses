@@ -1,19 +1,30 @@
 package my.epam.unit07.task01;
 
 import java.text.ParseException;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+/**
+ * Class represents operation on account.
+ * <p>
+ * Stores account id, operation type and operation value.
+ */
 
 public class Operation {
     private long accountId;
     private OperationType type;
     private long value;
+    private boolean applied = false;
 
     private final static String OPERATION_STRING_REGEXP = "(^Operation *\\{ *accountId=\\d+, *type=\\w+, *value=\\d+ *\\}$)";
 
     private Operation() {
+    }
+
+    public void apply(Account account) {
+        type.apply(account, value);
+        applied = true;
     }
 
     public static Operation build(long accountId, OperationType type, long value) {
@@ -83,5 +94,33 @@ public class Operation {
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (int) (value ^ (value >>> 32));
         return result;
+    }
+
+    public boolean wasApplied() {
+        return applied;
+    }
+
+    public long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
+    }
+
+    public OperationType getType() {
+        return type;
+    }
+
+    public void setType(OperationType type) {
+        this.type = type;
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public void setValue(long value) {
+        this.value = value;
     }
 }
