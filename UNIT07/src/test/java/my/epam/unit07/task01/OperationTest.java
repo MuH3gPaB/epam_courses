@@ -3,13 +3,53 @@ package my.epam.unit07.task01;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.text.ParseException;
+
 public class OperationTest extends Assert {
 
     @Test
-    public void parseValidString(){
-        String opString = "Operation{accountId=123123, type=withdraw, value=100}";
+    public void parseValidString() throws ParseException {
+        Operation expected = Operation.build(123123, OperationType.WITHDRAW, 100);
+        Operation actual = Operation.parseOperation(expected.toString());
 
-        Operation expected = new Operation(123123L, OperatinType.WITHDRAW, 100L);
+        assertEquals(expected, actual);
+    }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void createOperationWithZeroAccIdShouldThrowsIAE() {
+        Operation operation = Operation.build(0, OperationType.DEPOSIT, 100);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void createOperationWithZeroValueShouldThrowsIAE() {
+        Operation operation = Operation.build(123123, OperationType.DEPOSIT, 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void createOperationWithNegativeAccIdShouldThrowsIAE() {
+        Operation operation = Operation.build(-123, OperationType.DEPOSIT, 100);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void createOperationWithNegativeValueShouldThrowsIAE() {
+        Operation operation = Operation.build(123123, OperationType.DEPOSIT, -100);
+    }
+
+    @Test(expected = ParseException.class)
+    public void parseStringWithEmptyAccountIdShouldThrowsPE() throws ParseException {
+        String opString = "Operation{accountId=, type=WITHDRAW, value=100}";
+        Operation.parseOperation(opString);
+    }
+
+    @Test(expected = ParseException.class)
+    public void parseStringWithEmptyTypeShouldThrowsPE() throws ParseException {
+        String opString = "Operation{accountId=123112, type=, value=100}";
+        Operation.parseOperation(opString);
+    }
+
+    @Test(expected = ParseException.class)
+    public void parseStringWithEmptyValueShouldThrowsPE() throws ParseException {
+        String opString = "Operation{accountId=123112, type=WITHDRAW, value=}";
+        Operation.parseOperation(opString);
     }
 }

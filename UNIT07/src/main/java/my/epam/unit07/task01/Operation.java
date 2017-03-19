@@ -1,24 +1,58 @@
 package my.epam.unit07.task01;
 
+import java.text.ParseException;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Operation {
     private long accountId;
-    private OperatinType type;
+    private OperationType type;
     private long value;
 
-    public Operation(long accountId, OperatinType type, long value) {
-        Objects.requireNonNull(type, "Operation type should not be null.");
-        if(accountId <= 0) throw new IllegalArgumentException("Negative or zero account id.");
-        if(value <= 0) throw new IllegalArgumentException("Negative or zero operation value.");
+    private final static String OPERATION_STRING_REGEXP = "(^Operation *\\{ *accountId=\\d+, *type=\\w+, *value=\\d+ *\\}$)";
 
-        this.accountId = accountId;
-        this.type = type;
-        this.value = value;
+    private Operation() {
     }
 
-    public static Operation parseOperation(String string) {
-        return null;
+    public static Operation build(long accountId, OperationType type, long value) {
+        Objects.requireNonNull(type, "Operation type should not be null.");
+        if (accountId <= 0) throw new IllegalArgumentException("Negative or zero account id.");
+        if (value <= 0) throw new IllegalArgumentException("Negative or zero operation value.");
+
+        Operation operation = new Operation();
+        operation.accountId = accountId;
+        operation.type = type;
+        operation.value = value;
+        return operation;
+    }
+
+    public static Operation parseOperation(String string) throws ParseException {
+        string = string.trim();
+
+        if (!string.matches(OPERATION_STRING_REGEXP)) {
+            throw new ParseException("Operation parse error on string [" + string + "]", 0);
+        }
+
+        String accountIdString = extractValue("accountId", string);
+        String operationTypeString = extractValue("type", string);
+        String valueString = extractValue("value", string);
+
+        long accountId = Long.parseLong(accountIdString);
+        OperationType type = OperationType.valueOf(operationTypeString);
+        long value = Long.parseLong(valueString);
+
+        return Operation.build(accountId, type, value);
+    }
+
+    private static String extractValue(String valName, String string) throws ParseException {
+        Matcher matcher = Pattern.compile(valName + "=.*?(?=,|\\})").matcher(string);
+        if (matcher.find()) {
+            return matcher.group().split("=")[1];
+        } else {
+            throw new ParseException("Value extraction error on value [" + valName + "] on string [" + string + "].", 0);
+        }
     }
 
     @Override

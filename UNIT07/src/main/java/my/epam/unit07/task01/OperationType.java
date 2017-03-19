@@ -1,6 +1,6 @@
 package my.epam.unit07.task01;
 
-public enum OperatinType {
+public enum OperationType {
     DEPOSIT,
     WITHDRAW;
 
