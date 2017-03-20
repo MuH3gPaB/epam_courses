@@ -37,7 +37,43 @@ thread safe access using double check.
 
 For testing was used custom [LogAppender](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/test/java/my/epam/unit07/task02/LogAppender.java) that storing all log messages.
 
-Task03 [(source)]()
--------------------
+Task03 [(source)](https://github.com/MuH3gPaB/epam_courses/tree/master/UNIT07/src/main/java/my/epam/unit07/task03) [(app)](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/main/java/my/epam/unit07/task03/App.java)
+-----------------------------
+The task is to make [IntegerSetterGetters](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/main/java/my/epam/unit07/task03/IntegerSetterGetter.java) not able to became readers all together.
+
+##### _The first added feature is watchdog timer into [SharedResource](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/main/java/my/epam/unit07/task03/SharedResource.java)._
+
+[SharedResource](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/main/java/my/epam/unit07/task03/SharedResource.java) can not control how much requests for data it will receive,
+and do not know how much data it can provide.
+
+So, [SharedResouce](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/main/java/my/epam/unit07/task03/SharedResource.java) should check the situation when it's no more data available,
+but unsatisfied clients still waiting.
+
+The watchdog timer just solve this problem.
+
+WDT start counting from 10 to zero (one count per second) on resource creation.
+
+When WDT comes to zero, _noMoreData_ is flag set up.
+
+If thread tries to get data when _noMoreData_ flag is true, the NoSuchElementException
+ is thrown.
+
+ Every time [SharedResource](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/main/java/my/epam/unit07/task03/SharedResource.java) get new data, _noMoreData_ flag sets to false,
+ and WDT value sets back to 10.
+
+##### _The **second** added feature is check [IntegerSetterGetter](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/main/java/my/epam/unit07/task03/IntegerSetterGetter.java) role before each iteration._
+
+All [IntegerSetterGetters](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/main/java/my/epam/unit07/task03/IntegerSetterGetter.java) are joined into one ThreadGroup.
+
+When thread make choice of role (reader or writer), it checks if it
+is last thread in the group that can became a writer, and if it so,
+it becomes a writer, otherwise - the random choice.
+
+##### _Some minor code refactoring was performed:_
+- UserResourceThread renamed to App;
+- IntegerSetterGetter class was placed to separated file;
+- all outputs redirected to logger.info;
+- synchronized block now starts before thread will choice its role;
+- some more minor refactoring...
 
 
