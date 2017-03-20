@@ -23,6 +23,7 @@ public class ParallelAccountsManager extends AccountsManager {
         }
     }
 
+    @Override
     public void performParallelOperations(ArrayList<Operation> operations) {
 
         ArrayList<Thread> threads = buildThreads(operations);

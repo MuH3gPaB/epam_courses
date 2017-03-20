@@ -46,6 +46,10 @@ public class AccountsManager {
         operation.apply(account);
     }
 
+    public void performParallelOperations(ArrayList<Operation> operations){
+        throw new UnsupportedOperationException("Method should be overrided.");
+    }
+
     protected void checkAccount(long accountId, boolean create) {
         if (!accounts.containsKey(accountId)) {
             if (create) {

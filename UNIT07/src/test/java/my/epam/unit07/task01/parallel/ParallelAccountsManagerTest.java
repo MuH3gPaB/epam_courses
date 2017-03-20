@@ -1,5 +1,6 @@
 package my.epam.unit07.task01.parallel;
 
+import my.epam.unit07.task01.AccountsManager;
 import my.epam.unit07.task01.model.Operation;
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,28 +10,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ParallelAccountsManagerTest extends Assert {
-    private ParallelAccountsManager manager;
+    private AccountsManager manager;
+    private CommonParallelAccountingForTest common;
 
     @Before
     public void initTest() {
         manager = new ParallelAccountsManager();
+        common = new CommonParallelAccountingForTest(manager);
     }
 
     @Test
-    public void parallelOperationsPerformTest() {
+    public void parallelValidOperationsTest() {
         long accountId = manager.addAccount(0);
-        ArrayList<Operation> operations = new ArrayList<>();
+        common.parallelValidOperations(accountId);
+        assertEquals(0, manager.getAccountBalance(accountId));
+    }
 
-        int operationsCount = 3000;
-        for (int i = 1; i < operationsCount; i++) {
-            operations.add(Operation.build(accountId, Operation.OperationType.DEPOSIT, 100 * i));
-            operations.add(Operation.build(accountId, Operation.OperationType.WITHDRAW, 100 * i));
-        }
-
-        Collections.shuffle(operations);
-
-        manager.performParallelOperations(operations);
-
+    @Test
+    public void parallelOneInvalidOperationShouldCompleteAllValids() {
+        long accountId = manager.addAccount(0);
+        common.parallelOneInvalidOperation(accountId);
         assertEquals(0, manager.getAccountBalance(accountId));
     }
 }
