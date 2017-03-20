@@ -1,5 +1,7 @@
 package my.epam.unit07.task01;
 
+import my.epam.unit07.task01.model.Account;
+import my.epam.unit07.task01.model.Operation;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -7,7 +9,7 @@ import java.util.*;
 public class AccountsManager {
     private static Logger logger = Logger.getLogger(AccountsManager.class);
 
-    private Map<Long, Account> accounts = new HashMap<>();
+    protected Map<Long, Account> accounts = new HashMap<>();
     private boolean autoCreateAccounts = true;
 
     public AccountsManager(Map<Long, Account> accounts) {
@@ -38,61 +40,24 @@ public class AccountsManager {
 
     public void performOperation(Operation operation) {
         long accountId = operation.getAccountId();
-        if (!accounts.containsKey(accountId)) {
-            if (autoCreateAccounts) {
-                accounts.put(accountId, new Account(accountId, 0));
-            } else {
-                throw new IllegalArgumentException("Account with id [" + accountId + "] does not exist.");
-            }
-        }
+        checkAccount(accountId, autoCreateAccounts);
 
         Account account = accounts.get(accountId);
         operation.apply(account);
     }
 
+    protected void checkAccount(long accountId, boolean create) {
+        if (!accounts.containsKey(accountId)) {
+            if (create) {
+                accounts.put(accountId, new Account(accountId, 0));
+            } else {
+                throw new IllegalArgumentException("Account with id [" + accountId + "] does not exist.");
+            }
+        }
+    }
+
     public void performOperations(ArrayList<Operation> operations) {
         operations.forEach(this::performOperation);
-    }
-
-    public void performParallelOperations(ArrayList<Operation> operations) {
-        int allJob = operations.size();
-        int threadsCount = calculateThreadsCount(allJob);
-        int operatorsJob = allJob / threadsCount;
-        ArrayList<Thread> threads = new ArrayList<>();
-        for (int i = 0; i < threadsCount; i++) {
-            int fromIndex = i * operatorsJob;
-            int toIndex = (i + 1) * operatorsJob;
-            if (i == threadsCount - 1) {
-                toIndex = operations.size();
-            }
-            List<Operation> forOperator = operations.subList(fromIndex, toIndex);
-
-            Runnable operator = () -> {
-                for (Operation operation : forOperator) {
-                    AccountsManager.this.performOperation(operation);
-                }
-            };
-
-            Thread thread = new Thread(operator, "Operator" + i);
-            thread.start();
-            threads.add(thread);
-        }
-
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                logger.warn("Parallel operations interrupted.");
-            }
-        }
-    }
-
-    private int calculateThreadsCount(int opl) {
-        int threadsCount = 8;
-        while (opl / threadsCount < 5 && threadsCount != 1) {
-            threadsCount--;
-        }
-        return threadsCount;
     }
 
     public boolean isAutoCreateAccounts() {

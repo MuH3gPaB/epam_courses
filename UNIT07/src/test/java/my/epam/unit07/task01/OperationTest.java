@@ -1,5 +1,6 @@
 package my.epam.unit07.task01;
 
+import my.epam.unit07.task01.model.Operation;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -9,7 +10,7 @@ public class OperationTest extends Assert {
 
     @Test
     public void parseValidString() throws ParseException {
-        Operation expected = Operation.build(123123, OperationType.WITHDRAW, 100);
+        Operation expected = Operation.build(123123, Operation.OperationType.WITHDRAW, 100);
         Operation actual = Operation.parseOperation(expected.toString());
 
         assertEquals(expected, actual);
@@ -17,22 +18,22 @@ public class OperationTest extends Assert {
 
     @Test(expected = IllegalArgumentException.class)
     public void createOperationWithZeroAccIdShouldThrowsIAE() {
-        Operation operation = Operation.build(0, OperationType.DEPOSIT, 100);
+        Operation operation = Operation.build(0, Operation.OperationType.DEPOSIT, 100);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createOperationWithZeroValueShouldThrowsIAE() {
-        Operation operation = Operation.build(123123, OperationType.DEPOSIT, 0);
+        Operation operation = Operation.build(123123, Operation.OperationType.DEPOSIT, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createOperationWithNegativeAccIdShouldThrowsIAE() {
-        Operation operation = Operation.build(-123, OperationType.DEPOSIT, 100);
+        Operation operation = Operation.build(-123, Operation.OperationType.DEPOSIT, 100);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createOperationWithNegativeValueShouldThrowsIAE() {
-        Operation operation = Operation.build(123123, OperationType.DEPOSIT, -100);
+        Operation operation = Operation.build(123123, Operation.OperationType.DEPOSIT, -100);
     }
 
     @Test(expected = ParseException.class)

@@ -1,4 +1,4 @@
-package my.epam.unit07.task01;
+package my.epam.unit07.task01.model;
 
 public class Account {
 

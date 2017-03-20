@@ -1,4 +1,4 @@
-package my.epam.unit07.task01;
+package my.epam.unit07.task01.model;
 
 import java.text.ParseException;
 import java.util.Objects;
@@ -122,5 +122,25 @@ public class Operation {
 
     public void setValue(long value) {
         this.value = value;
+    }
+
+    public static enum OperationType {
+        DEPOSIT {
+            @Override
+            public void apply(Account account, Long value) {
+                account.increase(value);
+            }
+        },
+
+        WITHDRAW {
+            @Override
+            public void apply(Account account, Long value) {
+                account.decrease(value);
+            }
+        };
+
+        public void apply(Account account, Long value) {
+            throw new UnsupportedOperationException();
+        }
     }
 }
