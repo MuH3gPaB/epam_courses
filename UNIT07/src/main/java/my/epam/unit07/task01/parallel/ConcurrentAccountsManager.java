@@ -22,7 +22,7 @@ public class ConcurrentAccountsManager extends AccountsManager {
         checkAccount(accountId, isAutoCreateAccounts());
 
         Account account = accounts.get(accountId);
-        
+
         operation.apply(account);
     }
 
