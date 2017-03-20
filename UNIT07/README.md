@@ -55,7 +55,7 @@ WDT start counting from 10 to zero (one count per second) on resource creation.
 
 When WDT comes to zero, _noMoreData_ flag sets up.
 
-If thread tries to get data when _noMoreData_ flag is true, the NoSuchElementException
+If thread tries to get data when _noMoreData_ flag is true, NoSuchElementException
  is thrown.
 
  Every time [SharedResource](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/main/java/my/epam/unit07/task03/SharedResource.java) get new data, _noMoreData_ flag sets to false,
