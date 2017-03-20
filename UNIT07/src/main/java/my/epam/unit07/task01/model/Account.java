@@ -1,5 +1,13 @@
 package my.epam.unit07.task01.model;
 
+/**
+ * This class represent bank account.
+ * <p>
+ * It use just two fields: id, balance.
+ * <p>
+ * Two simple operations supported: increase, decrease.
+ */
+
 public class Account {
 
     private long balance;

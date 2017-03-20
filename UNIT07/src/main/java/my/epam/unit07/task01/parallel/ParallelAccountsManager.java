@@ -8,6 +8,13 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class add Parallel perform operations functionality
+ * to general AccountsManager class.
+ * <p>
+ * It uses synchronized keyword for synchronization.
+ */
+
 public class ParallelAccountsManager extends AccountsManager {
     private static Logger logger = Logger.getLogger(ParallelAccountsManager.class);
 

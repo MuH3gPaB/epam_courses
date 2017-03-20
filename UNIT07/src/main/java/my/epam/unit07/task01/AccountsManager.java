@@ -9,6 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * Simple account manager class.
+ * <p>
+ * Two basic operations: add, remove account.
+ * <p>
+ * All operations with changing account balance may be applied
+ * using performOperation method with Operation class.
+ */
+
 public class AccountsManager {
     private static Logger logger = Logger.getLogger(AccountsManager.class);
 
@@ -55,16 +64,6 @@ public class AccountsManager {
         throw new UnsupportedOperationException("Method should be overrided.");
     }
 
-    protected void checkAccount(long accountId, boolean create) {
-        if (!accounts.containsKey(accountId)) {
-            if (create) {
-                accounts.put(accountId, new Account(accountId, 0));
-            } else {
-                throw new IllegalArgumentException("Account with id [" + accountId + "] does not exist.");
-            }
-        }
-    }
-
     public void performOperations(List<Operation> operations) {
         operations.forEach(this::performOperation);
     }
@@ -87,5 +86,15 @@ public class AccountsManager {
 
     public long getOperationsCount() {
         return operationsCount;
+    }
+
+    protected void checkAccount(long accountId, boolean create) {
+        if (!accounts.containsKey(accountId)) {
+            if (create) {
+                accounts.put(accountId, new Account(accountId, 0));
+            } else {
+                throw new IllegalArgumentException("Account with id [" + accountId + "] does not exist.");
+            }
+        }
     }
 }

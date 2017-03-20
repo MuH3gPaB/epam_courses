@@ -13,6 +13,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * This class add Parallel perform operations functionality
+ * to general AccountsManager class.
+ * <p>
+ * It uses java.concurrent API for synchronization.
+ */
+
 public class ConcurrentAccountsManager extends AccountsManager {
     private static Logger logger = Logger.getLogger(ConcurrentAccountsManager.class);
     private final Lock lock = new ReentrantLock();
