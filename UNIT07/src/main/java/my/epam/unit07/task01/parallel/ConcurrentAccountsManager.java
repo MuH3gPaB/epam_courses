@@ -5,7 +5,10 @@ import my.epam.unit07.task01.model.Account;
 import my.epam.unit07.task01.model.Operation;
 import org.apache.log4j.Logger;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +38,7 @@ public class ConcurrentAccountsManager extends AccountsManager {
     }
 
     @Override
-    public void performParallelOperations(ArrayList<Operation> operations) {
+    public void performParallelOperations(List<Operation> operations) {
         List<Runnable> jobs = buildJobs(operations);
         doJobs(jobs);
     }
@@ -46,7 +49,7 @@ public class ConcurrentAccountsManager extends AccountsManager {
         ex.shutdown();
     }
 
-    private List<Runnable> buildJobs(ArrayList<Operation> operations) {
+    private List<Runnable> buildJobs(List<Operation> operations) {
         Runnable[] jobs = operations.stream()
                 .map(operation -> (Runnable) () -> {
                     try {

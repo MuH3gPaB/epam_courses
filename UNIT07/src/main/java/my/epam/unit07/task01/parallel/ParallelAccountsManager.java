@@ -24,9 +24,9 @@ public class ParallelAccountsManager extends AccountsManager {
     }
 
     @Override
-    public void performParallelOperations(ArrayList<Operation> operations) {
+    public void performParallelOperations(List<Operation> operations) {
 
-        ArrayList<Thread> threads = buildThreads(operations);
+        List<Thread> threads = buildThreads(operations);
 
         for (Thread thread : threads) {
             try {
@@ -37,8 +37,8 @@ public class ParallelAccountsManager extends AccountsManager {
         }
     }
 
-    private ArrayList<Thread> buildThreads(ArrayList<Operation> operations) {
-        ArrayList<Thread> threads = new ArrayList<>();
+    private List<Thread> buildThreads(List<Operation> operations) {
+        List<Thread> threads = new ArrayList<>();
 
         int allJob = operations.size();
         int threadsCount = calculateThreadsCount(allJob);

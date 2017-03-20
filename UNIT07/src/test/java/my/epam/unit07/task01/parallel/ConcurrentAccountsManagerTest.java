@@ -1,13 +1,9 @@
 package my.epam.unit07.task01.parallel;
 
 import my.epam.unit07.task01.AccountsManager;
-import my.epam.unit07.task01.model.Operation;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class ConcurrentAccountsManagerTest extends Assert {
     private AccountsManager manager;

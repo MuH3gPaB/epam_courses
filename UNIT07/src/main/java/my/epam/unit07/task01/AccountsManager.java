@@ -4,7 +4,10 @@ import my.epam.unit07.task01.model.Account;
 import my.epam.unit07.task01.model.Operation;
 import org.apache.log4j.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class AccountsManager {
     private static Logger logger = Logger.getLogger(AccountsManager.class);
@@ -46,7 +49,7 @@ public class AccountsManager {
         operation.apply(account);
     }
 
-    public void performParallelOperations(ArrayList<Operation> operations){
+    public void performParallelOperations(List<Operation> operations) {
         throw new UnsupportedOperationException("Method should be overrided.");
     }
 
@@ -60,7 +63,7 @@ public class AccountsManager {
         }
     }
 
-    public void performOperations(ArrayList<Operation> operations) {
+    public void performOperations(List<Operation> operations) {
         operations.forEach(this::performOperation);
     }
 

@@ -5,6 +5,7 @@ import my.epam.unit07.task01.model.Operation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class CommonParallelAccountingForTest {
     private AccountsManager manager;
@@ -14,7 +15,7 @@ public class CommonParallelAccountingForTest {
     }
 
     public void parallelValidOperations(long accountId) {
-        ArrayList<Operation> operations = buildOperations(accountId);
+        List<Operation> operations = buildOperations(accountId);
 
         Collections.shuffle(operations);
 
@@ -22,7 +23,7 @@ public class CommonParallelAccountingForTest {
     }
 
     public void parallelOneInvalidOperation(long accountId) {
-        ArrayList<Operation> operations = buildOperations(accountId);
+        List<Operation> operations = buildOperations(accountId);
 
         long notExistingId = accountId + 1;
         Operation invalidOperation = Operation.build(notExistingId, Operation.OperationType.DEPOSIT, 100);
@@ -33,8 +34,8 @@ public class CommonParallelAccountingForTest {
         manager.performParallelOperations(operations);
     }
 
-    private ArrayList<Operation> buildOperations(long accountId) {
-        ArrayList<Operation> operations = new ArrayList<>();
+    private List<Operation> buildOperations(long accountId) {
+        List<Operation> operations = new ArrayList<>();
 
         int operationsCount = 3000;
         for (int i = 1; i < operationsCount; i++) {
