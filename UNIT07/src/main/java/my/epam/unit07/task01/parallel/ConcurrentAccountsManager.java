@@ -48,7 +48,13 @@ public class ConcurrentAccountsManager extends AccountsManager {
 
     private List<Runnable> buildJobs(ArrayList<Operation> operations) {
         Runnable[] jobs = operations.stream()
-                .map(operation -> (Runnable) () -> this.performOperation(operation))
+                .map(operation -> (Runnable) () -> {
+                    try {
+                        this.performOperation(operation);
+                    } catch (IllegalArgumentException e) {
+                        logger.warn(e.getMessage());
+                    }
+                })
                 .toArray(Runnable[]::new);
 
         return Arrays.asList(jobs);

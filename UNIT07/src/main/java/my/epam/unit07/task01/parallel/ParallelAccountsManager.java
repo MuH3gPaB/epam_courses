@@ -58,11 +58,13 @@ public class ParallelAccountsManager extends AccountsManager {
     }
 
     private Thread runOperator(int i, List<Operation> forOperator) {
-        Runnable operator = () -> {
-            for (Operation operation : forOperator) {
-                ParallelAccountsManager.this.performOperation(operation);
+        Runnable operator = () -> forOperator.forEach((operation) -> {
+            try {
+                this.performOperation(operation);
+            } catch (IllegalArgumentException e) {
+                logger.warn(e.getMessage());
             }
-        };
+        });
 
         Thread thread = new Thread(operator, "Operator" + i);
         thread.start();
