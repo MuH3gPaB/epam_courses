@@ -20,6 +20,7 @@ public class SharedResource {
 
     public void setElement(Integer element) {
         list.add(element);
+        noMoreData = false;
         resetWdt();
     }
 
