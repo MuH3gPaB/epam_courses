@@ -30,10 +30,12 @@ public class ConcurrentAccountsManager extends AccountsManager {
         try {
             if (lock.tryLock(10, TimeUnit.SECONDS)) {
                 operation.apply(account);
+                operationsCount++;
                 lock.unlock();
             }
         } catch (InterruptedException e) {
             logger.warn("Job interrupted. On [" + operation + "]");
+            lock.unlock();
         }
     }
 

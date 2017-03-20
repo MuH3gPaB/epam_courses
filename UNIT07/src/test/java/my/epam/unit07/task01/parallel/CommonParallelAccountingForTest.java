@@ -42,6 +42,7 @@ public class CommonParallelAccountingForTest {
             operations.add(Operation.build(accountId, Operation.OperationType.DEPOSIT, 100 * i));
             operations.add(Operation.build(accountId, Operation.OperationType.WITHDRAW, 100 * i));
         }
+
         return operations;
     }
 

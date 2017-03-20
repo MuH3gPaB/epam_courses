@@ -14,6 +14,7 @@ public class AccountsManager {
 
     protected Map<Long, Account> accounts = new HashMap<>();
     private boolean autoCreateAccounts = true;
+    protected long operationsCount = 0;
 
     public AccountsManager(Map<Long, Account> accounts) {
         this.accounts = accounts;
@@ -47,6 +48,7 @@ public class AccountsManager {
 
         Account account = accounts.get(accountId);
         operation.apply(account);
+        operationsCount++;
     }
 
     public void performParallelOperations(List<Operation> operations) {
@@ -81,5 +83,9 @@ public class AccountsManager {
         } else {
             throw new IllegalArgumentException("Account wiht id [" + accountId + "] not found.");
         }
+    }
+
+    public long getOperationsCount() {
+        return operationsCount;
     }
 }

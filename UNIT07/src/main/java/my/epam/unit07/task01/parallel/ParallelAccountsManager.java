@@ -20,6 +20,7 @@ public class ParallelAccountsManager extends AccountsManager {
 
         synchronized (account) {
             operation.apply(account);
+            operationsCount++;
         }
     }
 
