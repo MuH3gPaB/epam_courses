@@ -6,9 +6,7 @@ import my.epam.unit07.task01.model.Operation;
 import org.apache.log4j.Logger;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ConcurrentAccountsManager extends AccountsManager {
     private static Logger logger = Logger.getLogger(ConcurrentAccountsManager.class);
-    private Map<Long, Lock> locks = new HashMap<>();
+    private final Lock lock = new ReentrantLock();
 
     @Override
     public void performOperation(Operation operation) {
@@ -25,7 +23,6 @@ public class ConcurrentAccountsManager extends AccountsManager {
         checkAccount(accountId, isAutoCreateAccounts());
 
         Account account = accounts.get(accountId);
-        Lock lock = getLock(accountId);
 
         try {
             if (lock.tryLock(10, TimeUnit.SECONDS)) {
@@ -63,13 +60,5 @@ public class ConcurrentAccountsManager extends AccountsManager {
                 .toArray(Runnable[]::new);
 
         return Arrays.asList(jobs);
-    }
-
-    private Lock getLock(Long accountId) {
-        if (!locks.containsKey(accountId)) {
-            locks.put(accountId, new ReentrantLock());
-        }
-
-        return locks.get(accountId);
     }
 }
