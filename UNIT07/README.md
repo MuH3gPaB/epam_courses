@@ -53,7 +53,7 @@ The watchdog timer just solve this problem.
 
 WDT start counting from 10 to zero (one count per second) on resource creation.
 
-When WDT comes to zero, _noMoreData_ is flag set up.
+When WDT comes to zero, _noMoreData_ flag sets up.
 
 If thread tries to get data when _noMoreData_ flag is true, the NoSuchElementException
  is thrown.
