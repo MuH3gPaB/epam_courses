@@ -18,7 +18,7 @@ In table below represented most popular java collections available from java.uti
 |CopyOnWriteArrayList|Yes|Yes|No|Yes|Yes|Yes|No|
 |CopyOnWriteArraySet|No|No|No|No|Yes|Yes|No|
 |DelayQueue|Delay<br>expiration|No|No|Yes|No|Yes|Block on take until delay expired|
-|HashMap|No|Yes|Yes|No by keys. Yes by values.|Yes|No|No|
+|HashMap|No|Yes|Yes|No by keys.<br>Yes by values.|Yes|No|No|
 |HashSet|No|No|No|No|Yes|No|No|
 |LinkedBlockingDeque|FIFO<br>/LIFO|No|No|Yes|No|Yes|Yes|
 |LinkedBlockingQueue|FIFO|No|No|Yes|No|Yes|Yes|
@@ -29,7 +29,7 @@ In table below represented most popular java collections available from java.uti
 |PriorityBlockingQueue|Yes|No|No|Yes|No|Yes|Yes|
 |TreeMap|Yes|Yes|Yes|No by keys.<br>Yes by values.|Yes|No|No|
 |TreeSet|Yes|No|No|No|Depends on Comparator|No|No|
-|SynchronousQueue|No|No|No|Capacity = 1|No|Yes|Block write until read|
+|SynchronousQueue|No|No|No|Capacity<br>= 1|No|Yes|Block write until read|
 
 
 
