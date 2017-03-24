@@ -5,31 +5,31 @@ Welcome to Unit 06 home work page!
 
 Task01
 ------
-Java collections.
+In table below represented most popular java collections available from java.util.* package.
 
-|№|Name   |Ordering|Random Access|Key-Value Pairs|Allows Duplicates|Allows Null Values|Thread Safe|Blocking Operations|
-|---|---|---|---|---|---|---|---|---|
-|1|ArrayBlockingQueue|FIFO|No|No|Yes|No|Yes|Yes|
-|2|ArrayDeque|FIFO/LIFO|No|No|Yes|No|No|No|
-|3|ArrayList|Yes|Yes|No|Yes|Yes|No|No|
-|4|ConcurrentHashMap|No|Yes|Yes|No by keys. Yes by values.|No|Yes|Write to same segment|
-|5|ConcurrentSkipListMap|Yes|Yes|Yes|No by keys. Yes by values.|No|Yes|No|
-|6|ConcurrentSkipListSet|Yes|No|No|No|No|Yes|No|
-|7|CopyOnWriteArrayList|Yes|Yes|No|Yes|Yes|Yes|No|
-|8|CopyOnWriteArraySet|No|No|No|No|Yes|Yes|No|
-|9|DelayQueue|Delay expiration|No|No|Yes|No|Yes|Block on take until delay expired|
-|10|HashMap|No|Yes|Yes|No by keys. Yes by values.|Yes|No|No|
-|11|HashSet|No|No|No|No|Yes|No|No|
-|12|LinkedBlockingDeque|FIFO/LIFO|No|No|Yes|No|Yes|Yes|
-|13|LinkedBlockingQueue|FIFO|No|No|Yes|No|Yes|Yes|
-|14|LinkedHashMap|Yes|Yes|Yes|No by keys. Yes by values.|Yes|No|No|
-|15|LinkedHashSet|Yes|No|No|No|Yes|No|No|
-|16|LinkedList|Yes|Yes|No|Yes|Yes|No|No|
-|17|LinkedTransferQueue|FIFO|No|No|Yes|No|Yes|Yes (variate)|
-|18|PriorityBlockingQueue|Yes|No|No|Yes|No|Yes|Yes|
-|19|TreeMap|Yes|Yes|Yes|No by keys. Yes by values.|Yes|No|No|
-|20|TreeSet|Yes|No|No|No|Depends on Comparator|No|No|
-|21|SynchronousQueue|No|No|No|Capacity = 1|No|Yes|Block write until read|
+|Name   |Ordering|Random Access|Key-Value Pairs|Allows Duplicates|Allows Null Values|Thread Safe|Blocking Operations|
+|---|---|---|---|---|---|---|---|
+|ArrayBlockingQueue|FIFO|No|No|Yes|No|Yes|Yes|
+|ArrayDeque|FIFO/LIFO|No|No|Yes|No|No|No|
+|ArrayList|Yes|Yes|No|Yes|Yes|No|No|
+|ConcurrentHashMap|No|Yes|Yes|No by keys. Yes by values.|No|Yes|Write to same segment|
+|ConcurrentSkipListMap|Yes|Yes|Yes|No by keys. Yes by values.|No|Yes|No|
+|ConcurrentSkipListSet|Yes|No|No|No|No|Yes|No|
+|CopyOnWriteArrayList|Yes|Yes|No|Yes|Yes|Yes|No|
+|CopyOnWriteArraySet|No|No|No|No|Yes|Yes|No|
+|DelayQueue|Delay expiration|No|No|Yes|No|Yes|Block on take until delay expired|
+|HashMap|No|Yes|Yes|No by keys. Yes by values.|Yes|No|No|
+|HashSet|No|No|No|No|Yes|No|No|
+|LinkedBlockingDeque|FIFO/LIFO|No|No|Yes|No|Yes|Yes|
+|LinkedBlockingQueue|FIFO|No|No|Yes|No|Yes|Yes|
+|LinkedHashMap|Yes|Yes|Yes|No by keys. Yes by values.|Yes|No|No|
+|LinkedHashSet|Yes|No|No|No|Yes|No|No|
+|LinkedList|Yes|Yes|No|Yes|Yes|No|No|
+|LinkedTransferQueue|FIFO|No|No|Yes|No|Yes|Yes (variate)|
+|PriorityBlockingQueue|Yes|No|No|Yes|No|Yes|Yes|
+|TreeMap|Yes|Yes|Yes|No by keys. Yes by values.|Yes|No|No|
+|TreeSet|Yes|No|No|No|Depends on Comparator|No|No|
+|SynchronousQueue|No|No|No|Capacity = 1|No|Yes|Block write until read|
 
 
 
