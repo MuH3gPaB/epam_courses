@@ -46,4 +46,24 @@ In [CachedPropertiesFileBundle](https://github.com/MuH3gPaB/epam_courses/blob/ma
 
 Task03
 -----------------------------
+Given classes:
 
+![Uml diagram](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/unit06task3uml.png)
+
+Table of correctness of assignments represented below.
+
+|Assignment|Correct/<br>Not correct|Comment|
+|---|:---:|:---|
+|Doctor doctor1 = new Doctor();|![Ok](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/ok.png)|Ordinary variable assignment with same type object.|
+|Doctor doctor2 = new MedicalStaff();|![notOk](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/notOk.png)|MedicalStaff object is not a Doctor, and could not be assigned to Doctors type variable.|
+|Doctor doctor3 = new HeadDoctor();|![Ok](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/ok.png)|HeadDoctor is a doctor according to the hierarchy of inheritance.|
+|Object object1 = new HeadDoctor();|![Ok](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/ok.png)|Every java object extends Object class, so it's valid to assign Object variable to object of any type.|
+|HeadDoctor doctor5 = new Object();|![notOk](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/notOk.png)|Created Object is not HeadDoctor, so it's incorrect assignment.|
+|Doctor doctor6 = new Nurse();|![notOk](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/notOk.png)|Nurse is not a Doctor, and cant be assigned to Doctor's type variable.|
+|Nurse nurse = new Doctor();|![notOk](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/notOk.png)|Doctor is not a Nurse, and cant be assigned to Nurse's type variable.|
+|Object object2 = new Nurse();|![Ok](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/ok.png)|Every java object extends Object class, so it's valid to assign Object variable to object of any type.|
+|List\<Doctor> list1= new ArrayList\<Doctor>();|![Ok](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/ok.png)|ArrayList implements List, so we can assign generified classes variables with same type.|
+|List\<MedicalStaff> list2 = new ArrayList\<Doctor>();|![notOk](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/notOk.png)|Generified classes do not take into account the hierarchy of inheritance.|
+|List\<Doctor> list3 = new ArrayList\<MedicalStaff>();|![notOk](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/notOk.png)|Generified classes do not take into account the hierarchy of inheritance.|
+|List\<Object> list4 = new ArrayList\<Doctor>();|![notOk](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/notOk.png)|Generified classes do not take into account the hierarchy of inheritance.|
+|List\<Object> list5 = new ArrayList\<Object>();|![Ok](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/ok.png)|ArrayList implements List, so we can assign generified classes variables with same type.|
