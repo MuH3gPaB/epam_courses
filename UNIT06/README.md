@@ -32,14 +32,17 @@ In table below represented most popular java collections available from java.uti
 |SynchronousQueue|No|No|No|Capacity<br>= 1|No|Yes|Block write until read|
 
 
-
-
-
-
-
-
 Task02
-------------------------------
+------
+[CachedPropertiesFileBundle](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/main/java/my/epam/unit07/task02/CachedPropertiesFileBundle.java) from [task2 unit7](https://github.com/MuH3gPaB/epam_courses/tree/master/UNIT07) stores properties to inner HashMap.
+
+Ordinary, on putting value into Map with key which already present
+in current map, its value will be overridden.
+
+In [CachedPropertiesFileBundle](https://github.com/MuH3gPaB/epam_courses/blob/master/UNIT07/src/main/java/my/epam/unit07/task02/CachedPropertiesFileBundle.java), when we try to read properties file which already was read,
+ it just check inner HashMap if it contains properties for this file,
+ and do not add properties with same key again.
+
 
 Task03
 -----------------------------
