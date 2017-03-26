@@ -67,3 +67,15 @@ Table of correctness of assignments represented below.
 |List\<Doctor> list3 = new ArrayList\<MedicalStaff>();|![notOk](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/notOk.png)|Generified classes do not take into account the hierarchy of inheritance.|
 |List\<Object> list4 = new ArrayList\<Doctor>();|![notOk](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/notOk.png)|Generified classes do not take into account the hierarchy of inheritance.|
 |List\<Object> list5 = new ArrayList\<Object>();|![Ok](https://github.com/MuH3gPaB/epam_courses/blob/master/misc/ok.png)|ArrayList implements List, so we can assign generified classes variables with same type.|
+
+
+Task04
+------
+Java collections interfaces and their major functionality.
+
+|Interface|Major functionality|Usage|
+|---|---|---|
+|Set|No duplications|Users groups and permissions|
+|List|Ordering, random access|Any dynamically changing arrays|
+|Queue|FIFO queues|Stack|
+|Map|Key/value pairs|Properties bundle|
