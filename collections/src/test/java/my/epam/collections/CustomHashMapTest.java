@@ -3,6 +3,9 @@ package my.epam.collections;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Map;
+
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class CustomHashMapTest {
@@ -12,6 +15,7 @@ public class CustomHashMapTest {
     public void setUp() throws Exception {
         map = new CustomHashMap<>();
     }
+
     // SIZE() --------------------------------------------------------------------
     @Test
     public void sizeOfEmptyMapShouldBeZero() throws Exception {
@@ -113,29 +117,105 @@ public class CustomHashMapTest {
     }
 
     @Test
-    public void containsValueShouldReturnTrueOnNullIfNullValuePresent() throws Exception{
+    public void containsValueShouldReturnTrueOnNullIfNullValuePresent() throws Exception {
         map.put("key", null);
         assertTrue(map.containsValue(null));
     }
 
     @Test
-    public void containsValueShouldReturnFalseOnNullIfNullValueAbsent() throws Exception{
+    public void containsValueShouldReturnFalseOnNullIfNullValueAbsent() throws Exception {
         assertFalse(map.containsValue(null));
     }
 
 
-
     // GET() --------------------------------------------------------------------
     @Test
-    public void get() throws Exception {
+    public void getShouldReturnValueThatMappedToKey() throws Exception {
+        String key = "key";
+        Integer value = 1;
 
+        map.put(key, value);
+        Integer actual = map.get(key);
+
+        assertEquals(value, actual);
     }
+
+    @Test
+    public void getShouldReturnNullIfNoValueMappedToKey() throws Exception {
+        assertNull(map.get("key"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getShouldThrowNPEOnNullKey() throws Exception {
+        assertNull(null);
+    }
+
 
     // PUT() --------------------------------------------------------------------
     @Test
-    public void put() throws Exception {
+    public void putShouldAddNewUniquePair() throws Exception {
+        Integer value = 10;
+        String key = "key";
 
+        map.put(key, value);
+        assertTrue(map.containsKey(key) && map.containsValue(value));
     }
+
+    @Test
+    public void putShouldReplaceValueOnMappingToExistingKey() throws Exception {
+        String key = "key";
+        Integer value = 20;
+
+        map.put(key, 10);
+        map.put(key, value);
+        assertEquals(value, map.get(key));
+    }
+
+    @Test
+    public void putShouldReturnPreviousValueIfItWasMapped() throws Exception {
+        String key = "key";
+        Integer preValue = 20;
+        map.put(key, preValue);
+
+        assertEquals(preValue, map.put(key, 10));
+    }
+
+    @Test
+    public void putShouldReturnNullIfNoPreviousValueWasMapped() throws Exception {
+        assertNull(map.put("key", 10));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void putShouldThrowNPEIfKeyIsNull() throws Exception {
+        map.put(null, 10);
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void putShouldThrowCCEIfKeyHaveWrongType() throws Exception {
+        Map unGenerefiedMap = map;
+        unGenerefiedMap.put(1, 1);
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void putShouldThrowCCEIfValueHaveWrongType() throws Exception {
+        Map unGenerefiedMap = map;
+        unGenerefiedMap.put("key", "value");
+    }
+
+    @Test
+    public void putShouldBeOkOnAddingImplementationOfGenericsValue() throws Exception {
+        Map<String, Number> map = new CustomHashMap<>();
+        map.put("key", 1);
+        assertTrue(map.containsValue(1));
+    }
+
+    @Test
+    public void putShouldBeOkOnAddingImplementationOfGenericsKey() throws Exception {
+        Map<Number, Number> map = new CustomHashMap<>();
+        map.put(1, 1);
+        assertTrue(map.containsKey(1));
+    }
+
 
     // REMOVE() --------------------------------------------------------------------
     @Test
