@@ -1,117 +1,119 @@
 package my.epam.collections;
 
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 
-import java.util.Map;
+import static org.junit.Assert.*;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.core.IsNull.notNullValue;
-
-@FixMethodOrder
-public class CustomHashMapTest extends Assert {
-    private Map<Integer, String> m;
+public class CustomHashMapTest {
+    private CustomHashMap<String, Integer> map;
 
     @Before
-    public void createMapInstance() {
-        m = new CustomHashMap<>();
+    public void setUp() throws Exception {
+        map = new CustomHashMap<>();
     }
 
     @Test
-    public void testThatWeCanCreate() {
-        assertThat(m, is(notNullValue()));
+    public void sizeOfEmptyMapShouldBeZero() throws Exception {
+        assertEquals(0, map.size());
     }
 
     @Test
-    public void testThatNewMapIsEmpty() {
-        assertThat(m.isEmpty(), is(true));
+    public void sizeShouldGrowOnPuttingNewElement() throws Exception {
+        map.put("str1", 1);
+        int oldSize = map.size();
+
+        map.put("str2", 2);
+        int newSize = map.size();
+
+        assertEquals(1, newSize - oldSize);
     }
 
     @Test
-    public void testThatOnNewMapContainKeyMethodReturnFalseForAnyObject() {
-        assertThat(m.containsKey(1), is(false));
+    public void sizeShouldReduceOnRemovingElement() throws Exception {
+        String key = "str1";
+        map.put(key, 1);
+        map.remove(key);
+
+        assertEquals(0, map.size());
     }
 
     @Test
-    public void testThatWeCanPutKeyValuePairAndCanCheckIt() {
-        m.put(3, "abc");
-        assertThat(m.containsKey(3), is(true));
-    }
+    public void sizeShouldNotGrowOnAddingExistingKeyElement() throws Exception {
+        String key = "str1";
+        map.put(key, 1);
+        int sizeOld = map.size();
 
-    @Test(expected = NullPointerException.class)
-    public void testThatWeCanNotPutNullKey() {
-        m.put(null, "abc");
-    }
+        map.put(key, 2);
+        int sizeNew = map.size();
 
-    @Test
-    public void testThatWeCanPutNullValue() {
-        m.put(12, null);
-        assertThat(m.get(12), is(nullValue()));
+        assertEquals(sizeNew, sizeOld);
     }
 
     @Test
-    public void testThatMapCanPutPairWithKeyThatAlreadyPresented() {
-        m.put(10, "ten");
-        m.put(10, "ten");
-        assertThat(m.containsKey(10), is(true));
-    }
-
-    @Test
-    public void testThatMapCanContainsKeysWithSameHashCode() {
-        class SameObj {
-            private int val;
-
-            SameObj(int val) {
-                this.val = val;
-            }
-
-            public int hashCode() {
-                return 1234;
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || getClass() != o.getClass()) return false;
-
-                SameObj sameObj = (SameObj) o;
-
-                return val == sameObj.val;
-
-            }
+    public void sizeShouldReturnIntMaxValueIfMapSizeMoreThenIntMaxValue() throws Exception {
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            map.put("val" + i, i);
         }
-        Map<SameObj, String> map = new CustomHashMap<>();
-        SameObj obj1 = new SameObj(10);
-        SameObj obj2 = new SameObj(20);
-        map.put(obj1, "obj1");
-        map.put(obj2, "obj2");
 
-        assertNotEquals(map.get(obj1), map.get(obj2));
+        map.put("more values", 1);
+
+        assertEquals(Integer.MAX_VALUE, map.size());
     }
+    
+    @Test
+    public void isEmpty() throws Exception {
 
-    @Test(expected = NullPointerException.class)
-    public void testThatContainsKeyMethodThrowsExceptionOnNullKey() {
     }
 
     @Test
-    public void testContainsValueMethodWorksProperlyOn() {
+    public void containsKey() throws Exception {
+
     }
 
     @Test
-    public void testContainsValueMethodWorksProperlyOnNullInputValue() {
-        m.put(1, null);
-        assertTrue(m.containsValue(null));
-    }
+    public void containsValue() throws Exception {
 
+    }
 
     @Test
-    public void testThatMapCalculateItsSizeProperly() {
-        m.put(1, "dff");
-        m.put(2, "ddd");
+    public void get() throws Exception {
 
-        assertEquals(2, m.size());
     }
+
+    @Test
+    public void put() throws Exception {
+
+    }
+
+    @Test
+    public void remove() throws Exception {
+
+    }
+
+    @Test
+    public void putAll() throws Exception {
+
+    }
+
+    @Test
+    public void clear() throws Exception {
+
+    }
+
+    @Test
+    public void keySet() throws Exception {
+
+    }
+
+    @Test
+    public void values() throws Exception {
+
+    }
+
+    @Test
+    public void entrySet() throws Exception {
+
+    }
+
 }
