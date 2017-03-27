@@ -12,7 +12,7 @@ public class CustomHashMapTest {
     public void setUp() throws Exception {
         map = new CustomHashMap<>();
     }
-
+    // SIZE() --------------------------------------------------------------------
     @Test
     public void sizeOfEmptyMapShouldBeZero() throws Exception {
         assertEquals(0, map.size());
@@ -60,57 +60,74 @@ public class CustomHashMapTest {
 
         assertEquals(Integer.MAX_VALUE, map.size());
     }
-    
-    @Test
-    public void isEmpty() throws Exception {
 
+    // IS_EMPTY() --------------------------------------------------------------------
+    @Test
+    public void isEmptyShouldReturnTrueOnEmptyMap() throws Exception {
+        assertTrue(map.isEmpty());
     }
 
+    @Test
+    public void isEmptyShouldReturnFalseOnNotEmptyMap() throws Exception {
+        map.put("str1", 1);
+        assertFalse(map.isEmpty());
+    }
+
+    // CONTAINS_KEY() --------------------------------------------------------------------
     @Test
     public void containsKey() throws Exception {
 
     }
 
+    // CONTAINS_VALUE() --------------------------------------------------------------------
     @Test
     public void containsValue() throws Exception {
 
     }
 
+    // GET() --------------------------------------------------------------------
     @Test
     public void get() throws Exception {
 
     }
 
+    // PUT() --------------------------------------------------------------------
     @Test
     public void put() throws Exception {
 
     }
 
+    // REMOVE() --------------------------------------------------------------------
     @Test
     public void remove() throws Exception {
 
     }
 
+    // PUT_ALL() --------------------------------------------------------------------
     @Test
     public void putAll() throws Exception {
 
     }
 
+    // CLEAR() --------------------------------------------------------------------
     @Test
     public void clear() throws Exception {
 
     }
 
+    // KEY_SET() --------------------------------------------------------------------
     @Test
     public void keySet() throws Exception {
 
     }
 
+    // VALUES() --------------------------------------------------------------------
     @Test
     public void values() throws Exception {
 
     }
 
+    // ENTRY_SET() --------------------------------------------------------------------
     @Test
     public void entrySet() throws Exception {
 
