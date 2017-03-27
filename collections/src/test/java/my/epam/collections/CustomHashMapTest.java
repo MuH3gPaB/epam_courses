@@ -1,6 +1,7 @@
 package my.epam.collections;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
+@FixMethodOrder
 public class CustomHashMapTest {
     private CustomHashMap<String, Integer> map;
 
@@ -57,7 +59,7 @@ public class CustomHashMapTest {
     @Test
     public void sizeShouldReturnIntMaxValueIfMapSizeMoreThenIntMaxValue() throws Exception {
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            map.put("val" + i, i);
+            map.put("val" + i, 1);
         }
 
         map.put("more values", 1);
@@ -219,8 +221,29 @@ public class CustomHashMapTest {
 
     // REMOVE() --------------------------------------------------------------------
     @Test
-    public void remove() throws Exception {
+    public void removeShouldUnmapValueForPresentKey() throws Exception {
+        String key = "key";
+        map.put(key, 10);
+        map.remove(key);
+        assertFalse(map.containsKey(key));
+    }
 
+    @Test
+    public void removeShouldReturnUnmappedValueForPresentKey() throws Exception {
+        String key = "key";
+        Integer value = 10;
+        map.put(key, value);
+        assertEquals(value, map.remove(key));
+    }
+
+    @Test
+    public void removeShouldReturnNullForAbsentKey() throws Exception {
+        assertNull(map.remove("key"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void removeShouldThrowNPEOnNullKey() throws Exception {
+        map.remove(null);
     }
 
     // PUT_ALL() --------------------------------------------------------------------
