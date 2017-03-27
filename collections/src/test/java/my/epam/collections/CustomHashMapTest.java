@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
@@ -248,8 +249,68 @@ public class CustomHashMapTest {
 
     // PUT_ALL() --------------------------------------------------------------------
     @Test
-    public void putAll() throws Exception {
+    public void putAllShouldPutAllPairsFromValidMapWithNoDuplicates() throws Exception {
+        Map<String, Integer> mapToPut = new HashMap<>();
+        Integer value1 = 1;
+        Integer value2 = 2;
+        mapToPut.put("key1", value1);
+        mapToPut.put("key2", value2);
 
+        map.putAll(mapToPut);
+
+        assertEquals(value1, map.get("key1"));
+        assertEquals(value2, map.get("key2"));
+    }
+
+    @Test
+    public void putAllShouldPutAllPairsWithReplacingFromValidMapWithDuplicates() throws Exception {
+        Map<String, Integer> mapToPut = new HashMap<>();
+        Integer value1 = 1;
+        Integer value2 = 2;
+        mapToPut.put("key1", value1);
+        mapToPut.put("key2", value2);
+
+        map.put("key1", 10);
+
+        map.putAll(mapToPut);
+
+        assertEquals(value1, map.get("key1"));
+        assertEquals(value2, map.get("key2"));
+    }
+
+    @Test
+    public void putAllShouldWorkProperlyWithNullValues() throws Exception {
+        Map<String, Integer> mapToPut = new HashMap<>();
+        mapToPut.put("key1", null);
+
+        map.putAll(mapToPut);
+        assertTrue(map.containsValue(null));
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void putAllShouldThrowCCEOnPuttingMapWithWrongKeyType() throws Exception {
+        Map mapToPut = new HashMap();
+        mapToPut.put(10, 10);
+        map.putAll(mapToPut);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void putAllShouldThrowNPEOnPuttingMapWithNullKey() throws Exception {
+        Map mapToPut = new HashMap();
+        mapToPut.put(null, 10);
+        map.putAll(mapToPut);
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void putAllShouldThrowCCEOnPuttingMapWithWrongValueType() throws Exception {
+        Map mapToPut = new HashMap();
+        mapToPut.put("key", "value");
+        map.putAll(mapToPut);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void putAllShouldThrowNPEOnNull() throws Exception {
+        map.putAll(null);
     }
 
     // CLEAR() --------------------------------------------------------------------
