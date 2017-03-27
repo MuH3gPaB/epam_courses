@@ -75,15 +75,55 @@ public class CustomHashMapTest {
 
     // CONTAINS_KEY() --------------------------------------------------------------------
     @Test
-    public void containsKey() throws Exception {
+    public void containsKeyShouldReturnTrueIfKeyPresent() throws Exception {
+        String key = "key";
+        map.put(key, 1);
+        assertTrue(map.containsKey(key));
+    }
 
+    @Test
+    public void containsKeyShouldReturnFalseIfKeyAbsent() throws Exception {
+        assertFalse(map.containsKey("absent key"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void containsKeyShouldThrowNPEWithNull() throws Exception {
+        assertFalse(map.containsKey(null));
     }
 
     // CONTAINS_VALUE() --------------------------------------------------------------------
     @Test
-    public void containsValue() throws Exception {
-
+    public void containsValueShouldReturnTrueIfValuePresentOnce() throws Exception {
+        int value = 123;
+        map.put("key", value);
+        assertTrue(map.containsValue(value));
     }
+
+    @Test
+    public void containsValueShouldReturnTrueIfValuePresentTwoTimes() throws Exception {
+        int value = 123;
+        map.put("keyOne", value);
+        map.put("keyTwo", value);
+        assertTrue(map.containsValue(value));
+    }
+
+    @Test
+    public void containsValueShouldReturnFalseIfValueAbsent() throws Exception {
+        assertFalse(map.containsValue(123));
+    }
+
+    @Test
+    public void containsValueShouldReturnTrueOnNullIfNullValuePresent() throws Exception{
+        map.put("key", null);
+        assertTrue(map.containsValue(null));
+    }
+
+    @Test
+    public void containsValueShouldReturnFalseOnNullIfNullValueAbsent() throws Exception{
+        assertFalse(map.containsValue(null));
+    }
+
+
 
     // GET() --------------------------------------------------------------------
     @Test
