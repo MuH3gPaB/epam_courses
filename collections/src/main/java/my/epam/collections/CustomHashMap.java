@@ -1,12 +1,13 @@
 package my.epam.collections;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class CustomHashMap<K, V> implements Map<K, V> {
 
     private static final int DEFAULT_CAPACITY = 16;
 
-    private CustomEntry<K, V>[] buckets = new CustomEntry[DEFAULT_CAPACITY];
+    private CustomEntry<K, V>[] data = new CustomEntry[DEFAULT_CAPACITY];
 
     @Override
     public int size() {
@@ -20,7 +21,8 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsKey(Object key) {
-        CustomEntry<K, V> bucket = buckets[0];
+        K v = (K) key;
+        CustomEntry<K, V> bucket = data[0];
         if (bucket != null) {
             return bucket.key.equals(key);
         }
@@ -41,7 +43,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     public V put(K key, V value) {
         Objects.requireNonNull(key);
 
-        buckets[0] = new CustomEntry<>(key, value);
+        data[0] = new CustomEntry<>(key, value);
         return null; //TODO implement return prev value
     }
 
