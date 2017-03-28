@@ -1,6 +1,5 @@
-package my.epam.collections;
+package my.epam.unit01.collections;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;

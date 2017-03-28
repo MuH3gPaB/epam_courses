@@ -1,7 +1,6 @@
-package my.epam.task6;
+package my.epam.unit01.task06;
 
-import my.epam.logic.Task2Test;
-import org.apache.log4j.BasicConfigurator;
+import my.epam.unit01.task02.Task2Test;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;

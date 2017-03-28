@@ -1,4 +1,4 @@
-package my.epam.logic;
+package my.epam.unit01.task03;
 
 public class Task3 {
     private static final double MIN_STEP_VALUE = 0.00001;

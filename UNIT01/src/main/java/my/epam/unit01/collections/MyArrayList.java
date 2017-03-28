@@ -1,4 +1,4 @@
-package my.epam.collections;
+package my.epam.unit01.collections;
 
 /**
  * Experimental arrayList implementation.

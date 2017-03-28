@@ -1,4 +1,4 @@
-package my.epam.task6;
+package my.epam.unit01.task06;
 
 import java.util.NoSuchElementException;
 
