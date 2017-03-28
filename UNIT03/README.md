@@ -1,4 +1,4 @@
-UNIT 03 HOME WORK
+UNIT 03 HOME WORK - Information handling
 =================
 
 Welcome to Unit 03 home work page!

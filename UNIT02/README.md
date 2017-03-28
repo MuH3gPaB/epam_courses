@@ -1,4 +1,4 @@
-UNIT 02 HOME WORK
+UNIT 02 HOME WORK - OOP IN JAVA
 =================
 
 Welcome to Unit 02 home work page!
