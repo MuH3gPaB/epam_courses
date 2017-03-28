@@ -1,13 +1,12 @@
 package my.epam.collections;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class CustomHashMap<K, V> implements Map<K, V> {
 
-    private static final int DEFAULT_CAPACITY = 16;
-
-    private CustomEntry<K, V>[] data = new CustomEntry[DEFAULT_CAPACITY];
 
     @Override
     public int size() {
@@ -16,16 +15,11 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean isEmpty() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean containsKey(Object key) {
-        K v = (K) key;
-        CustomEntry<K, V> bucket = data[0];
-        if (bucket != null) {
-            return bucket.key.equals(key);
-        }
         return false;
     }
 
@@ -41,10 +35,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
-        Objects.requireNonNull(key);
-
-        data[0] = new CustomEntry<>(key, value);
-        return null; //TODO implement return prev value
+        return null;
     }
 
     @Override
@@ -77,27 +68,14 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return null;
     }
 
-    class CustomEntry<K, V> implements Map.Entry<K, V> {
+    class CustomEntry<K, V> implements Map.Entry<K,V>{
 
-        private final K key;
+        private K key;
         private V value;
-        private CustomEntry<K, V> next = null;
 
-        CustomEntry(K key, V value) {
+        public CustomEntry(K key, V value) {
             this.key = key;
             this.value = value;
-        }
-
-        public boolean hasNext() {
-            return this.next != null;
-        }
-
-        public CustomEntry<K, V> next() {
-            return this.next;
-        }
-
-        void setNext(CustomEntry<K, V> next) {
-            this.next = next;
         }
 
         @Override
@@ -113,6 +91,142 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         @Override
         public V setValue(V value) {
             return null;
+        }
+    }
+
+    class KeySet<K> implements Set<K>{
+
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return false;
+        }
+
+        @Override
+        public Iterator<K> iterator() {
+            return null;
+        }
+
+        @Override
+        public Object[] toArray() {
+            return new Object[0];
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            return null;
+        }
+
+        @Override
+        public boolean add(K k) {
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends K> c) {
+            return false;
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+    }
+
+    class Values<V> implements Collection<V>{
+
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return false;
+        }
+
+        @Override
+        public Iterator<V> iterator() {
+            return null;
+        }
+
+        @Override
+        public Object[] toArray() {
+            return new Object[0];
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            return null;
+        }
+
+        @Override
+        public boolean add(V v) {
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends V> c) {
+            return false;
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public void clear() {
+
         }
     }
 }

@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 @FixMethodOrder
@@ -39,9 +38,11 @@ public class CustomHashMapTest {
     public void sizeShouldReduceOnRemovingElement() throws Exception {
         String key = "str1";
         map.put(key, 1);
+        int oldSize = map.size();
         map.remove(key);
+        int newSize = map.size();
 
-        assertEquals(0, map.size());
+        assertEquals(1, oldSize - newSize);
     }
 
     @Test
@@ -691,8 +692,8 @@ public class CustomHashMapTest {
         map.put("keyOne", 10);
         map.put("keyThree", 30);
 
-        for(Map.Entry<String, Integer> entry : map.entrySet()){
-            if(entry.getKey().equals("keyOne")) entry.setValue(20);
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if (entry.getKey().equals("keyOne")) entry.setValue(20);
         }
 
         assertEquals(new Integer(20), map.get("keyOne"));
