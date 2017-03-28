@@ -77,7 +77,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return null;
     }
 
-    private class CustomEntry<K, V> implements Iterator<CustomEntry<K, V>> {
+    class CustomEntry<K, V> implements Map.Entry<K, V> {
 
         private final K key;
         private V value;
@@ -98,6 +98,21 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
         void setNext(CustomEntry<K, V> next) {
             this.next = next;
+        }
+
+        @Override
+        public K getKey() {
+            return null;
+        }
+
+        @Override
+        public V getValue() {
+            return null;
+        }
+
+        @Override
+        public V setValue(V value) {
+            return null;
         }
     }
 }

@@ -567,8 +567,149 @@ public class CustomHashMapTest {
 
     // ENTRY_SET() METHOD --------------------------------------------------------------------
     @Test
-    public void entrySet() throws Exception {
+    public void entrySetShouldReturnSetOfMapEntries() throws Exception {
+        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryOne = map.new CustomEntry<>("keyOne", 30);
+        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryTwo = map.new CustomEntry<>("keyTwo", 20);
 
+        map.put(entryOne.getKey(), entryOne.getValue());
+        map.put(entryTwo.getKey(), entryTwo.getValue());
+
+        Set<Map.Entry<String, Integer>> entries = map.entrySet();
+
+        assertTrue(entries.contains(entryOne) && entries.contains(entryTwo));
+    }
+
+    @Test
+    public void entrySetShouldReturnEmptySetOnEmptyMap() throws Exception {
+        Set entries = map.entrySet();
+        assertTrue(entries.isEmpty());
+    }
+
+    @Test
+    public void entrySetShouldNotContainLaterRemovedFromMapEntries() throws Exception {
+        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entry = map.new CustomEntry<>("keyOne", 30);
+        map.put(entry.getKey(), entry.getValue());
+        map.put("keyTwo", 20);
+
+        Set<Map.Entry<String, Integer>> entries = map.entrySet();
+
+        assertTrue(entries.contains(entry));
+        map.remove(entry.getKey());
+        assertFalse(entries.contains(entry));
+    }
+
+    @Test
+    public void entrySetShouldContainLaterAddedToMapKeys() throws Exception {
+        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entry = map.new CustomEntry<>("keyOne", 30);
+
+        map.put("keyTwo", 20);
+
+        Set<Map.Entry<String, Integer>> entries = map.entrySet();
+
+        assertFalse(entries.contains(entry));
+        map.put(entry.getKey(), entry.getValue());
+        assertTrue(entries.contains(entry));
+    }
+
+    @Test
+    public void entrySetShouldSupportRemovingElementsFromMapViaIteratorRemove() throws Exception {
+        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToRemove = map.new CustomEntry<>("keyTwo", 20);
+
+        map.put(entryToRemove.getKey(), entryToRemove.getValue());
+        map.put("keyOne", 10);
+        map.put("keyThree", 30);
+
+        Iterator<Map.Entry<String, Integer>> iterator = map.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<String, Integer> entry = iterator.next();
+            if (entry.equals(entryToRemove)) iterator.remove();
+        }
+
+        assertFalse(map.containsKey(entryToRemove.getKey()));
+    }
+
+    @Test
+    public void entrySetShouldSupportRemovingElementsFromMapViaSetRemove() throws Exception {
+        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToRemove = map.new CustomEntry<>("keyTwo", 20);
+
+        map.put(entryToRemove.getKey(), entryToRemove.getValue());
+        map.put("keyOne", 10);
+        map.put("keyThree", 30);
+
+        map.entrySet().remove(entryToRemove);
+
+        assertFalse(map.containsKey(entryToRemove.getKey()));
+    }
+
+    @Test
+    public void entrySetShouldSupportRemovingElementsFromMapViaSetRemoveAll() throws Exception {
+        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToRemove = map.new CustomEntry<>("keyTwo", 20);
+
+        map.put(entryToRemove.getKey(), entryToRemove.getValue());
+        map.put("keyOne", 10);
+        map.put("keyThree", 30);
+
+        HashSet<Map.Entry> entriesToRemove = new HashSet<>();
+        entriesToRemove.add(entryToRemove);
+
+        map.entrySet().removeAll(entriesToRemove);
+
+        assertFalse(map.containsKey(entryToRemove.getKey()));
+    }
+
+    @Test
+    public void entrySetShouldSupportRemovingElementsFromMapViaSetRetainAll() throws Exception {
+        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToKeep = map.new CustomEntry<>("keyTwo", 20);
+
+        map.put(entryToKeep.getKey(), entryToKeep.getValue());
+        map.put("keyOne", 10);
+        map.put("keyThree", 30);
+
+        HashSet<Map.Entry> entriesToKeep = new HashSet<>();
+        entriesToKeep.add(entryToKeep);
+
+        map.entrySet().retainAll(entriesToKeep);
+
+        assertTrue(map.containsKey(entryToKeep.getKey()));
+        assertFalse(map.containsKey("keyOne"));
+        assertFalse(map.containsKey("keyThree"));
+    }
+
+    @Test
+    public void entrySetShouldSupportRemovingElementsFromMapViaSetClear() throws Exception {
+        map.put("keyOne", 10);
+        map.put("keyTwo", 20);
+        map.put("keyThree", 30);
+
+        map.entrySet().clear();
+        assertTrue(map.isEmpty());
+    }
+
+    @Test
+    public void entrySetShouldSupportSetValueToMapOperation() throws Exception {
+        map.put("keyOne", 10);
+        map.put("keyThree", 30);
+
+        for(Map.Entry<String, Integer> entry : map.entrySet()){
+            if(entry.getKey().equals("keyOne")) entry.setValue(20);
+        }
+
+        assertEquals(new Integer(20), map.get("keyOne"));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void entrySetShouldNotSupportAddToMapOperation() throws Exception {
+        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToTry = map.new CustomEntry<>("keyTwo", 20);
+        map.entrySet().add(entryToTry);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void entrySetShouldNotSupportAddAllToMapOperation() throws Exception {
+        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToTry = map.new CustomEntry<>("keyTwo", 20);
+        HashSet<Map.Entry<String, Integer>> setToAdd = new HashSet<>();
+        setToAdd.add(entryToTry);
+        map.entrySet().addAll(setToAdd);
     }
 
     // KEY_SET CLASS --------------------------------------------------------------------
