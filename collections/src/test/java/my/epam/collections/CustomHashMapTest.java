@@ -4,8 +4,7 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -130,7 +129,6 @@ public class CustomHashMapTest {
         assertFalse(map.containsValue(null));
     }
 
-
     // GET() --------------------------------------------------------------------
     @Test
     public void getShouldReturnValueThatMappedToKey() throws Exception {
@@ -152,7 +150,6 @@ public class CustomHashMapTest {
     public void getShouldThrowNPEOnNullKey() throws Exception {
         assertNull(null);
     }
-
 
     // PUT() --------------------------------------------------------------------
     @Test
@@ -218,7 +215,6 @@ public class CustomHashMapTest {
         map.put(1, 1);
         assertTrue(map.containsKey(1));
     }
-
 
     // REMOVE() --------------------------------------------------------------------
     @Test
@@ -315,26 +311,270 @@ public class CustomHashMapTest {
 
     // CLEAR() --------------------------------------------------------------------
     @Test
-    public void clear() throws Exception {
-
+    public void clearShouldRemoveAllElementsFromMap() throws Exception {
+        map.put("key", 10);
+        map.clear();
+        assertTrue(map.isEmpty());
     }
 
-    // KEY_SET() --------------------------------------------------------------------
+    // KEY_SET() METHOD --------------------------------------------------------------------
     @Test
-    public void keySet() throws Exception {
+    public void keySetShouldReturnSetOfMappedKeys() throws Exception {
+        map.put("keyOne", 1);
+        map.put("keyTwo", 2);
 
+        Set<String> keys = map.keySet();
+
+        assertTrue(keys.contains("keyOne"));
+        assertTrue(keys.contains("keyTwo"));
+        assertEquals(2, keys.size());
     }
 
-    // VALUES() --------------------------------------------------------------------
     @Test
-    public void values() throws Exception {
-
+    public void keySetShouldReturnEmptySetOnEmptyMap() throws Exception {
+        Set<String> keys = map.keySet();
+        assertTrue(keys.isEmpty());
     }
 
-    // ENTRY_SET() --------------------------------------------------------------------
+    @Test
+    public void keySetShouldNotContainLaterRemovedFromMapKeys() throws Exception {
+        String keyOne = "keyOne";
+        map.put(keyOne, 10);
+        map.put("keyTwo", 20);
+
+        Set<String> keys = map.keySet();
+        assertTrue(keys.contains(keyOne));
+        map.remove(keyOne);
+        assertFalse(keys.contains(keyOne));
+    }
+
+    @Test
+    public void keySetShouldContainLaterAddedToMapKeys() throws Exception {
+        String keyOne = "keyOne";
+        map.put("keyTwo", 20);
+
+        Set<String> keys = map.keySet();
+        assertFalse(keys.contains(keyOne));
+        map.put(keyOne, 10);
+        assertTrue(keys.contains(keyOne));
+    }
+
+    @Test
+    public void keySetShouldSupportRemovingElementsFromMapViaIteratorRemove() throws Exception {
+        String keyToRemove = "keyTwo";
+
+        map.put(keyToRemove, 20);
+        map.put("keyOne", 10);
+        map.put("keyThree", 30);
+
+        Iterator<String> iterator = map.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            if (key.equals(keyToRemove)) iterator.remove();
+        }
+
+        assertFalse(map.containsKey(keyToRemove));
+    }
+
+    @Test
+    public void keySetShouldSupportRemovingElementsFromMapViaSetRemove() throws Exception {
+        String keyToRemove = "keyTwo";
+
+        map.put(keyToRemove, 20);
+        map.put("keyOne", 10);
+        map.put("keyThree", 30);
+
+        map.keySet().remove(keyToRemove);
+
+        assertFalse(map.containsKey(keyToRemove));
+    }
+
+    @Test
+    public void keySetShouldSupportRemovingElementsFromMapViaSetRemoveAll() throws Exception {
+        String keyToRemove = "keyTwo";
+
+        map.put(keyToRemove, 20);
+        map.put("keyOne", 10);
+        map.put("keyThree", 30);
+
+        HashSet<String> keysToRemove = new HashSet<>();
+        keysToRemove.add(keyToRemove);
+
+        map.keySet().removeAll(keysToRemove);
+
+        assertFalse(map.containsKey(keyToRemove));
+    }
+
+    @Test
+    public void keySetShouldSupportRemovingElementsFromMapViaSetRetainAll() throws Exception {
+        String keyToKeep = "keyTwo";
+
+        map.put(keyToKeep, 20);
+        map.put("keyOne", 10);
+        map.put("keyThree", 30);
+
+        HashSet<String> keysToKeep = new HashSet<>();
+        keysToKeep.add(keyToKeep);
+
+        map.keySet().retainAll(keysToKeep);
+
+        assertTrue(map.containsKey(keyToKeep));
+        assertFalse(map.containsKey("keyOne"));
+        assertFalse(map.containsKey("keyThree"));
+    }
+
+    @Test
+    public void keySetShouldSupportRemovingElementsFromMapViaSetClear() throws Exception {
+        map.put("keyOne", 10);
+        map.put("keyTwo", 20);
+        map.put("keyThree", 30);
+
+        map.keySet().clear();
+        assertTrue(map.isEmpty());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void keySetShouldNotSupportAddToMapOperation() throws Exception {
+        map.keySet().add("key");
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void keySetShouldNotSupportAddAllToMapOperation() throws Exception {
+        HashSet<String> setToAdd = new HashSet<>();
+        setToAdd.add("key");
+        map.keySet().addAll(setToAdd);
+    }
+
+    // VALUES() METHOD --------------------------------------------------------------------
+    @Test
+    public void valuesShouldReturnValuesCollection() throws Exception {
+        map.put("keyOne", 10);
+        map.put("keyTwo", 20);
+
+        Collection<Integer> values = map.values();
+
+        assertTrue(values.contains(10));
+        assertTrue(values.contains(20));
+        assertEquals(2, values.size());
+    }
+
+    @Test
+    public void valuesShouldReturnEmptyValuesCollectionOnEmptyMap() throws Exception {
+        Collection<Integer> values = map.values();
+        assertTrue(values.isEmpty());
+    }
+
+    @Test
+    public void valuesShouldReturnCollectionWithLaterAddedToMapValues() throws Exception {
+        Collection<Integer> values = map.values();
+        map.put("key", 10);
+        assertTrue(values.contains(10));
+    }
+
+    @Test
+    public void valuesShouldReturnCollectionWithOutLaterRemovedFromMapValues() throws Exception {
+        map.put("key", 10);
+        Collection<Integer> values = map.values();
+        map.remove("key");
+        assertFalse(values.contains(10));
+    }
+
+    @Test
+    public void valuesShouldSupportRemovingElementsFromMapViaIteratorRemove() throws Exception {
+        Integer valueToRemove = 20;
+
+        map.put("keyOne", 10);
+        map.put("keyTwo", valueToRemove);
+        map.put("keyThree", 30);
+
+        Iterator<Integer> iterator = map.values().iterator();
+        while (iterator.hasNext()) {
+            Integer value = iterator.next();
+            if (value.equals(valueToRemove)) iterator.remove();
+        }
+
+        assertFalse(map.containsValue(valueToRemove));
+    }
+
+    @Test
+    public void valuesShouldSupportRemovingElementsFromMapViaCollectionRemove() throws Exception {
+        Integer valueToRemove = 20;
+
+        map.put("keyOne", 10);
+        map.put("keyTwo", valueToRemove);
+        map.put("keyThree", 30);
+
+        map.values().remove(valueToRemove);
+
+        assertFalse(map.containsValue(valueToRemove));
+    }
+
+    @Test
+    public void valuesShouldSupportRemovingElementsFromMapViaCollectionRemoveAll() throws Exception {
+        Integer valueToRemove = 20;
+
+        map.put("keyOne", 10);
+        map.put("keyTwo", valueToRemove);
+        map.put("keyThree", 30);
+
+        HashSet<Integer> valuesToRemove = new HashSet<>();
+        valuesToRemove.add(valueToRemove);
+
+        map.values().removeAll(valuesToRemove);
+
+        assertFalse(map.containsValue(valueToRemove));
+    }
+
+    @Test
+    public void valuesShouldSupportRemovingElementsFromMapViaCollectionRetainAll() throws Exception {
+        Integer valueToKeep = 20;
+
+        map.put("keyOne", 10);
+        map.put("keyTwo", valueToKeep);
+        map.put("keyThree", 30);
+
+        HashSet<Integer> valuesToKeep = new HashSet<>();
+        valuesToKeep.add(valueToKeep);
+
+        map.values().retainAll(valuesToKeep);
+
+        assertTrue(map.containsValue(valueToKeep));
+        assertFalse(map.containsValue(10));
+        assertFalse(map.containsValue(20));
+    }
+
+    @Test
+    public void valuesShouldSupportRemovingElementsFromMapViaCollectionClear() throws Exception {
+        map.put("keyOne", 10);
+        map.put("keyTwo", 20);
+        map.put("keyThree", 30);
+
+        map.values().clear();
+        assertTrue(map.isEmpty());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void valuesShouldNotSupportAddToMapOperation() throws Exception {
+        map.values().add(10);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void valuesShouldNotSupportAddAllToMapOperation() throws Exception {
+        HashSet<Integer> setToAdd = new HashSet<>();
+        setToAdd.add(10);
+        map.values().addAll(setToAdd);
+    }
+
+    // ENTRY_SET() METHOD --------------------------------------------------------------------
     @Test
     public void entrySet() throws Exception {
 
     }
+
+    // KEY_SET CLASS --------------------------------------------------------------------
+
+    // ENTRY_SET CLASS --------------------------------------------------------------------
+
+    // VALUES CLASS --------------------------------------------------------------------
 
 }
