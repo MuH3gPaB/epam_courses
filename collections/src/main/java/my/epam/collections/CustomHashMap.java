@@ -1,9 +1,6 @@
 package my.epam.collections;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CustomHashMap<K, V> implements Map<K, V> {
 
@@ -23,8 +20,9 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsKey(Object key) {
+        Objects.requireNonNull(key);
         for (int i = 0; i < size; i++) {
-            if(bucketsHeads[i].key.equals(key)){
+            if (bucketsHeads[i].key.equals(key)) {
                 return true;
             }
         }
@@ -34,7 +32,11 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public boolean containsValue(Object value) {
         for (int i = 0; i < size; i++) {
-            if(bucketsHeads[i].value.equals(value)){
+            if (bucketsHeads[i].value == null) {
+                if (value == null) {
+                    return true;
+                }
+            } else if (bucketsHeads[i].value.equals(value)) {
                 return true;
             }
         }
@@ -84,7 +86,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return null;
     }
 
-    class CustomEntry<K, V> implements Map.Entry<K,V>{
+    class CustomEntry<K, V> implements Map.Entry<K, V> {
 
         private K key;
         private V value;
@@ -110,7 +112,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    class KeySet<K> implements Set<K>{
+    class KeySet<K> implements Set<K> {
 
         @Override
         public int size() {
@@ -178,7 +180,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    class Values<V> implements Collection<V>{
+    class Values<V> implements Collection<V> {
 
         @Override
         public int size() {
