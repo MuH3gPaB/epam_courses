@@ -193,17 +193,18 @@ public class CustomHashMapTest {
         map.put(null, 10);
     }
 
-    @Test(expected = ClassCastException.class)
-    public void putShouldThrowCCEIfKeyHaveWrongType() throws Exception {
-        Map unGenerefiedMap = map;
-        unGenerefiedMap.put(1, 1);
-    }
-
-    @Test(expected = ClassCastException.class)
-    public void putShouldThrowCCEIfValueHaveWrongType() throws Exception {
-        Map unGenerefiedMap = map;
-        unGenerefiedMap.put("key", "value");
-    }
+    // Not appliable to HashMap
+//    @Test(expected = ClassCastException.class)
+//    public void putShouldThrowCCEIfKeyHaveWrongType() throws Exception {
+//        Map unGenerefiedMap = map;
+//        unGenerefiedMap.put(1, 1);
+//    }
+//
+//    @Test(expected = ClassCastException.class)
+//    public void putShouldThrowCCEIfValueHaveWrongType() throws Exception {
+//        Map unGenerefiedMap = map;
+//        unGenerefiedMap.put("key", "value");
+//    }
 
     @Test
     public void putShouldBeOkOnAddingImplementationOfGenericsValue() throws Exception {
@@ -223,7 +224,13 @@ public class CustomHashMapTest {
     @Test
     public void removeShouldUnmapValueForPresentKey() throws Exception {
         String key = "key";
+        String key1 = "key1";
+        String key2 = "key2";
+
         map.put(key, 10);
+        map.put(key1, 20);
+        map.put(key2, 30);
+        assertTrue(map.containsKey(key));
         map.remove(key);
         assertFalse(map.containsKey(key));
     }

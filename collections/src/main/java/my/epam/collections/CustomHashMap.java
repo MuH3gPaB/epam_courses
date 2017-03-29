@@ -22,7 +22,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     public boolean containsKey(Object key) {
         Objects.requireNonNull(key);
         for (int i = 0; i < size; i++) {
-            if (bucketsHeads[i].key.equals(key)) {
+            if (bucketsHeads[i] != null && bucketsHeads[i].key.equals(key)) {
                 return true;
             }
         }
@@ -56,21 +56,31 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
+        Objects.requireNonNull(key);
+
         for (int i = 0; i < size; i++) {
             if (bucketsHeads[i].key.equals(key)) {
+                V oldValue = bucketsHeads[i].getValue();
                 bucketsHeads[i].setValue(value);
-                return null;
+                return oldValue;
             }
         }
-        CustomEntry<K, V> kvCustomEntry = new CustomEntry<>(key, value);
-        bucketsHeads[size] = kvCustomEntry;
+
+        bucketsHeads[size] = new CustomEntry<>(key, value);
         size++;
         return null;
     }
 
     @Override
     public V remove(Object key) {
-        size--;
+        for (int i = 0; i < size; i++) {
+            if (bucketsHeads[i].key.equals(key)) {
+                V oldValue = bucketsHeads[i].getValue();
+                bucketsHeads[i] = null;
+                size--;
+                return oldValue;
+            }
+        }
         return null;
     }
 
