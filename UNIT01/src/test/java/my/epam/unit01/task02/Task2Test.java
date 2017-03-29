@@ -15,7 +15,6 @@ public class Task2Test extends Assert {
     }
 
     @Test
-    @Ignore
     public void getArrayIndex() throws Exception{
         try {
             Task2.getArrayIndex(0);
