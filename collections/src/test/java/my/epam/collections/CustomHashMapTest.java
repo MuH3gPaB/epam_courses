@@ -151,7 +151,7 @@ public class CustomHashMapTest {
 
     @Test(expected = NullPointerException.class)
     public void getShouldThrowNPEOnNullKey() throws Exception {
-        assertNull(null);
+        map.get(null);
     }
 
     // PUT() --------------------------------------------------------------------

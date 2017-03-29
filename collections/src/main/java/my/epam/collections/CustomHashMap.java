@@ -45,12 +45,25 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public V get(Object key) {
+        Objects.requireNonNull(key);
+        for (int i = 0; i < size; i++) {
+            if (bucketsHeads[i].key.equals(key)) {
+                return bucketsHeads[i].getValue();
+            }
+        }
         return null;
     }
 
     @Override
     public V put(K key, V value) {
-        bucketsHeads[size] = new CustomEntry<>(key, value);
+        for (int i = 0; i < size; i++) {
+            if (bucketsHeads[i].key.equals(key)) {
+                bucketsHeads[i].setValue(value);
+                return null;
+            }
+        }
+        CustomEntry<K, V> kvCustomEntry = new CustomEntry<>(key, value);
+        bucketsHeads[size] = kvCustomEntry;
         size++;
         return null;
     }
@@ -98,17 +111,19 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
         @Override
         public K getKey() {
-            return null;
+            return key;
         }
 
         @Override
         public V getValue() {
-            return null;
+            return value;
         }
 
         @Override
         public V setValue(V value) {
-            return null;
+            V tmp = this.value;
+            this.value = value;
+            return tmp;
         }
     }
 
