@@ -193,6 +193,17 @@ public class CustomHashMapTest {
         map.put(null, 10);
     }
 
+    @Test
+    public void putShouldAcceptMoreThan100Elements() throws Exception {
+        int elementsCount = 100;
+        for (int i = 0; i < elementsCount; i++) {
+            map.put("" + i, i);
+        }
+
+        assertTrue(map.containsValue(elementsCount-1));
+        assertEquals(elementsCount, map.size());
+    }
+
     // Not appliable to HashMap
 //    @Test(expected = ClassCastException.class)
 //    public void putShouldThrowCCEIfKeyHaveWrongType() throws Exception {

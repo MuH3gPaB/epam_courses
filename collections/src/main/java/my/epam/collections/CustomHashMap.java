@@ -5,7 +5,8 @@ import java.util.*;
 public class CustomHashMap<K, V> implements Map<K, V> {
 
     private static final int DEFAULT_BUCKETS_COUNT = 16;
-    private CustomEntry<K, V>[] bucketsHeads = new CustomEntry[DEFAULT_BUCKETS_COUNT];
+    private CustomEntry<K, V>[] bucketsHeads = produceBuckets(DEFAULT_BUCKETS_COUNT);
+
     private int size = 0;
 
     @Override
@@ -31,13 +32,17 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsValue(Object value) {
-        for (int i = 0; i < size; i++) {
-            if (bucketsHeads[i].value == null) {
-                if (value == null) {
-                    return true;
-                }
-            } else if (bucketsHeads[i].value.equals(value)) {
-                return true;
+        for (int i = 0; i < bucketsHeads.length; i++) {
+            CustomEntry<K, V> node = bucketsHeads[i];
+            if (node.hasNext()) {
+                do {
+                    node = node.next;
+                    if (node.getValue() == null) {
+                        if (value == null) return true;
+                    } else if (node.getValue().equals(value)) {
+                        return true;
+                    }
+                } while (node.hasNext());
             }
         }
         return false;
@@ -58,21 +63,32 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     public V put(K key, V value) {
         Objects.requireNonNull(key);
 
-        for (int i = 0; i < size; i++) {
-            if (bucketsHeads[i].key.equals(key)) {
-                V oldValue = bucketsHeads[i].getValue();
-                bucketsHeads[i].setValue(value);
-                return oldValue;
-            }
-        }
+        int bucketNumber = getBucketNumber(key);
+        CustomEntry<K, V> head = bucketsHeads[bucketNumber];
 
-        bucketsHeads[size] = new CustomEntry<>(key, value);
+        if (!head.hasNext()) {
+            head.next = new CustomEntry<>(key, value);
+        } else {
+            CustomEntry<K, V> node = head;
+
+            do {
+                node = node.next;
+                if (node.getKey().equals(key)) {
+                    V tmp = node.getValue();
+                    node.setValue(value);
+                    return tmp;
+                }
+            } while (node.hasNext());
+
+            node.next = new CustomEntry<>(key, value);
+        }
         size++;
         return null;
     }
 
     @Override
     public V remove(Object key) {
+        Objects.requireNonNull(key);
         for (int i = 0; i < size; i++) {
             if (bucketsHeads[i].key.equals(key)) {
                 V oldValue = bucketsHeads[i].getValue();
@@ -91,7 +107,8 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public void clear() {
-
+        this.bucketsHeads = new CustomEntry[DEFAULT_BUCKETS_COUNT];
+        this.size = 0;
     }
 
     @Override
@@ -109,14 +126,31 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return null;
     }
 
-    class CustomEntry<K, V> implements Map.Entry<K, V> {
+    private int getBucketNumber(K key) {
+        return key.hashCode() % bucketsHeads.length;
+    }
 
-        private K key;
+    private CustomEntry<K, V>[] produceBuckets(int bucketsCount) {
+        CustomEntry<K, V>[] entries = new CustomEntry[bucketsCount];
+        for (int i = 0; i < bucketsCount; i++) {
+            entries[i] = new CustomEntry<>(null, null);
+        }
+        return entries;
+    }
+
+    class CustomEntry<K, V> implements Map.Entry<K, V> {
+        private CustomEntry<K, V> next;
+
+        private final K key;
         private V value;
 
         public CustomEntry(K key, V value) {
             this.key = key;
             this.value = value;
+        }
+
+        public boolean hasNext() {
+            return next != null;
         }
 
         @Override
