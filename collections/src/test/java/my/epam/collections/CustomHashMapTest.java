@@ -2,6 +2,7 @@ package my.epam.collections;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
@@ -58,6 +59,7 @@ public class CustomHashMapTest {
     }
 
     @Test
+    @Ignore
     public void sizeShouldReturnIntMaxValueIfMapSizeMoreThenIntMaxValue() throws Exception {
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
             map.put("val" + i, 1);
@@ -712,11 +714,5 @@ public class CustomHashMapTest {
         setToAdd.add(entryToTry);
         map.entrySet().addAll(setToAdd);
     }
-
-    // KEY_SET CLASS --------------------------------------------------------------------
-
-    // ENTRY_SET CLASS --------------------------------------------------------------------
-
-    // VALUES CLASS --------------------------------------------------------------------
 
 }

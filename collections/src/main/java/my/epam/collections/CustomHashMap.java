@@ -7,24 +7,37 @@ import java.util.Set;
 
 public class CustomHashMap<K, V> implements Map<K, V> {
 
+    private static final int DEFAULT_BUCKETS_COUNT = 16;
+    private CustomEntry<K, V>[] bucketsHeads = new CustomEntry[DEFAULT_BUCKETS_COUNT];
+    private int size = 0;
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     @Override
     public boolean containsKey(Object key) {
+        for (int i = 0; i < size; i++) {
+            if(bucketsHeads[i].key.equals(key)){
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public boolean containsValue(Object value) {
+        for (int i = 0; i < size; i++) {
+            if(bucketsHeads[i].value.equals(value)){
+                return true;
+            }
+        }
         return false;
     }
 
@@ -35,11 +48,14 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
+        bucketsHeads[size] = new CustomEntry<>(key, value);
+        size++;
         return null;
     }
 
     @Override
     public V remove(Object key) {
+        size--;
         return null;
     }
 
