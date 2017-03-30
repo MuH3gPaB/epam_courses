@@ -284,13 +284,12 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     }
 
     class KeySetIterator<IK> implements Iterator<IK> {
-        private CustomEntry<IK, V> current;
-        private CustomEntry<IK, V> prevOrHead;
+        private CustomEntry<K, V> current;
+        private CustomEntry<K, V> lastReturned;
         private int currentBucket = 0;
 
         private KeySetIterator() {
-            prevOrHead = (CustomEntry<IK, V>) CustomHashMap.this.bucketsHeads[currentBucket];
-            current = getNextEntry(prevOrHead);
+            current = getNextEntry(CustomHashMap.this.bucketsHeads[currentBucket]);
         }
 
         @Override
@@ -300,21 +299,20 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
         @Override
         public IK next() {
-            CustomEntry<IK, V> result = this.current;
+            lastReturned = this.current;
             this.current = getNextEntry(this.current);
-            if (result == null) {
+            if (lastReturned == null) {
                 throw new NoSuchElementException();
             }
-            return result.getKey();
+            return (IK) lastReturned.getKey();
         }
 
         @Override
         public void remove() {
-            current = current.next;
-            prevOrHead.next = current;
+            CustomHashMap.this.remove(lastReturned.getKey());
         }
 
-        private CustomEntry<IK, V> getNextEntry(CustomEntry<IK, V> entry) {
+        private CustomEntry<K, V> getNextEntry(CustomEntry<K, V> entry) {
             if (entry.hasNext()) {
                 return entry.next;
             } else {
@@ -322,8 +320,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
                 if (currentBucket == CustomHashMap.this.bucketsHeads.length) {
                     return null;
                 } else {
-                    prevOrHead = (CustomEntry<IK, V>) CustomHashMap.this.bucketsHeads[currentBucket];
-                    return getNextEntry(prevOrHead);
+                    return getNextEntry(CustomHashMap.this.bucketsHeads[currentBucket]);
                 }
             }
         }
