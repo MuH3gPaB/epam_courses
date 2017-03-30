@@ -200,7 +200,7 @@ public class CustomHashMapTest {
             map.put("" + i, i);
         }
 
-        assertTrue(map.containsValue(elementsCount-1));
+        assertTrue(map.containsValue(elementsCount - 1));
         assertEquals(elementsCount, map.size());
     }
 
@@ -380,6 +380,46 @@ public class CustomHashMapTest {
         assertFalse(keys.contains(keyOne));
         map.put(keyOne, 10);
         assertTrue(keys.contains(keyOne));
+    }
+
+    @Test
+    public void keySetShouldSupportIterationWithIterator() throws Exception {
+        List<String> keysExpected = new ArrayList<>();
+        keysExpected.add("key1");
+        keysExpected.add("key2");
+        keysExpected.add("key3");
+
+        map.put(keysExpected.get(0), 10);
+        map.put(keysExpected.get(1), 20);
+        map.put(keysExpected.get(2), 30);
+
+        List<String> keysActual = new ArrayList<>();
+        Iterator<String> iterator = map.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            keysActual.add(key);
+        }
+
+        assertEquals(keysExpected, keysActual);
+    }
+
+    @Test
+    public void keySetShouldSupportIterationWithForEach() throws Exception {
+        List<String> keysExpected = new ArrayList<>();
+        keysExpected.add("key1");
+        keysExpected.add("key2");
+        keysExpected.add("key3");
+
+        map.put(keysExpected.get(0), 10);
+        map.put(keysExpected.get(1), 20);
+        map.put(keysExpected.get(2), 30);
+
+        List<String> keysActual = new ArrayList<>();
+        for (String key : map.keySet()) {
+            keysActual.add(key);
+        }
+
+        assertEquals(keysExpected, keysActual);
     }
 
     @Test

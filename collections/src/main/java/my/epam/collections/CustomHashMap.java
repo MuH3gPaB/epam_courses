@@ -119,8 +119,8 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         Objects.requireNonNull(m);
-        if(m.containsKey(null)) throw new NullPointerException();
-        for(Map.Entry<? extends K, ? extends V> entry : m.entrySet()){
+        if (m.containsKey(null)) throw new NullPointerException();
+        for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
             this.put(entry.getKey(), entry.getValue());
         }
     }
@@ -133,7 +133,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public Set<K> keySet() {
-        return null;
+        return new KeySet<>();
     }
 
     @Override
@@ -194,13 +194,24 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     class KeySet<K> extends AbstractSet<K> {
 
         @Override
+        public boolean contains(Object o) {
+            return CustomHashMap.this.containsKey(o);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            V value = CustomHashMap.this.remove(o);
+            return value != null;
+        }
+
+        @Override
         public Iterator<K> iterator() {
-            return null;
+            return CustomHashMap.this.new KeySetIterator<>();
         }
 
         @Override
         public int size() {
-            return 0;
+            return CustomHashMap.this.size();
         }
     }
 
@@ -269,6 +280,52 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         @Override
         public void clear() {
 
+        }
+    }
+
+    class KeySetIterator<IK> implements Iterator<IK> {
+        private CustomEntry<IK, V> current;
+        private CustomEntry<IK, V> prevOrHead;
+        private int currentBucket = 0;
+
+        private KeySetIterator() {
+            prevOrHead = (CustomEntry<IK, V>) CustomHashMap.this.bucketsHeads[currentBucket];
+            current = getNextEntry(prevOrHead);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public IK next() {
+            CustomEntry<IK, V> result = this.current;
+            this.current = getNextEntry(this.current);
+            if (result == null) {
+                throw new NoSuchElementException();
+            }
+            return result.getKey();
+        }
+
+        @Override
+        public void remove() {
+            current = current.next;
+            prevOrHead.next = current;
+        }
+
+        private CustomEntry<IK, V> getNextEntry(CustomEntry<IK, V> entry) {
+            if (entry.hasNext()) {
+                return entry.next;
+            } else {
+                currentBucket++;
+                if (currentBucket == CustomHashMap.this.bucketsHeads.length) {
+                    return null;
+                } else {
+                    prevOrHead = (CustomEntry<IK, V>) CustomHashMap.this.bucketsHeads[currentBucket];
+                    return getNextEntry(prevOrHead);
+                }
+            }
         }
     }
 }
