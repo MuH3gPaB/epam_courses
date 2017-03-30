@@ -603,7 +603,7 @@ public class CustomHashMapTest {
 
         assertTrue(map.containsValue(valueToKeep));
         assertFalse(map.containsValue(10));
-        assertFalse(map.containsValue(20));
+        assertFalse(map.containsValue(30));
     }
 
     @Test
