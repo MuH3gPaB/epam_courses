@@ -5,6 +5,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -59,14 +60,12 @@ public class CustomHashMapTest {
     }
 
     @Test
-    @Ignore
     public void sizeShouldReturnIntMaxValueIfMapSizeMoreThenIntMaxValue() throws Exception {
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            map.put("val" + i, 1);
-        }
-
-        map.put("more values", 1);
-
+        Field sizeField = map.getClass().getDeclaredField("size");
+        sizeField.setAccessible(true);
+        sizeField.set(map, Integer.MAX_VALUE);
+        assertEquals(Integer.MAX_VALUE, map.size());
+        map.put("key", 10);
         assertEquals(Integer.MAX_VALUE, map.size());
     }
 
@@ -774,5 +773,4 @@ public class CustomHashMapTest {
         setToAdd.add(entryToTry);
         map.entrySet().addAll(setToAdd);
     }
-
 }

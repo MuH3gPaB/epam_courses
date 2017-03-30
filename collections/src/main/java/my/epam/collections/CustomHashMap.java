@@ -92,7 +92,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
             node.next = new CustomEntry<>(key, value);
         }
-        size++;
+        incrementSize();
         return null;
     }
 
@@ -143,11 +143,15 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return null;
+        return new EntrySet<>();
     }
 
     private int getBucketNumber(Object key) {
         return Math.abs(key.hashCode() % bucketsHeads.length);
+    }
+
+    private void incrementSize() {
+        this.size += (this.size == Integer.MAX_VALUE) ? 0 : 1;
     }
 
     private CustomEntry<K, V>[] produceBuckets(int bucketsCount) {
@@ -188,6 +192,25 @@ public class CustomHashMap<K, V> implements Map<K, V> {
             V tmp = this.value;
             this.value = value;
             return tmp;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            CustomEntry<?, ?> that = (CustomEntry<?, ?>) o;
+
+            if (key != null ? !key.equals(that.key) : that.key != null) return false;
+            return value != null ? value.equals(that.value) : that.value == null;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = key != null ? key.hashCode() : 0;
+            result = 31 * result + (value != null ? value.hashCode() : 0);
+            return result;
         }
     }
 
@@ -233,18 +256,48 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    class KeySetIterator<IK> implements Iterator<IK> {
-        CustomEntry<K, V> current;
-        CustomEntry<K, V> lastReturned;
-        int currentBucket = 0;
+    class EntrySet<K> extends AbstractSet<K> {
 
-        KeySetIterator() {
-            current = getNextEntry(CustomHashMap.this.bucketsHeads[currentBucket]);
+        @Override
+        public boolean contains(Object o) {
+            Objects.requireNonNull(o);
+            if (!(o instanceof Map.Entry)) throw new ClassCastException();
+            Entry entry = (Entry) o;
+            if (CustomHashMap.this.containsKey(entry.getKey())) {
+                V value = CustomHashMap.this.get(entry.getKey());
+                if (value == null) {
+                    return entry.getValue() == null;
+                } else {
+                    return value.equals(entry.getValue());
+                }
+            }
+            return false;
         }
 
         @Override
-        public boolean hasNext() {
-            return current != null;
+        public boolean remove(Object o) {
+            Objects.requireNonNull(o);
+            if (!(o instanceof Map.Entry)) throw new ClassCastException();
+            Entry entry = (Entry) o;
+            V value = CustomHashMap.this.remove(entry.getKey());
+            return value != null;
+        }
+
+        @Override
+        public Iterator<K> iterator() {
+            return CustomHashMap.this.new EntrySetIterator<>();
+        }
+
+        @Override
+        public int size() {
+            return CustomHashMap.this.size();
+        }
+    }
+
+    class KeySetIterator<IK> extends EntrySetIterator<IK> {
+
+        KeySetIterator() {
+            current = getNextEntry(CustomHashMap.this.bucketsHeads[currentBucket]);
         }
 
         @Override
@@ -255,6 +308,48 @@ public class CustomHashMap<K, V> implements Map<K, V> {
                 throw new NoSuchElementException();
             }
             return (IK) lastReturned.getKey();
+        }
+    }
+
+    class ValuesIterator<IV> extends EntrySetIterator<IV> {
+
+        ValuesIterator() {
+            current = getNextEntry(CustomHashMap.this.bucketsHeads[currentBucket]);
+        }
+
+        @Override
+        public IV next() {
+            lastReturned = this.current;
+            this.current = getNextEntry(this.current);
+            if (lastReturned == null) {
+                throw new NoSuchElementException();
+            }
+            return (IV) lastReturned.getValue();
+        }
+    }
+
+    class EntrySetIterator<IE> implements Iterator<IE> {
+        CustomEntry<K, V> current;
+        CustomEntry<K, V> lastReturned;
+        int currentBucket = 0;
+
+        EntrySetIterator() {
+            current = getNextEntry(CustomHashMap.this.bucketsHeads[currentBucket]);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public IE next() {
+            lastReturned = this.current;
+            this.current = getNextEntry(this.current);
+            if (lastReturned == null) {
+                throw new NoSuchElementException();
+            }
+            return (IE) lastReturned;
         }
 
         @Override
@@ -273,23 +368,6 @@ public class CustomHashMap<K, V> implements Map<K, V> {
                     return getNextEntry(CustomHashMap.this.bucketsHeads[currentBucket]);
                 }
             }
-        }
-    }
-
-    private class ValuesIterator<IV> extends KeySetIterator<IV> {
-
-        ValuesIterator() {
-            current = getNextEntry(CustomHashMap.this.bucketsHeads[currentBucket]);
-        }
-
-        @Override
-        public IV next() {
-            lastReturned = this.current;
-            this.current = getNextEntry(this.current);
-            if (lastReturned == null) {
-                throw new NoSuchElementException();
-            }
-            return (IV) lastReturned.getValue();
         }
     }
 }
