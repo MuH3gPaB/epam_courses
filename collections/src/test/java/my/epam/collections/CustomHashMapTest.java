@@ -90,7 +90,14 @@ public class CustomHashMapTest {
     }
 
     @Test
+    public void containsKeyShouldReturnFalseIfMapIsEmpty() throws Exception {
+        assertFalse(map.containsKey("absent key"));
+    }
+
+    @Test
     public void containsKeyShouldReturnFalseIfKeyAbsent() throws Exception {
+        map.put("key1", 10);
+        map.put("key2", 20);
         assertFalse(map.containsKey("absent key"));
     }
 

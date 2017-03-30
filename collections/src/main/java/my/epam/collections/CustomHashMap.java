@@ -37,8 +37,8 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsValue(Object value) {
-        for (int i = 0; i < bucketsHeads.length; i++) {
-            CustomEntry<K, V> node = bucketsHeads[i];
+        for (CustomEntry<K, V> bucketsHead : bucketsHeads) {
+            CustomEntry<K, V> node = bucketsHead;
             if (node.hasNext()) {
                 do {
                     node = node.next;
@@ -162,13 +162,13 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return entries;
     }
 
-    class CustomEntry<K, V> implements Map.Entry<K, V> {
-        private CustomEntry<K, V> next;
+    class CustomEntry<EK, EV> implements Map.Entry<EK, EV> {
+        private CustomEntry<EK, EV> next;
 
-        private final K key;
-        private V value;
+        private final EK key;
+        private EV value;
 
-        public CustomEntry(K key, V value) {
+        public CustomEntry(EK key, EV value) {
             this.key = key;
             this.value = value;
         }
@@ -178,18 +178,18 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
-        public K getKey() {
+        public EK getKey() {
             return key;
         }
 
         @Override
-        public V getValue() {
+        public EV getValue() {
             return value;
         }
 
         @Override
-        public V setValue(V value) {
-            V tmp = this.value;
+        public EV setValue(EV value) {
+            EV tmp = this.value;
             this.value = value;
             return tmp;
         }
@@ -214,7 +214,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    class KeySet<K> extends AbstractSet<K> {
+    class KeySet<KK> extends AbstractSet<KK> {
 
         @Override
         public boolean contains(Object o) {
@@ -228,7 +228,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
-        public Iterator<K> iterator() {
+        public Iterator<KK> iterator() {
             return CustomHashMap.this.new KeySetIterator<>();
         }
 
@@ -238,7 +238,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    class Values<V> extends AbstractCollection<V> {
+    class Values<VV> extends AbstractCollection<VV> {
 
         @Override
         public boolean contains(Object o) {
@@ -246,7 +246,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
-        public Iterator<V> iterator() {
+        public Iterator<VV> iterator() {
             return new ValuesIterator<>();
         }
 
@@ -256,7 +256,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    class EntrySet<K> extends AbstractSet<K> {
+    class EntrySet<EK> extends AbstractSet<EK> {
 
         @Override
         public boolean contains(Object o) {
@@ -284,7 +284,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
-        public Iterator<K> iterator() {
+        public Iterator<EK> iterator() {
             return CustomHashMap.this.new EntrySetIterator<>();
         }
 
