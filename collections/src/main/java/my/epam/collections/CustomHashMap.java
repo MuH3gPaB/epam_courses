@@ -22,10 +22,15 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public boolean containsKey(Object key) {
         Objects.requireNonNull(key);
-        for (int i = 0; i < size; i++) {
-            if (bucketsHeads[i] != null && bucketsHeads[i].key.equals(key)) {
-                return true;
-            }
+        int bucketNumber = getBucketNumber(key);
+        CustomEntry<K, V> node = bucketsHeads[bucketNumber];
+        if (node.hasNext()) {
+            do {
+                node = node.next;
+                if (node.key.equals(key)) {
+                    return true;
+                }
+            } while (node.hasNext());
         }
         return false;
     }
@@ -51,10 +56,15 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public V get(Object key) {
         Objects.requireNonNull(key);
-        for (int i = 0; i < size; i++) {
-            if (bucketsHeads[i].key.equals(key)) {
-                return bucketsHeads[i].getValue();
-            }
+        int bucketNumber = getBucketNumber(key);
+        CustomEntry<K, V> node = bucketsHeads[bucketNumber];
+        if (node.hasNext()) {
+            do {
+                node = node.next;
+                if (node.key.equals(key)) {
+                    return node.value;
+                }
+            } while (node.hasNext());
         }
         return null;
     }
@@ -89,13 +99,19 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public V remove(Object key) {
         Objects.requireNonNull(key);
-        for (int i = 0; i < size; i++) {
-            if (bucketsHeads[i].key.equals(key)) {
-                V oldValue = bucketsHeads[i].getValue();
-                bucketsHeads[i] = null;
-                size--;
-                return oldValue;
-            }
+        int bucketNumber = getBucketNumber(key);
+        CustomEntry<K, V> head = bucketsHeads[bucketNumber];
+        if (head.hasNext()) {
+            CustomEntry<K, V> node = head;
+            do {
+                if (node.next.key.equals(key)) {
+                    V tmp = node.next.value;
+                    node.next = node.next.next;
+                    size--;
+                    return tmp;
+                }
+                node = node.next;
+            } while (node.hasNext());
         }
         return null;
     }
@@ -126,8 +142,8 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return null;
     }
 
-    private int getBucketNumber(K key) {
-        return key.hashCode() % bucketsHeads.length;
+    private int getBucketNumber(Object key) {
+        return Math.abs(key.hashCode() % bucketsHeads.length);
     }
 
     private CustomEntry<K, V>[] produceBuckets(int bucketsCount) {
@@ -171,22 +187,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    class KeySet<K> implements Set<K> {
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public boolean contains(Object o) {
-            return false;
-        }
+    class KeySet<K> extends AbstractSet<K> {
 
         @Override
         public Iterator<K> iterator() {
@@ -194,48 +195,8 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
-        public Object[] toArray() {
-            return new Object[0];
-        }
-
-        @Override
-        public <T> T[] toArray(T[] a) {
-            return null;
-        }
-
-        @Override
-        public boolean add(K k) {
-            return false;
-        }
-
-        @Override
-        public boolean remove(Object o) {
-            return false;
-        }
-
-        @Override
-        public boolean containsAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean addAll(Collection<? extends K> c) {
-            return false;
-        }
-
-        @Override
-        public boolean retainAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public boolean removeAll(Collection<?> c) {
-            return false;
-        }
-
-        @Override
-        public void clear() {
-
+        public int size() {
+            return 0;
         }
     }
 
