@@ -304,24 +304,26 @@ public class CustomHashMapTest {
         assertTrue(map.containsValue(null));
     }
 
-    @Test(expected = ClassCastException.class)
-    public void putAllShouldThrowCCEOnPuttingMapWithWrongKeyType() throws Exception {
-        Map mapToPut = new HashMap();
-        mapToPut.put(10, 10);
-        map.putAll(mapToPut);
-    }
+//    Not for HashMap
+//
+//    @Test(expected = ClassCastException.class)
+//    public void putAllShouldThrowCCEOnPuttingMapWithWrongKeyType() throws Exception {
+//        Map mapToPut = new HashMap();
+//        mapToPut.put(10, 10);
+//        map.putAll(mapToPut);
+//    }
+//
+//    @Test(expected = ClassCastException.class)
+//    public void putAllShouldThrowCCEOnPuttingMapWithWrongValueType() throws Exception {
+//        Map mapToPut = new HashMap();
+//        mapToPut.put("key", "value");
+//        map.putAll(mapToPut);
+//    }
 
     @Test(expected = NullPointerException.class)
     public void putAllShouldThrowNPEOnPuttingMapWithNullKey() throws Exception {
         Map mapToPut = new HashMap();
         mapToPut.put(null, 10);
-        map.putAll(mapToPut);
-    }
-
-    @Test(expected = ClassCastException.class)
-    public void putAllShouldThrowCCEOnPuttingMapWithWrongValueType() throws Exception {
-        Map mapToPut = new HashMap();
-        mapToPut.put("key", "value");
         map.putAll(mapToPut);
     }
 

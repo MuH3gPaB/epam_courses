@@ -118,7 +118,11 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-
+        Objects.requireNonNull(m);
+        if(m.containsKey(null)) throw new NullPointerException();
+        for(Map.Entry<? extends K, ? extends V> entry : m.entrySet()){
+            this.put(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
