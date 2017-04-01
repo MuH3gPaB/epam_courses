@@ -147,7 +147,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     }
 
     private int getBucketNumber(Object key) {
-        return Math.abs(key.hashCode() % bucketsHeads.length);
+        return key.hashCode() & (bucketsHeads.length - 1);
     }
 
     private void incrementSize() {
