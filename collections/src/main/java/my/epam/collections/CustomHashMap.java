@@ -8,7 +8,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     private CustomEntry<K, V>[] bucketsHeads = produceBuckets(DEFAULT_BUCKETS_COUNT);
 
     private int capacity = DEFAULT_BUCKETS_COUNT;
-    private float loadFactor = 0.75F;
+    private final float loadFactor = 0.75F;
     private int size = 0;
 
     @Override
@@ -75,6 +75,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     public V put(K key, V value) {
         Objects.requireNonNull(key);
 
+        checkOverflow();
         int bucketNumber = getBucketNumber(key);
         CustomEntry<K, V> head = bucketsHeads[bucketNumber];
 
@@ -146,22 +147,6 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public Set<Entry<K, V>> entrySet() {
         return new EntrySet<>();
-    }
-
-    private int getBucketNumber(Object key) {
-        return key.hashCode() & (bucketsHeads.length - 1);
-    }
-
-    private void incrementSize() {
-        this.size += (this.size == Integer.MAX_VALUE) ? 0 : 1;
-    }
-
-    private CustomEntry<K, V>[] produceBuckets(int bucketsCount) {
-        CustomEntry<K, V>[] entries = new CustomEntry[bucketsCount];
-        for (int i = 0; i < bucketsCount; i++) {
-            entries[i] = new CustomEntry<>(null, null);
-        }
-        return entries;
     }
 
     class CustomEntry<EK, EV> implements Map.Entry<EK, EV> {
@@ -370,6 +355,38 @@ public class CustomHashMap<K, V> implements Map<K, V> {
                     return getNextEntry(CustomHashMap.this.bucketsHeads[currentBucket]);
                 }
             }
+        }
+    }
+
+    private int getBucketNumber(Object key) {
+        return key.hashCode() & (bucketsHeads.length - 1);
+    }
+
+    private void incrementSize() {
+        this.size += (this.size == Integer.MAX_VALUE) ? 0 : 1;
+    }
+
+    private CustomEntry<K, V>[] produceBuckets(int bucketsCount) {
+        CustomEntry<K, V>[] entries = new CustomEntry[bucketsCount];
+        for (int i = 0; i < bucketsCount; i++) {
+            entries[i] = new CustomEntry<>(null, null);
+        }
+        return entries;
+    }
+
+    private void checkOverflow() {
+        if (size + 1 > capacity * loadFactor) {
+            capacity = capacity * 2;
+            rebuildMap(capacity);
+        }
+    }
+
+    private void rebuildMap(int capacity) {
+        CustomEntry<K, V>[] entries = entrySet().toArray(new CustomEntry[0]);
+        bucketsHeads = produceBuckets(capacity);
+        size = 0;
+        for (CustomEntry<K, V> entry : entries) {
+            put(entry.getKey(), entry.getValue());
         }
     }
 }
