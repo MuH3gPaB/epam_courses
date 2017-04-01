@@ -211,19 +211,6 @@ public class CustomHashMapTest {
         assertEquals(elementsCount, map.size());
     }
 
-    // Not appliable to HashMap
-//    @Test(expected = ClassCastException.class)
-//    public void putShouldThrowCCEIfKeyHaveWrongType() throws Exception {
-//        Map unGenerefiedMap = map;
-//        unGenerefiedMap.put(1, 1);
-//    }
-//
-//    @Test(expected = ClassCastException.class)
-//    public void putShouldThrowCCEIfValueHaveWrongType() throws Exception {
-//        Map unGenerefiedMap = map;
-//        unGenerefiedMap.put("key", "value");
-//    }
-
     @Test
     public void putShouldBeOkOnAddingImplementationOfGenericsValue() throws Exception {
         Map<String, Number> map = new CustomHashMap<>();
@@ -310,22 +297,6 @@ public class CustomHashMapTest {
         map.putAll(mapToPut);
         assertTrue(map.containsValue(null));
     }
-
-//    Not for HashMap
-//
-//    @Test(expected = ClassCastException.class)
-//    public void putAllShouldThrowCCEOnPuttingMapWithWrongKeyType() throws Exception {
-//        Map mapToPut = new HashMap();
-//        mapToPut.put(10, 10);
-//        map.putAll(mapToPut);
-//    }
-//
-//    @Test(expected = ClassCastException.class)
-//    public void putAllShouldThrowCCEOnPuttingMapWithWrongValueType() throws Exception {
-//        Map mapToPut = new HashMap();
-//        mapToPut.put("key", "value");
-//        map.putAll(mapToPut);
-//    }
 
     @Test(expected = NullPointerException.class)
     public void putAllShouldThrowNPEOnPuttingMapWithNullKey() throws Exception {
