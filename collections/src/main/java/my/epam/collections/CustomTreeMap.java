@@ -4,8 +4,16 @@ import java.util.*;
 
 public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     private CustomTreeEntry<K, V> root;
+    private Comparator<K> comparator;
     private int size = 0;
 
+    public CustomTreeMap(Comparator<K> comparator) {
+        this.comparator = comparator;
+    }
+
+    public CustomTreeMap() {
+        this(null);
+    }
 
     @Override
     public Comparator<? super K> comparator() {
@@ -64,9 +72,22 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public V put(K key, V value) {
-        if(root == null) root = new CustomTreeEntry<>(key, value);
+        if (comparator == null) {
+            Comparable<K> compKey = (Comparable<K>) key;
+            root = putToNode(root, compKey, value);
+        }
         incrementSize();
         return null;
+    }
+
+    private CustomTreeEntry<K, V> putToNode(CustomTreeEntry<K, V> node, Comparable<K> key, V value) {
+        if (node != null) {
+            if (key.compareTo(node.getKey()) > 0) node.right = putToNode(node.right, key, value);
+            if (key.compareTo(node.getKey()) < 0) node.left = putToNode(node.right, key, value);
+            return node;
+        } else {
+            return new CustomTreeEntry<K, V>((K) key, value);
+        }
     }
 
     @Override
