@@ -3,7 +3,7 @@ package my.epam.collections;
 import java.util.*;
 
 public class CustomTreeMap<K, V> implements SortedMap<K, V> {
-
+    private CustomTreeEntry<K, V> root;
     private int size = 0;
 
 
@@ -49,12 +49,12 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public boolean containsKey(Object key) {
-        return false;
+        return root.getKey().equals(key);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return false;
+        return root.getValue().equals(value);
     }
 
     @Override
@@ -64,6 +64,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public V put(K key, V value) {
+        if(root == null) root = new CustomTreeEntry<>(key, value);
         incrementSize();
         return null;
     }
@@ -99,19 +100,16 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         return null;
     }
 
-    class CustomEntry<EK, EV> implements Map.Entry<EK, EV> {
-        private CustomEntry<EK, EV> next;
+    class CustomTreeEntry<EK, EV> implements Map.Entry<EK, EV> {
+        private CustomTreeEntry<EK, EV> right;
+        private CustomTreeEntry<EK, EV> left;
 
         private final EK key;
         private EV value;
 
-        public CustomEntry(EK key, EV value) {
+        public CustomTreeEntry(EK key, EV value) {
             this.key = key;
             this.value = value;
-        }
-
-        public boolean hasNext() {
-            return next != null;
         }
 
         @Override
@@ -136,7 +134,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            CustomEntry<?, ?> that = (CustomEntry<?, ?>) o;
+            CustomTreeEntry<?, ?> that = (CustomTreeEntry<?, ?>) o;
 
             if (key != null ? !key.equals(that.key) : that.key != null) return false;
             return value != null ? value.equals(that.value) : that.value == null;
@@ -266,8 +264,8 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     }
 
     class EntrySetIterator<IE> implements Iterator<IE> {
-        CustomEntry<K, V> current;
-        CustomEntry<K, V> lastReturned;
+        CustomTreeEntry<K, V> current;
+        CustomTreeEntry<K, V> lastReturned;
         int currentBucket = 0;
 
         EntrySetIterator() {
@@ -293,7 +291,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
             CustomTreeMap.this.remove(lastReturned.getKey());
         }
 
-        CustomEntry<K, V> getNextEntry(CustomEntry<K, V> entry) {
+        CustomTreeEntry<K, V> getNextEntry(CustomTreeEntry<K, V> entry) {
             return null;
         }
     }

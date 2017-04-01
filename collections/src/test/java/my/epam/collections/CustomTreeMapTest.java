@@ -2,7 +2,6 @@ package my.epam.collections;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -609,8 +608,8 @@ public class CustomTreeMapTest {
     // ENTRY_SET() METHOD --------------------------------------------------------------------
     @Test
     public void entrySetShouldReturnSetOfMapEntries() throws Exception {
-        CustomTreeMap<String, Integer>.CustomEntry<String, Integer> entryOne = map.new CustomEntry<>("keyOne", 30);
-        CustomTreeMap<String, Integer>.CustomEntry<String, Integer> entryTwo = map.new CustomEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryOne = map.new CustomTreeEntry<>("keyOne", 30);
+        Map.Entry<String, Integer> entryTwo = map.new CustomTreeEntry<>("keyTwo", 20);
 
         map.put(entryOne.getKey(), entryOne.getValue());
         map.put(entryTwo.getKey(), entryTwo.getValue());
@@ -628,7 +627,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldNotContainLaterRemovedFromMapEntries() throws Exception {
-        CustomTreeMap<String, Integer>.CustomEntry<String, Integer> entry = map.new CustomEntry<>("keyOne", 30);
+        Map.Entry<String, Integer> entry = map.new CustomTreeEntry<>("keyOne", 30);
         map.put(entry.getKey(), entry.getValue());
         map.put("keyTwo", 20);
 
@@ -641,7 +640,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldContainLaterAddedToMapKeys() throws Exception {
-        CustomTreeMap<String, Integer>.CustomEntry<String, Integer> entry = map.new CustomEntry<>("keyOne", 30);
+        Map.Entry<String, Integer> entry = map.new CustomTreeEntry<>("keyOne", 30);
 
         map.put("keyTwo", 20);
 
@@ -654,7 +653,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaIteratorRemove() throws Exception {
-        CustomTreeMap<String, Integer>.CustomEntry<String, Integer> entryToRemove = map.new CustomEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToRemove = map.new CustomTreeEntry<>("keyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
         map.put("keyOne", 10);
@@ -672,7 +671,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRemove() throws Exception {
-        CustomTreeMap<String, Integer>.CustomEntry<String, Integer> entryToRemove = map.new CustomEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToRemove = map.new CustomTreeEntry<>("keyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
         map.put("keyOne", 10);
@@ -685,7 +684,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRemoveAll() throws Exception {
-        CustomTreeMap<String, Integer>.CustomEntry<String, Integer> entryToRemove = map.new CustomEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToRemove = map.new CustomTreeEntry<>("keyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
         map.put("keyOne", 10);
@@ -701,7 +700,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRetainAll() throws Exception {
-        CustomTreeMap<String, Integer>.CustomEntry<String, Integer> entryToKeep = map.new CustomEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToKeep = map.new CustomTreeEntry<>("keyTwo", 20);
 
         map.put(entryToKeep.getKey(), entryToKeep.getValue());
         map.put("keyOne", 10);
@@ -741,13 +740,13 @@ public class CustomTreeMapTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void entrySetShouldNotSupportAddToMapOperation() throws Exception {
-        CustomTreeMap<String, Integer>.CustomEntry<String, Integer> entryToTry = map.new CustomEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToTry = map.new CustomTreeEntry<>("keyTwo", 20);
         map.entrySet().add(entryToTry);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void entrySetShouldNotSupportAddAllToMapOperation() throws Exception {
-        CustomTreeMap<String, Integer>.CustomEntry<String, Integer> entryToTry = map.new CustomEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToTry = map.new CustomTreeEntry<>("keyTwo", 20);
         HashSet<Map.Entry<String, Integer>> setToAdd = new HashSet<>();
         setToAdd.add(entryToTry);
         map.entrySet().addAll(setToAdd);
