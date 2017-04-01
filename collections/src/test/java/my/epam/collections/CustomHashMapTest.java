@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
 
@@ -779,5 +780,36 @@ public class CustomHashMapTest {
         HashSet<Map.Entry<String, Integer>> setToAdd = new HashSet<>();
         setToAdd.add(entryToTry);
         map.entrySet().addAll(setToAdd);
+    }
+
+    // Load factor and Capacity
+
+
+    @Test
+    public void capacityShouldBeDoubledAfterAdding13ElementToDefaultInitCapacityMap() throws Exception {
+
+        for (int i = 0; i < 13; i++) {
+            map.put("key" + i, i);
+        }
+
+        Field capacityField = map.getClass().getDeclaredField("capacity");
+        capacityField.setAccessible(true);
+
+        int capacityBefore = (int) capacityField.get(map);
+
+        map.put("newKey", 10);
+
+        int capacityAfter = (int) capacityField.get(map);
+
+        assertEquals(capacityBefore * 2, capacityAfter);
+    }
+
+    @Test
+    public void afterCapacityWasDoubledAllOldElemetnShouldPresentInMap() throws Exception {
+        IntStream.range(0, 13).forEach((i) -> map.put("key" + i, i));
+
+        map.put("newKey", 10);
+
+        IntStream.range(0, 13).forEach((i) -> assertTrue(map.containsKey("key" + i)));
     }
 }

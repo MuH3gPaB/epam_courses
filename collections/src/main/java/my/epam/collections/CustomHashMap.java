@@ -7,6 +7,8 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     private static final int DEFAULT_BUCKETS_COUNT = 16;
     private CustomEntry<K, V>[] bucketsHeads = produceBuckets(DEFAULT_BUCKETS_COUNT);
 
+    private int capacity = DEFAULT_BUCKETS_COUNT;
+    private float loadFactor = 0.75F;
     private int size = 0;
 
     @Override
