@@ -4,6 +4,8 @@ import java.util.*;
 
 public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
+    private int size = 0;
+
 
     @Override
     public Comparator<? super K> comparator() {
@@ -37,12 +39,12 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size() == 0;
     }
 
     @Override
@@ -62,11 +64,13 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public V put(K key, V value) {
+        incrementSize();
         return null;
     }
 
     @Override
     public V remove(Object key) {
+        size--;
         return null;
     }
 
@@ -294,4 +298,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         }
     }
 
+    private void incrementSize() {
+        size += size == Integer.MAX_VALUE ? 0 : 1;
+    }
 }
