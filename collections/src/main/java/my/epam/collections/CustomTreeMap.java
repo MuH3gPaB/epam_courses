@@ -1,13 +1,39 @@
 package my.epam.collections;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
-public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
+public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
-    private Node<K, V> root;
+
+    @Override
+    public Comparator<? super K> comparator() {
+        return null;
+    }
+
+    @Override
+    public SortedMap<K, V> subMap(K fromKey, K toKey) {
+        return null;
+    }
+
+    @Override
+    public SortedMap<K, V> headMap(K toKey) {
+        return null;
+    }
+
+    @Override
+    public SortedMap<K, V> tailMap(K fromKey) {
+        return null;
+    }
+
+    @Override
+    public K firstKey() {
+        return null;
+    }
+
+    @Override
+    public K lastKey() {
+        return null;
+    }
 
     @Override
     public int size() {
@@ -16,26 +42,17 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     @Override
     public boolean isEmpty() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean containsKey(Object key) {
-        Objects.requireNonNull(key);
-
-        if (root == null) return false;
-        root.key.compareTo((K) key);
-        return find(root, (K) key) != null;
+        return false;
     }
 
     @Override
     public boolean containsValue(Object value) {
-        if (root == null) return false;
-        if (root.value == null) {
-            return value == null;
-        } else {
-            return root.value.equals(value);
-        }
+        return false;
     }
 
     @Override
@@ -45,36 +62,7 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
-        Objects.requireNonNull(key);
-        root = put(root, key, value);
-        return value;
-    }
-
-    private Node<K, V> put(Node<K, V> node, K key, V value) {
-        if (node == null) {
-            return new Node<>(key, value);
-        }
-        if (node.key.equals(key)) {
-            node.value = value;
-        } else if (node.key.compareTo(key) > 0) {
-            node.left = put(node.left, key, value);
-        } else {
-            node.right = put(node.right, key, value);
-        }
-        return node;
-    }
-
-    private Node<K, V> find(Node<K, V> node, K key) {
-        if (node == null) {
-            return null;
-        }
-        if (node.key.equals(key)) {
-            return node;
-        } else if (node.key.compareTo(key) > 0) {
-            return find(node.left, key);
-        } else {
-            return find(node.right, key);
-        }
+        return null;
     }
 
     @Override
@@ -107,17 +95,203 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
         return null;
     }
 
-    private class Node<K extends Comparable<K>, V> {
-        private final K key;
-        private V value;
-        private Node<K, V> left;
-        private Node<K, V> right;
+    class CustomEntry<EK, EV> implements Map.Entry<EK, EV> {
+        private CustomEntry<EK, EV> next;
 
-        public Node(K key, V value) {
+        private final EK key;
+        private EV value;
+
+        public CustomEntry(EK key, EV value) {
             this.key = key;
             this.value = value;
         }
 
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public EK getKey() {
+            return key;
+        }
+
+        @Override
+        public EV getValue() {
+            return value;
+        }
+
+        @Override
+        public EV setValue(EV value) {
+            EV tmp = this.value;
+            this.value = value;
+            return tmp;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            CustomEntry<?, ?> that = (CustomEntry<?, ?>) o;
+
+            if (key != null ? !key.equals(that.key) : that.key != null) return false;
+            return value != null ? value.equals(that.value) : that.value == null;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = key != null ? key.hashCode() : 0;
+            result = 31 * result + (value != null ? value.hashCode() : 0);
+            return result;
+        }
+    }
+
+    class KeySet<KK> extends AbstractSet<KK> {
+
+        @Override
+        public boolean contains(Object o) {
+            return CustomTreeMap.this.containsKey(o);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            V value = CustomTreeMap.this.remove(o);
+            return value != null;
+        }
+
+        @Override
+        public Iterator<KK> iterator() {
+            return CustomTreeMap.this.new KeySetIterator<>();
+        }
+
+        @Override
+        public int size() {
+            return CustomTreeMap.this.size();
+        }
+    }
+
+    class Values<VV> extends AbstractCollection<VV> {
+
+        @Override
+        public boolean contains(Object o) {
+            return CustomTreeMap.this.containsValue(o);
+        }
+
+        @Override
+        public Iterator<VV> iterator() {
+            return new ValuesIterator<>();
+        }
+
+        @Override
+        public int size() {
+            return CustomTreeMap.this.size();
+        }
+    }
+
+    class EntrySet<EK> extends AbstractSet<EK> {
+
+        @Override
+        public boolean contains(Object o) {
+            Objects.requireNonNull(o);
+            if (!(o instanceof Map.Entry)) throw new ClassCastException();
+            Entry entry = (Entry) o;
+            if (CustomTreeMap.this.containsKey(entry.getKey())) {
+                V value = CustomTreeMap.this.get(entry.getKey());
+                if (value == null) {
+                    return entry.getValue() == null;
+                } else {
+                    return value.equals(entry.getValue());
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            Objects.requireNonNull(o);
+            if (!(o instanceof Map.Entry)) throw new ClassCastException();
+            Entry entry = (Entry) o;
+            V value = CustomTreeMap.this.remove(entry.getKey());
+            return value != null;
+        }
+
+        @Override
+        public Iterator<EK> iterator() {
+            return CustomTreeMap.this.new EntrySetIterator<>();
+        }
+
+        @Override
+        public int size() {
+            return CustomTreeMap.this.size();
+        }
+    }
+
+    class KeySetIterator<IK> extends EntrySetIterator<IK> {
+
+        KeySetIterator() {
+
+        }
+
+        @Override
+        public IK next() {
+            lastReturned = this.current;
+            this.current = getNextEntry(this.current);
+            if (lastReturned == null) {
+                throw new NoSuchElementException();
+            }
+            return (IK) lastReturned.getKey();
+        }
+    }
+
+    class ValuesIterator<IV> extends EntrySetIterator<IV> {
+
+        ValuesIterator() {
+
+        }
+
+        @Override
+        public IV next() {
+            lastReturned = this.current;
+            this.current = getNextEntry(this.current);
+            if (lastReturned == null) {
+                throw new NoSuchElementException();
+            }
+            return (IV) lastReturned.getValue();
+        }
+    }
+
+    class EntrySetIterator<IE> implements Iterator<IE> {
+        CustomEntry<K, V> current;
+        CustomEntry<K, V> lastReturned;
+        int currentBucket = 0;
+
+        EntrySetIterator() {
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public IE next() {
+            lastReturned = this.current;
+            this.current = getNextEntry(this.current);
+            if (lastReturned == null) {
+                throw new NoSuchElementException();
+            }
+            return (IE) lastReturned;
+        }
+
+        @Override
+        public void remove() {
+            CustomTreeMap.this.remove(lastReturned.getKey());
+        }
+
+        CustomEntry<K, V> getNextEntry(CustomEntry<K, V> entry) {
+            return null;
+        }
     }
 
 }
