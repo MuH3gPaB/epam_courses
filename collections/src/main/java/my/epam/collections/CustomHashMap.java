@@ -2,25 +2,76 @@ package my.epam.collections;
 
 import java.util.*;
 
+/**
+ * Custom implementation of Map interface.
+ * <p>
+ * This Map uses inner hash table to store entries.
+ * <p>
+ * 'Null' key not allowed.
+ * Support 'null' values.
+ *
+ * @param <K> key
+ * @param <V> value
+ */
+
+
 public class CustomHashMap<K, V> implements Map<K, V> {
 
     private static final int DEFAULT_BUCKETS_COUNT = 16;
-    private CustomEntry<K, V>[] bucketsHeads = produceBuckets(DEFAULT_BUCKETS_COUNT);
+    private CustomEntry<K, V>[] bucketsHeads;
 
-    private int capacity = DEFAULT_BUCKETS_COUNT;
+    private int capacity;
     private final float loadFactor = 0.75F;
     private int size = 0;
 
+    /**
+     * Default constructor creates default empty Map.
+     *
+     * Default capacity = 16.
+     */
+    public CustomHashMap() {
+        this(DEFAULT_BUCKETS_COUNT);
+    }
+
+    /**
+     * Creates empty Map with given initial capacity.
+     *
+     * @param capacity initial capacity
+     */
+
+    public CustomHashMap(int capacity) {
+        this.capacity = capacity;
+        bucketsHeads = produceBuckets(capacity);
+    }
+
+    /**
+     * Get current size of the Map.
+     *
+     * @return current size
+     */
     @Override
     public int size() {
         return size;
     }
 
+    /**
+     * Check if current Map is empty.
+     *
+     * @return true if map is empty otherwise - false
+     */
     @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
+    /**
+     * Check if current map contains given key.
+     *
+     * Key should not be null.
+     *
+     * @param key key for check
+     * @return true if key mapped, otherwise - false
+     */
     @Override
     public boolean containsKey(Object key) {
         Objects.requireNonNull(key);
@@ -37,6 +88,19 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return false;
     }
 
+    /**
+     * Check if current map contains given value.
+     *
+     * Iterate over hole map, and checks every value on
+     * equals to given.
+     *
+     * On first founded equals value returns true.
+     *
+     * Accept null value.
+     *
+     * @param value value to be checked
+     * @return true if found, otherwise - false
+     */
     @Override
     public boolean containsValue(Object value) {
         for (CustomEntry<K, V> bucketsHead : bucketsHeads) {
@@ -55,6 +119,14 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return false;
     }
 
+    /**
+     * Get value mapped to given key.
+     *
+     * Given key should not be null.
+     *
+     * @param key key to be found
+     * @return value if found or null
+     */
     @Override
     public V get(Object key) {
         Objects.requireNonNull(key);
@@ -71,6 +143,21 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return null;
     }
 
+    /**
+     * Map given value to given key.
+     *
+     * Key should not be null.
+     * Value may be null.
+     *
+     * If another value was already mapped to given key,
+     * old value will be override to new one.
+     *
+     * In this case, old value will be returned.
+     *
+     * @param key   key to be mapped
+     * @param value value to be mapped
+     * @return null, or old value if was mapped
+     */
     @Override
     public V put(K key, V value) {
         Objects.requireNonNull(key);
@@ -99,6 +186,17 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return null;
     }
 
+    /**
+     * Unmap given key if was mapped.
+     *
+     * Key should not be null.
+     * Return null if no value was mapped, otherwise - value was mapped.
+     *
+     * It's no way to check if null value was mapped, or no value.
+     *
+     * @param key key to be unmapped
+     * @return value that was mapped, or null if no value was mapped.
+     */
     @Override
     public V remove(Object key) {
         Objects.requireNonNull(key);
@@ -119,6 +217,17 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return null;
     }
 
+    /**
+     * Put all values from given map to current.
+     *
+     * Given map should not contains null keys.
+     *
+     * If given map contains keys that already mapped in current map,
+     * mapped value will be override by values from given map.
+     *
+     * @param m map with values
+     * @throws NullPointerException if given map contains null keys
+     */
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         Objects.requireNonNull(m);
@@ -128,22 +237,40 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
+    /**
+     * Unmap all values from current map.
+     */
     @Override
     public void clear() {
-        this.bucketsHeads = new CustomEntry[DEFAULT_BUCKETS_COUNT];
+        this.bucketsHeads = produceBuckets(capacity);
         this.size = 0;
     }
 
+    /**
+     * Get set of keys of the current map.
+     *
+     * @return keySet
+     */
     @Override
     public Set<K> keySet() {
         return new KeySet<>();
     }
 
+    /**
+     * Get values collection.
+     *
+     * @return values
+     */
     @Override
     public Collection<V> values() {
         return new Values<>();
     }
 
+    /**
+     * Get set of entries.
+     *
+     * @return entries set
+     */
     @Override
     public Set<Entry<K, V>> entrySet() {
         return new EntrySet<>();
