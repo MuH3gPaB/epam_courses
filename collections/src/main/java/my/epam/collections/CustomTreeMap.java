@@ -57,12 +57,40 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public boolean containsKey(Object key) {
-        return root.getKey().equals(key);
+        Objects.requireNonNull(key);
+        Comparable<K> keyComp = (Comparable<K>) key;
+        return findNodeByKey(root, keyComp) != null;
+    }
+
+    private CustomTreeEntry<K, V> findNodeByKey(CustomTreeEntry<K, V> node, Comparable<K> keyComp) {
+        if (node == null) return null;
+        if (keyComp.compareTo(node.getKey()) > 0) return node.right;
+        else if (keyComp.compareTo(node.getKey()) < 0) return node.left;
+        else return node;
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return root.getValue().equals(value);
+        return findNodeByValue(root, value) != null;
+    }
+
+    private CustomTreeEntry<K, V> findNodeByValue(CustomTreeEntry<K, V> node, Object value) {
+        if (node == null) return null;
+        if (node.getValue() == null) {
+            if (value == null) {
+                return node;
+            }
+        } else {
+            if (node.getValue().equals(value)) {
+                return node;
+            }
+        }
+
+        CustomTreeEntry<K, V> left = findNodeByValue(node.left, value);
+        CustomTreeEntry<K, V> right = findNodeByValue(node.right, value);
+
+        if (left == null) return right;
+        else return left;
     }
 
     @Override
