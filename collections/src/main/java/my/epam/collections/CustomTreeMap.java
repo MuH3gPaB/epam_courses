@@ -131,16 +131,18 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     public V remove(Object key) {
         Objects.requireNonNull(key);
         Comparable<K> keyComp = (Comparable<K>) key;
-        root = removeNode(root, keyComp);
-        return null;
+        CustomNodeEntry<K, V> oldValContainer = new CustomNodeEntry<>(null, null);
+        root = removeNode(root, keyComp, oldValContainer);
+        return oldValContainer.getValue();
     }
 
-    private CustomNodeEntry<K, V> removeNode(CustomNodeEntry<K, V> node, Comparable<K> keyComp) {
+    private CustomNodeEntry<K, V> removeNode(CustomNodeEntry<K, V> node, Comparable<K> keyComp, CustomNodeEntry<K, V> oldVal) {
         if (node == null) return null;
-        if (keyComp.compareTo(node.getKey()) > 0) node.right = removeNode(node.right, keyComp);
-        else if (keyComp.compareTo(node.getKey()) < 0) node.left = removeNode(node.left, keyComp);
+        if (keyComp.compareTo(node.getKey()) > 0) node.right = removeNode(node.right, keyComp, oldVal);
+        else if (keyComp.compareTo(node.getKey()) < 0) node.left = removeNode(node.left, keyComp, oldVal);
         else {
             size--;
+            oldVal.setValue(node.getValue());
             if (node.left == null) return node.right;
             if (node.right == null) return node.left;
 
