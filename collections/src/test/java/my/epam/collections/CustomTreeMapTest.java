@@ -608,8 +608,8 @@ public class CustomTreeMapTest {
     // ENTRY_SET() METHOD --------------------------------------------------------------------
     @Test
     public void entrySetShouldReturnSetOfMapEntries() throws Exception {
-        Map.Entry<String, Integer> entryOne = map.new CustomTreeEntry<>("keyOne", 30);
-        Map.Entry<String, Integer> entryTwo = map.new CustomTreeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryOne = map.new CustomNodeEntry<>("keyOne", 30);
+        Map.Entry<String, Integer> entryTwo = map.new CustomNodeEntry<>("keyTwo", 20);
 
         map.put(entryOne.getKey(), entryOne.getValue());
         map.put(entryTwo.getKey(), entryTwo.getValue());
@@ -627,7 +627,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldNotContainLaterRemovedFromMapEntries() throws Exception {
-        Map.Entry<String, Integer> entry = map.new CustomTreeEntry<>("keyOne", 30);
+        Map.Entry<String, Integer> entry = map.new CustomNodeEntry<>("keyOne", 30);
         map.put(entry.getKey(), entry.getValue());
         map.put("keyTwo", 20);
 
@@ -640,7 +640,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldContainLaterAddedToMapKeys() throws Exception {
-        Map.Entry<String, Integer> entry = map.new CustomTreeEntry<>("keyOne", 30);
+        Map.Entry<String, Integer> entry = map.new CustomNodeEntry<>("keyOne", 30);
 
         map.put("keyTwo", 20);
 
@@ -653,7 +653,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaIteratorRemove() throws Exception {
-        Map.Entry<String, Integer> entryToRemove = map.new CustomTreeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToRemove = map.new CustomNodeEntry<>("keyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
         map.put("keyOne", 10);
@@ -671,7 +671,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRemove() throws Exception {
-        Map.Entry<String, Integer> entryToRemove = map.new CustomTreeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToRemove = map.new CustomNodeEntry<>("keyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
         map.put("keyOne", 10);
@@ -684,7 +684,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRemoveAll() throws Exception {
-        Map.Entry<String, Integer> entryToRemove = map.new CustomTreeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToRemove = map.new CustomNodeEntry<>("keyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
         map.put("keyOne", 10);
@@ -700,7 +700,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRetainAll() throws Exception {
-        Map.Entry<String, Integer> entryToKeep = map.new CustomTreeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToKeep = map.new CustomNodeEntry<>("keyTwo", 20);
 
         map.put(entryToKeep.getKey(), entryToKeep.getValue());
         map.put("keyOne", 10);
@@ -740,13 +740,13 @@ public class CustomTreeMapTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void entrySetShouldNotSupportAddToMapOperation() throws Exception {
-        Map.Entry<String, Integer> entryToTry = map.new CustomTreeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToTry = map.new CustomNodeEntry<>("keyTwo", 20);
         map.entrySet().add(entryToTry);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void entrySetShouldNotSupportAddAllToMapOperation() throws Exception {
-        Map.Entry<String, Integer> entryToTry = map.new CustomTreeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToTry = map.new CustomNodeEntry<>("keyTwo", 20);
         HashSet<Map.Entry<String, Integer>> setToAdd = new HashSet<>();
         setToAdd.add(entryToTry);
         map.entrySet().addAll(setToAdd);

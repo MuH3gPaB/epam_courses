@@ -3,7 +3,7 @@ package my.epam.collections;
 import java.util.*;
 
 public class CustomTreeMap<K, V> implements SortedMap<K, V> {
-    private CustomTreeEntry<K, V> root;
+    private CustomNodeEntry<K, V> root;
     private Comparator<K> comparator;
     private int size = 0;
 
@@ -62,7 +62,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         return findNodeByKey(root, keyComp) != null;
     }
 
-    private CustomTreeEntry<K, V> findNodeByKey(CustomTreeEntry<K, V> node, Comparable<K> keyComp) {
+    private CustomNodeEntry<K, V> findNodeByKey(CustomNodeEntry<K, V> node, Comparable<K> keyComp) {
         if (node == null) return null;
         if (keyComp.compareTo(node.getKey()) > 0) return node.right;
         else if (keyComp.compareTo(node.getKey()) < 0) return node.left;
@@ -74,7 +74,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         return findNodeByValue(root, value) != null;
     }
 
-    private CustomTreeEntry<K, V> findNodeByValue(CustomTreeEntry<K, V> node, Object value) {
+    private CustomNodeEntry<K, V> findNodeByValue(CustomNodeEntry<K, V> node, Object value) {
         if (node == null) return null;
         if (node.getValue() == null) {
             if (value == null) {
@@ -86,8 +86,8 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
             }
         }
 
-        CustomTreeEntry<K, V> left = findNodeByValue(node.left, value);
-        CustomTreeEntry<K, V> right = findNodeByValue(node.right, value);
+        CustomNodeEntry<K, V> left = findNodeByValue(node.left, value);
+        CustomNodeEntry<K, V> right = findNodeByValue(node.right, value);
 
         if (left == null) return right;
         else return left;
@@ -97,27 +97,33 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     public V get(Object key) {
         Objects.requireNonNull(key);
         Comparable<K> compKey = (Comparable<K>) key;
-        CustomTreeEntry<K, V> nodeByKey = findNodeByKey(root, compKey);
+        CustomNodeEntry<K, V> nodeByKey = findNodeByKey(root, compKey);
         return nodeByKey == null ? null : nodeByKey.getValue();
     }
 
     @Override
     public V put(K key, V value) {
+        Objects.requireNonNull(key);
+        CustomNodeEntry<K, V> oldValContainer = new CustomNodeEntry<>(null, null);
         if (comparator == null) {
             Comparable<K> compKey = (Comparable<K>) key;
-            root = putToNode(root, compKey, value);
+            root = putToNode(root, compKey, value, oldValContainer);
         }
-        incrementSize();
-        return null;
+        return oldValContainer.getValue();
     }
 
-    private CustomTreeEntry<K, V> putToNode(CustomTreeEntry<K, V> node, Comparable<K> key, V value) {
+    private CustomNodeEntry<K, V> putToNode(CustomNodeEntry<K, V> node, Comparable<K> key, V value, CustomNodeEntry<K, V> oldVal) {
         if (node != null) {
-            if (key.compareTo(node.getKey()) > 0) node.right = putToNode(node.right, key, value);
-            if (key.compareTo(node.getKey()) < 0) node.left = putToNode(node.right, key, value);
+            if (key.compareTo(node.getKey()) > 0) node.right = putToNode(node.right, key, value, oldVal);
+            else if (key.compareTo(node.getKey()) < 0) node.left = putToNode(node.right, key, value, oldVal);
+            else {
+                oldVal.setValue(node.getValue());
+                node.setValue(value);
+            }
             return node;
         } else {
-            return new CustomTreeEntry<K, V>((K) key, value);
+            incrementSize();
+            return new CustomNodeEntry<K, V>((K) key, value);
         }
     }
 
@@ -152,14 +158,14 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         return null;
     }
 
-    class CustomTreeEntry<EK, EV> implements Map.Entry<EK, EV> {
-        private CustomTreeEntry<EK, EV> right;
-        private CustomTreeEntry<EK, EV> left;
+    class CustomNodeEntry<EK, EV> implements Map.Entry<EK, EV> {
+        private CustomNodeEntry<EK, EV> right;
+        private CustomNodeEntry<EK, EV> left;
 
         private final EK key;
         private EV value;
 
-        public CustomTreeEntry(EK key, EV value) {
+        public CustomNodeEntry(EK key, EV value) {
             this.key = key;
             this.value = value;
         }
@@ -186,7 +192,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            CustomTreeEntry<?, ?> that = (CustomTreeEntry<?, ?>) o;
+            CustomNodeEntry<?, ?> that = (CustomNodeEntry<?, ?>) o;
 
             if (key != null ? !key.equals(that.key) : that.key != null) return false;
             return value != null ? value.equals(that.value) : that.value == null;
@@ -316,8 +322,8 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     }
 
     class EntrySetIterator<IE> implements Iterator<IE> {
-        CustomTreeEntry<K, V> current;
-        CustomTreeEntry<K, V> lastReturned;
+        CustomNodeEntry<K, V> current;
+        CustomNodeEntry<K, V> lastReturned;
         int currentBucket = 0;
 
         EntrySetIterator() {
@@ -343,7 +349,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
             CustomTreeMap.this.remove(lastReturned.getKey());
         }
 
-        CustomTreeEntry<K, V> getNextEntry(CustomTreeEntry<K, V> entry) {
+        CustomNodeEntry<K, V> getNextEntry(CustomNodeEntry<K, V> entry) {
             return null;
         }
     }
