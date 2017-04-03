@@ -764,33 +764,4 @@ public class CustomTreeMapTest {
         setToAdd.add(entryToTry);
         map.entrySet().addAll(setToAdd);
     }
-
-    // Load factor and Capacity
-
-
-    @Test
-    public void capacityShouldBeDoubledAfterAdding13ElementToDefaultInitCapacityMap() throws Exception {
-
-        IntStream.range(0, 12).forEach((i) -> map.put("key" + i, i));
-
-        Field capacityField = map.getClass().getDeclaredField("capacity");
-        capacityField.setAccessible(true);
-
-        int capacityBefore = (int) capacityField.get(map);
-
-        map.put("newKey", 10);
-
-        int capacityAfter = (int) capacityField.get(map);
-
-        assertEquals(capacityBefore * 2, capacityAfter);
-    }
-
-    @Test
-    public void afterCapacityWasDoubledAllOldElemetnShouldPresentInMap() throws Exception {
-        IntStream.range(0, 12).forEach((i) -> map.put("key" + i, i));
-
-        map.put("newKey", 10);
-
-        IntStream.range(0, 12).forEach((i) -> assertTrue(map.containsKey("key" + i)));
-    }
 }
