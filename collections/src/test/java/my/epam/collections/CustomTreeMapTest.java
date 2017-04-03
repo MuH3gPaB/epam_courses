@@ -3,6 +3,8 @@ package my.epam.collections;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -11,12 +13,23 @@ import java.util.stream.IntStream;
 import static org.junit.Assert.*;
 
 @FixMethodOrder
+@RunWith(Parameterized.class)
 public class CustomTreeMapTest {
     private CustomTreeMap<String, Integer> map;
 
+    @Parameterized.Parameters
+    public static List data() {
+        return Arrays.asList(new CustomTreeMap<String, Integer>());
+//                new CustomTreeMap<String, Integer>(Collections.reverseOrder()));
+    }
+
+    public CustomTreeMapTest(CustomTreeMap<String, Integer> map) {
+        this.map = map;
+    }
+
     @Before
     public void setUp() throws Exception {
-        map = new CustomTreeMap<>();
+        map.clear();
     }
 
     // SIZE() --------------------------------------------------------------------

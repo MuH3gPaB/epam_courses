@@ -173,7 +173,8 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public void clear() {
-
+        size = 0;
+        root = null;
     }
 
     @Override
