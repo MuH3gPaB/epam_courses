@@ -129,8 +129,39 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public V remove(Object key) {
-        size--;
+        Objects.requireNonNull(key);
+        Comparable<K> keyComp = (Comparable<K>) key;
+        root = removeNode(root, keyComp);
         return null;
+    }
+
+    private CustomNodeEntry<K, V> removeNode(CustomNodeEntry<K, V> node, Comparable<K> keyComp) {
+        if (node == null) return null;
+        if (keyComp.compareTo(node.getKey()) > 0) node.right = removeNode(node.right, keyComp);
+        else if (keyComp.compareTo(node.getKey()) < 0) node.left = removeNode(node.left, keyComp);
+        else {
+            size--;
+            if (node.left == null) return node.right;
+            if (node.right == null) return node.left;
+
+            CustomNodeEntry<K, V> tmp = node;
+            node = findMin(tmp);
+            node.right = removeMin(tmp);
+            node.left = tmp.left;
+        }
+        return node;
+    }
+
+    private CustomNodeEntry<K, V> findMin(CustomNodeEntry<K, V> node) {
+        if (node.left == null) return node;
+        else return findMin(node.left);
+    }
+
+
+    private CustomNodeEntry<K, V> removeMin(CustomNodeEntry<K, V> node) {
+        if (node.left == null) return node.right;
+        node.left = removeMin(node.left);
+        return node;
     }
 
     @Override
