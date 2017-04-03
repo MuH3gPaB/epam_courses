@@ -95,7 +95,10 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public V get(Object key) {
-        return null;
+        Objects.requireNonNull(key);
+        Comparable<K> compKey = (Comparable<K>) key;
+        CustomTreeEntry<K, V> nodeByKey = findNodeByKey(root, compKey);
+        return nodeByKey == null ? null : nodeByKey.getValue();
     }
 
     @Override
