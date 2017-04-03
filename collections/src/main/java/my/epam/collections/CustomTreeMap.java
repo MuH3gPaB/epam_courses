@@ -114,9 +114,15 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     private CustomNodeEntry<K, V> putToNode(CustomNodeEntry<K, V> node, Comparable<K> key, V value, CustomNodeEntry<K, V> oldVal) {
         if (node != null) {
-            if (key.compareTo(node.getKey()) > 0) node.right = putToNode(node.right, key, value, oldVal);
-            else if (key.compareTo(node.getKey()) < 0) node.left = putToNode(node.right, key, value, oldVal);
-            else {
+            if (key.compareTo(node.getKey()) > 0) {
+                CustomNodeEntry<K, V> newNode = putToNode(node.right, key, value, oldVal);
+                node.right = newNode;
+                newNode.parent = node;
+            } else if (key.compareTo(node.getKey()) < 0) {
+                CustomNodeEntry<K, V> newNode = putToNode(node.left, key, value, oldVal);
+                node.left = newNode;
+                newNode.parent = node;
+            } else {
                 oldVal.setValue(node.getValue());
                 node.setValue(value);
             }
@@ -168,7 +174,11 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-
+        Objects.requireNonNull(m);
+        if (m.containsKey(null)) throw new NullPointerException();
+        for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
+            this.put(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
@@ -179,22 +189,23 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public Set<K> keySet() {
-        return null;
+        return new KeySet<>();
     }
 
     @Override
     public Collection<V> values() {
-        return null;
+        return new Values<>();
     }
 
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return null;
+        return new EntrySet<>();
     }
 
     class CustomNodeEntry<EK, EV> implements Map.Entry<EK, EV> {
         private CustomNodeEntry<EK, EV> right;
         private CustomNodeEntry<EK, EV> left;
+        private CustomNodeEntry<EK, EV> parent;
 
         private final EK key;
         private EV value;
@@ -358,9 +369,10 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     class EntrySetIterator<IE> implements Iterator<IE> {
         CustomNodeEntry<K, V> current;
         CustomNodeEntry<K, V> lastReturned;
-        int currentBucket = 0;
 
-        EntrySetIterator() {
+        private EntrySetIterator() {
+            current = findMin(root);
+            lastReturned = null;
         }
 
         @Override
@@ -371,10 +383,10 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         @Override
         public IE next() {
             lastReturned = this.current;
-            this.current = getNextEntry(this.current);
             if (lastReturned == null) {
                 throw new NoSuchElementException();
             }
+            this.current = getNextEntry(this.current);
             return (IE) lastReturned;
         }
 
@@ -383,8 +395,21 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
             CustomTreeMap.this.remove(lastReturned.getKey());
         }
 
-        CustomNodeEntry<K, V> getNextEntry(CustomNodeEntry<K, V> entry) {
-            return null;
+        CustomNodeEntry<K, V> getNextEntry(CustomNodeEntry<K, V> node) {
+            if (node == null) return null;
+            else {
+                if (node.right != null) {
+                    return findMin(node.right);
+                } else {
+                    CustomNodeEntry<K, V> parent = node.parent;
+                    CustomNodeEntry<K, V> child = node;
+                    while (parent != null && parent.left != child) {
+                        child = parent;
+                        parent = child.parent;
+                    }
+                    return parent;
+                }
+            }
         }
     }
 
