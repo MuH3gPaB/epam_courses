@@ -62,35 +62,9 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         return findNodeByKey(root, keyComp) != null;
     }
 
-    private CustomNodeEntry<K, V> findNodeByKey(CustomNodeEntry<K, V> node, Comparable<K> keyComp) {
-        if (node == null) return null;
-        if (keyComp.compareTo(node.getKey()) > 0) return findNodeByKey(node.right, keyComp);
-        else if (keyComp.compareTo(node.getKey()) < 0) return findNodeByKey(node.left, keyComp);
-        else return node;
-    }
-
     @Override
     public boolean containsValue(Object value) {
         return findNodeByValue(root, value) != null;
-    }
-
-    private CustomNodeEntry<K, V> findNodeByValue(CustomNodeEntry<K, V> node, Object value) {
-        if (node == null) return null;
-        if (node.getValue() == null) {
-            if (value == null) {
-                return node;
-            }
-        } else {
-            if (node.getValue().equals(value)) {
-                return node;
-            }
-        }
-
-        CustomNodeEntry<K, V> left = findNodeByValue(node.left, value);
-        CustomNodeEntry<K, V> right = findNodeByValue(node.right, value);
-
-        if (left == null) return right;
-        else return left;
     }
 
     @Override
@@ -112,27 +86,6 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         return oldValContainer.getValue();
     }
 
-    private CustomNodeEntry<K, V> putToNode(CustomNodeEntry<K, V> node, Comparable<K> key, V value, CustomNodeEntry<K, V> oldVal) {
-        if (node != null) {
-            if (key.compareTo(node.getKey()) > 0) {
-                CustomNodeEntry<K, V> newNode = putToNode(node.right, key, value, oldVal);
-                node.right = newNode;
-                newNode.parent = node;
-            } else if (key.compareTo(node.getKey()) < 0) {
-                CustomNodeEntry<K, V> newNode = putToNode(node.left, key, value, oldVal);
-                node.left = newNode;
-                newNode.parent = node;
-            } else {
-                oldVal.setValue(node.getValue());
-                node.setValue(value);
-            }
-            return node;
-        } else {
-            incrementSize();
-            return new CustomNodeEntry<K, V>((K) key, value);
-        }
-    }
-
     @Override
     public V remove(Object key) {
         Objects.requireNonNull(key);
@@ -140,50 +93,6 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         CustomNodeEntry<K, V> oldValContainer = new CustomNodeEntry<>(null, null);
         root = removeNode(root, keyComp, oldValContainer);
         return oldValContainer.getValue();
-    }
-
-    private CustomNodeEntry<K, V> removeNode(CustomNodeEntry<K, V> node, Comparable<K> keyComp, CustomNodeEntry<K, V> oldVal) {
-        if (node == null) return null;
-        if (keyComp.compareTo(node.getKey()) > 0) node.right = removeNode(node.right, keyComp, oldVal);
-        else if (keyComp.compareTo(node.getKey()) < 0) node.left = removeNode(node.left, keyComp, oldVal);
-        else {
-            size--;
-            oldVal.setValue(node.getValue());
-            boolean leftExist = !(node.left == null);
-            boolean rightExist = !(node.right == null);
-
-            if (leftExist) {
-                if (rightExist) {
-                    CustomNodeEntry<K, V> tmp = node;
-                    node = findMin(tmp);
-                    node.right = removeMin(tmp);
-                    node.left = tmp.left;
-                } else {
-                    node.left.parent = node.parent;
-                    return node.left;
-                }
-            } else {
-                if (rightExist) {
-                    node.right.parent = node.parent;
-                    return node.right;
-                } else {
-                    return null;
-                }
-            }
-        }
-        return node;
-    }
-
-    private CustomNodeEntry<K, V> findMin(CustomNodeEntry<K, V> node) {
-        if (node.left == null) return node;
-        else return findMin(node.left);
-    }
-
-
-    private CustomNodeEntry<K, V> removeMin(CustomNodeEntry<K, V> node) {
-        if (node.left == null) return node.right;
-        node.left = removeMin(node.left);
-        return node;
     }
 
     @Override
@@ -429,5 +338,95 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     private void incrementSize() {
         size += size == Integer.MAX_VALUE ? 0 : 1;
+    }
+
+    private CustomNodeEntry<K, V> removeNode(CustomNodeEntry<K, V> node, Comparable<K> keyComp, CustomNodeEntry<K, V> oldVal) {
+        if (node == null) return null;
+        if (keyComp.compareTo(node.getKey()) > 0) node.right = removeNode(node.right, keyComp, oldVal);
+        else if (keyComp.compareTo(node.getKey()) < 0) node.left = removeNode(node.left, keyComp, oldVal);
+        else {
+            size--;
+            oldVal.setValue(node.getValue());
+            boolean leftExist = !(node.left == null);
+            boolean rightExist = !(node.right == null);
+
+            if (leftExist) {
+                if (rightExist) {
+                    CustomNodeEntry<K, V> tmp = node;
+                    node = findMin(tmp);
+                    node.right = removeMin(tmp);
+                    node.left = tmp.left;
+                } else {
+                    node.left.parent = node.parent;
+                    return node.left;
+                }
+            } else {
+                if (rightExist) {
+                    node.right.parent = node.parent;
+                    return node.right;
+                } else {
+                    return null;
+                }
+            }
+        }
+        return node;
+    }
+
+    private CustomNodeEntry<K, V> findMin(CustomNodeEntry<K, V> node) {
+        if (node.left == null) return node;
+        else return findMin(node.left);
+    }
+
+    private CustomNodeEntry<K, V> removeMin(CustomNodeEntry<K, V> node) {
+        if (node.left == null) return node.right;
+        node.left = removeMin(node.left);
+        return node;
+    }
+
+    private CustomNodeEntry<K, V> findNodeByKey(CustomNodeEntry<K, V> node, Comparable<K> keyComp) {
+        if (node == null) return null;
+        if (keyComp.compareTo(node.getKey()) > 0) return findNodeByKey(node.right, keyComp);
+        else if (keyComp.compareTo(node.getKey()) < 0) return findNodeByKey(node.left, keyComp);
+        else return node;
+    }
+
+    private CustomNodeEntry<K, V> findNodeByValue(CustomNodeEntry<K, V> node, Object value) {
+        if (node == null) return null;
+        if (node.getValue() == null) {
+            if (value == null) {
+                return node;
+            }
+        } else {
+            if (node.getValue().equals(value)) {
+                return node;
+            }
+        }
+
+        CustomNodeEntry<K, V> left = findNodeByValue(node.left, value);
+        CustomNodeEntry<K, V> right = findNodeByValue(node.right, value);
+
+        if (left == null) return right;
+        else return left;
+    }
+
+    private CustomNodeEntry<K, V> putToNode(CustomNodeEntry<K, V> node, Comparable<K> key, V value, CustomNodeEntry<K, V> oldVal) {
+        if (node != null) {
+            if (key.compareTo(node.getKey()) > 0) {
+                CustomNodeEntry<K, V> newNode = putToNode(node.right, key, value, oldVal);
+                node.right = newNode;
+                newNode.parent = node;
+            } else if (key.compareTo(node.getKey()) < 0) {
+                CustomNodeEntry<K, V> newNode = putToNode(node.left, key, value, oldVal);
+                node.left = newNode;
+                newNode.parent = node;
+            } else {
+                oldVal.setValue(node.getValue());
+                node.setValue(value);
+            }
+            return node;
+        } else {
+            incrementSize();
+            return new CustomNodeEntry<K, V>((K) key, value);
+        }
     }
 }

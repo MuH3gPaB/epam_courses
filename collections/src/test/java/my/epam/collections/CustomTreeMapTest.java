@@ -764,4 +764,41 @@ public class CustomTreeMapTest {
         setToAdd.add(entryToTry);
         map.entrySet().addAll(setToAdd);
     }
+
+    // COMPARATOR ---------------------------------------------
+    @Test
+    public void comparatorShouldReturnValidKeyComparator() throws Exception {
+        Comparator<? super String> comparator = map.comparator();
+    }
+
+    // SUBMAP ---------------------------------------------
+    @Test
+    public void subMapShouldReturnValidSubMap() throws Exception {
+        map.subMap("0", "10");
+    }
+
+    // HEADMAP ---------------------------------------------
+    @Test
+    public void headMapShouldReturnValidHeadMap() throws Exception {
+        map.headMap("10");
+    }
+
+    // TAILMAP ---------------------------------------------
+
+    @Test
+    public void tailMapShouldReturnValidTailMap() throws Exception {
+        map.tailMap("10");
+    }
+
+    // FIRSTKEY ---------------------------------------------
+    @Test
+    public void firstKeyShouldReturnValidFirstKey() throws Exception {
+        map.firstKey();
+    }
+
+    // LASTKEY ---------------------------------------------
+    @Test
+    public void lastKeyShouldReturnValidlastKey() throws Exception {
+        map.lastKey();
+    }
 }
