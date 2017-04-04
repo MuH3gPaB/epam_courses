@@ -64,8 +64,8 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     private CustomNodeEntry<K, V> findNodeByKey(CustomNodeEntry<K, V> node, Comparable<K> keyComp) {
         if (node == null) return null;
-        if (keyComp.compareTo(node.getKey()) > 0) return node.right;
-        else if (keyComp.compareTo(node.getKey()) < 0) return node.left;
+        if (keyComp.compareTo(node.getKey()) > 0) return findNodeByKey(node.right, keyComp);
+        else if (keyComp.compareTo(node.getKey()) < 0) return findNodeByKey(node.left, keyComp);
         else return node;
     }
 
@@ -149,13 +149,27 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         else {
             size--;
             oldVal.setValue(node.getValue());
-            if (node.left == null) return node.right;
-            if (node.right == null) return node.left;
+            boolean leftExist = !(node.left == null);
+            boolean rightExist = !(node.right == null);
 
-            CustomNodeEntry<K, V> tmp = node;
-            node = findMin(tmp);
-            node.right = removeMin(tmp);
-            node.left = tmp.left;
+            if (leftExist) {
+                if (rightExist) {
+                    CustomNodeEntry<K, V> tmp = node;
+                    node = findMin(tmp);
+                    node.right = removeMin(tmp);
+                    node.left = tmp.left;
+                } else {
+                    node.left.parent = node.parent;
+                    return node.left;
+                }
+            } else {
+                if (rightExist) {
+                    node.right.parent = node.parent;
+                    return node.right;
+                } else {
+                    return null;
+                }
+            }
         }
         return node;
     }
