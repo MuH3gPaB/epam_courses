@@ -768,13 +768,138 @@ public class CustomTreeMapTest {
     // COMPARATOR ---------------------------------------------
     @Test
     public void comparatorShouldReturnValidKeyComparator() throws Exception {
-        Comparator<? super String> comparator = map.comparator();
+        Comparator<String> comparator = new LastCharacterComparator();
+        CustomTreeMap<String, Integer> map = new CustomTreeMap<>(comparator);
+        assertEquals(comparator, map.comparator());
+    }
+
+    @Test
+    public void comparatorShouldReturnNullIfDefaultConstructorWasUsed() throws Exception {
+        assertNull(map.comparator());
     }
 
     // SUBMAP ---------------------------------------------
     @Test
     public void subMapShouldReturnValidSubMap() throws Exception {
-        map.subMap("0", "10");
+        fillMapForSubmapping();
+        Map<String, Integer> subMap = map.subMap("E", "G");
+        assertEquals(subMap.get("E"), new Integer(50));
+        assertEquals(subMap.get("F"), new Integer(60));
+        assertEquals(subMap.size(), 2);
+    }
+
+    @Test
+    public void subMapShouldReturnEmptyMapIfFirstKeyEqualsToSecond() throws Exception {
+        fillMapForSubmapping();
+        assertTrue(map.subMap("A", "A").isEmpty());
+    }
+
+    @Test
+    public void subMapShouldContainsLaterAddedToOriginalMapValuesIfTheirKeysAreInRange() throws Exception {
+        fillMapForSubmapping();
+        SortedMap<String, Integer> subMap = map.subMap("A", "D");
+        String key = "Core";
+        Integer value = 10;
+        map.put(key, value);
+
+        assertEquals(value, subMap.get(key));
+    }
+
+    @Test
+    public void subMapShouldNotContainsLaterAddedToOriginalMapValuesIfTheirKeysAreNotInRange() throws Exception {
+        fillMapForSubmapping();
+        SortedMap<String, Integer> subMap = map.subMap("A", "D");
+        String key = "Xiaomi";
+        map.put(key, 10);
+
+        assertFalse(subMap.containsKey(key));
+    }
+
+    @Test
+    public void subMapShouldNotContainsLaterRemovedFromOriginalMapValuesIfTheirKeysAreInRange() throws Exception {
+        fillMapForSubmapping();
+        SortedMap<String, Integer> subMap = map.subMap("X", "Z");
+        String key = "Y";
+        map.remove(key);
+
+        assertFalse(subMap.containsKey(key));
+    }
+
+    @Test
+    public void subMapShouldRemoveValuesFromOriginalMap() throws Exception {
+        fillMapForSubmapping();
+        SortedMap<String, Integer> subMap = map.subMap("X", "Z");
+        String key = "Y";
+        subMap.remove(key);
+
+        assertFalse(map.containsKey(key));
+    }
+
+    @Test
+    public void subMapShouldPutValuesToOriginalMapIfTheirKeysAreInRange() throws Exception {
+        fillMapForSubmapping();
+        SortedMap<String, Integer> subMap = map.subMap("K", "P");
+        String key = "Lower";
+        subMap.put(key, 20);
+
+        assertTrue(map.containsKey(key));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void subMapShouldThrowIAEOnPuttingNewKeyWhichIsNotInRange() throws Exception {
+        fillMapForSubmapping();
+        SortedMap<String, Integer> subMap = map.subMap("K", "P");
+        String key = "Crazy";
+        subMap.put(key, 20);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void subMapShouldThrowNPEIfFirstArgumentIsNull() throws Exception {
+        fillMapForSubmapping();
+        map.subMap(null, "Z");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void subMapShouldThrowNPEIfSecondArgumentIsNull() throws Exception {
+        fillMapForSubmapping();
+        map.subMap("A", null);
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void subMapShouldThrowCCEIfFirstKeyCouldNotBeComparedInThisMap() throws Exception {
+        fillMapForSubmapping();
+        SortedMap ungenerifiedMap = map;
+        ungenerifiedMap.subMap(10, "B");
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void subMapShouldThrowCCEIfSecondKeyCouldNotBeComparedInThisMap() throws Exception {
+        fillMapForSubmapping();
+        SortedMap ungenerifiedMap = map;
+        ungenerifiedMap.subMap("A", 20);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void subMapShouldThrowsIAEIfFirstKeyIsGreaterThenSecond() throws Exception {
+        fillMapForSubmapping();
+        map.subMap("Z", "Y");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void subMapShouldThrowsIAEIfFirstKeyIsLessThenMapMinimum() throws Exception {
+        fillMapForSubmapping();
+        map.subMap("0", "Z");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void subMapShouldThrowsIAEIfSecondKeyIsGreaterThenMapMaximum() throws Exception {
+        fillMapForSubmapping();
+        map.subMap("C", "^");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void subMapShouldThrowsIAEOnEmptyMap() throws Exception {
+        map.subMap("a", "b");
     }
 
     // HEADMAP ---------------------------------------------
@@ -800,5 +925,44 @@ public class CustomTreeMapTest {
     @Test
     public void lastKeyShouldReturnValidlastKey() throws Exception {
         map.lastKey();
+    }
+
+    // Last character comparator for testing.
+    private class LastCharacterComparator implements Comparator<String> {
+        @Override
+        public int compare(String o1, String o2) {
+            char c1 = o1.charAt(o1.length() - 1);
+            char c2 = o2.charAt(o2.length() - 1);
+            return c1 - c2;
+        }
+    }
+
+    private void fillMapForSubmapping() {
+        map.put("A", 10);
+        map.put("B", 20);
+        map.put("C", 30);
+        map.put("D", 40);
+        map.put("E", 50);
+        map.put("F", 60);
+        map.put("G", 70);
+        map.put("H", 80);
+        map.put("I", 90);
+        map.put("J", 100);
+        map.put("K", 110);
+        map.put("L", 120);
+        map.put("M", 130);
+        map.put("N", 140);
+        map.put("O", 150);
+        map.put("P", 160);
+        map.put("Q", 170);
+        map.put("R", 180);
+        map.put("S", 190);
+        map.put("T", 200);
+        map.put("U", 210);
+        map.put("V", 220);
+        map.put("W", 230);
+        map.put("X", 240);
+        map.put("Y", 250);
+        map.put("Z", 260);
     }
 }

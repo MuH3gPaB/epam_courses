@@ -17,7 +17,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public Comparator<? super K> comparator() {
-        return null;
+        return comparator;
     }
 
     @Override
