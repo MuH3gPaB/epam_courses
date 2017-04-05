@@ -37,12 +37,14 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public K firstKey() {
-        return null;
+        if (isEmpty()) throw new NoSuchElementException();
+        return findMin(root).getKey();
     }
 
     @Override
     public K lastKey() {
-        return null;
+        if (isEmpty()) throw new NoSuchElementException();
+        return findMax(root).getKey();
     }
 
     @Override
@@ -429,6 +431,11 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     private CustomNodeEntry<K, V> findMin(CustomNodeEntry<K, V> node) {
         if (node.left == null) return node;
         else return findMin(node.left);
+    }
+
+    private CustomNodeEntry<K, V> findMax(CustomNodeEntry<K, V> node) {
+        if (node.right == null) return node;
+        else return findMax(node.right);
     }
 
     private CustomNodeEntry<K, V> removeMin(CustomNodeEntry<K, V> node) {
