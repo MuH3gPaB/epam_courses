@@ -79,9 +79,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     public V put(K key, V value) {
         Objects.requireNonNull(key);
         CustomNodeEntry<K, V> oldValContainer = new CustomNodeEntry<>(null, null);
-        if (comparator == null) {
-            root = putToNode(root, key, value, oldValContainer);
-        }
+        root = putToNode(root, key, value, oldValContainer);
         return oldValContainer.getValue();
     }
 

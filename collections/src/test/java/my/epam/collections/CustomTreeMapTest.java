@@ -20,7 +20,7 @@ public class CustomTreeMapTest {
     @Parameterized.Parameters
     public static List data() {
         return Arrays.asList(new CustomTreeMap<String, Integer>(),
-                new CustomTreeMap<String, Integer>(Collections.reverseOrder()));
+                new CustomTreeMap<String, Integer>(new NaturalComparator<>()));
     }
 
     public CustomTreeMapTest(CustomTreeMap<String, Integer> map) {
@@ -390,6 +390,8 @@ public class CustomTreeMapTest {
             keysActual.add(key);
         }
 
+        if (map.comparator() != null) keysExpected.sort(map.comparator());
+
         assertEquals(keysExpected, keysActual);
     }
 
@@ -408,6 +410,8 @@ public class CustomTreeMapTest {
         for (String key : map.keySet()) {
             keysActual.add(key);
         }
+
+        if (map.comparator() != null) keysExpected.sort(map.comparator());
 
         assertEquals(keysExpected, keysActual);
     }
@@ -775,6 +779,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void comparatorShouldReturnNullIfDefaultConstructorWasUsed() throws Exception {
+        map = new CustomTreeMap<>();
         assertNull(map.comparator());
     }
 
@@ -906,7 +911,8 @@ public class CustomTreeMapTest {
     @Test
     public void firstKeyShouldReturnValidFirstKey() throws Exception {
         fillMapForSubmapping();
-        assertEquals("A", map.firstKey());
+        String[] keys = map.keySet().toArray(new String[0]);
+        assertEquals(keys[0], map.firstKey());
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -918,7 +924,8 @@ public class CustomTreeMapTest {
     @Test
     public void lastKeyShouldReturnValidLastKey() throws Exception {
         fillMapForSubmapping();
-        assertEquals("Z", map.lastKey());
+        String[] keys = map.keySet().toArray(new String[0]);
+        assertEquals(keys[keys.length - 1], map.lastKey());
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -934,6 +941,13 @@ public class CustomTreeMapTest {
             char c1 = o1.charAt(o1.length() - 1);
             char c2 = o2.charAt(o2.length() - 1);
             return c1 - c2;
+        }
+    }
+
+    private static class NaturalComparator<K extends Comparable> implements Comparator<K> {
+        @Override
+        public int compare(K o1, K o2) {
+            return o1.compareTo(o2);
         }
     }
 
