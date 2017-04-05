@@ -918,14 +918,27 @@ public class CustomTreeMapTest {
     // FIRSTKEY ---------------------------------------------
     @Test
     public void firstKeyShouldReturnValidFirstKey() throws Exception {
+        fillMapForSubmapping();
+        assertEquals("A", map.firstKey());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void firstKeyShouldThrowNSEIfMapIsEmpty() throws Exception {
         map.firstKey();
     }
 
     // LASTKEY ---------------------------------------------
     @Test
-    public void lastKeyShouldReturnValidlastKey() throws Exception {
+    public void lastKeyShouldReturnValidLastKey() throws Exception {
+        fillMapForSubmapping();
+        assertEquals("Z", map.lastKey());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void lastKeyShouldThrowNSEIfMapIsEmpty() throws Exception {
         map.lastKey();
     }
+
 
     // Last character comparator for testing.
     private class LastCharacterComparator implements Comparator<String> {
