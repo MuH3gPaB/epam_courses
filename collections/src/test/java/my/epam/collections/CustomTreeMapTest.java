@@ -1,5 +1,6 @@
 package my.epam.collections;
 
+import junitx.framework.ComparableAssert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -8,7 +9,6 @@ import org.junit.runners.Parameterized;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
 
@@ -933,6 +933,19 @@ public class CustomTreeMapTest {
         map.lastKey();
     }
 
+    // Balance tests
+    @Test
+    public void if15OrderedElementsWasAddedBalanceShouldBeCloseTo1() {
+        fillMapOrdered(15);
+        double error = Math.abs(map.getBalanceRate() - 1);
+        ComparableAssert.assertLesser(0.001, error);
+    }
+
+    private void fillMapOrdered(int count) {
+        for (int i = 0; i < count; i++) {
+            map.put(String.valueOf(i), i);
+        }
+    }
 
     // Last character comparator for testing.
     private class LastCharacterComparator implements Comparator<String> {

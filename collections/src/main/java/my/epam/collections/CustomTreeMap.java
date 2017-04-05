@@ -121,6 +121,36 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         return new EntrySet<>();
     }
 
+    public double getBalanceRate() {
+        double left = 0;
+        double right = 0;
+        for (Entry<K, V> entry : entrySet()) {
+            CustomNodeEntry nodeEntry = (CustomNodeEntry) entry;
+            if (nodeEntry.left != null) left += getNodeWeight(nodeEntry);
+            if (nodeEntry.right != null) right += getNodeWeight(nodeEntry);
+        }
+        return left / right;
+    }
+
+    private double getNodeWeight(CustomNodeEntry node) {
+        int level = getNodeLevel(node);
+        if (level < 9) {
+            return Math.pow(10, 9 - level);
+        } else {
+            return 1;
+        }
+    }
+
+    private int getNodeLevel(CustomNodeEntry node) {
+        int level = 1;
+        CustomNodeEntry parent = node.parent;
+        while (parent != null) {
+            level++;
+            parent = parent.parent;
+        }
+        return level;
+    }
+
     class CustomNodeEntry<EK, EV> implements Map.Entry<EK, EV> {
         private CustomNodeEntry<EK, EV> right;
         private CustomNodeEntry<EK, EV> left;
