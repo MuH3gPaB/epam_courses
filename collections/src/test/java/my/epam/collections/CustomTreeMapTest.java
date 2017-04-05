@@ -19,8 +19,8 @@ public class CustomTreeMapTest {
 
     @Parameterized.Parameters
     public static List data() {
-        return Arrays.asList(new CustomTreeMap<String, Integer>());
-//                new CustomTreeMap<String, Integer>(Collections.reverseOrder()));
+        return Arrays.asList(new CustomTreeMap<String, Integer>(),
+                new CustomTreeMap<String, Integer>(Collections.reverseOrder()));
     }
 
     public CustomTreeMapTest(CustomTreeMap<String, Integer> map) {
@@ -900,19 +900,6 @@ public class CustomTreeMapTest {
     @Test(expected = IllegalArgumentException.class)
     public void subMapShouldThrowsIAEOnEmptyMap() throws Exception {
         map.subMap("a", "b");
-    }
-
-    // HEADMAP ---------------------------------------------
-    @Test
-    public void headMapShouldReturnValidHeadMap() throws Exception {
-        map.headMap("10");
-    }
-
-    // TAILMAP ---------------------------------------------
-
-    @Test
-    public void tailMapShouldReturnValidTailMap() throws Exception {
-        map.tailMap("10");
     }
 
     // FIRSTKEY ---------------------------------------------
