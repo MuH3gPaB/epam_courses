@@ -938,7 +938,7 @@ public class CustomTreeMapTest {
     public void if15OrderedElementsWasAddedBalanceShouldBeCloseTo1() {
         fillMapOrdered(15);
         double error = Math.abs(map.getBalanceRate() - 1);
-        ComparableAssert.assertLesser(0.001, error);
+        ComparableAssert.assertLesser(0.01, error);
     }
 
     private void fillMapOrdered(int count) {
