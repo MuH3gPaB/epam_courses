@@ -353,6 +353,9 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
                 Comparable<K> toComp = (Comparable<K>) toKey;
 
                 if (fromComp.compareTo(toKey) > 0) throw new IllegalArgumentException();
+
+                if(fromComp.compareTo(CustomTreeMap.this.firstKey()) < 0 ) throw new IllegalArgumentException();
+                if(toComp.compareTo(CustomTreeMap.this.lastKey()) > 0 ) throw new IllegalArgumentException();
             }
 
             this.fromKey = fromKey;
