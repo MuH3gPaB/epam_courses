@@ -2,6 +2,14 @@ package my.epam.collections;
 
 import java.util.*;
 
+/**
+ * This class is educational purpose implementation of SortedMap.
+ * <p>
+ * It stores key-value pairs into balanced red black tree.
+ *
+ * @param <K> key type
+ * @param <V> value type
+ */
 public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     private CustomNodeEntry<K, V> root;
     private Comparator<K> comparator;
@@ -391,6 +399,71 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
             if (compare((K) key, fromKey) >= 0 && compare((K) key, toKey) < 0)
                 return CustomTreeMap.this.put(key, value);
             else throw new IllegalArgumentException();
+        }
+
+        @Override
+        public SortedMap<K, V> subMap(K fromKey, K toKey) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public SortedMap<K, V> headMap(K toKey) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public SortedMap<K, V> tailMap(K fromKey) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public K firstKey() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public K lastKey() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Set<K> keySet() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Collection<V> values() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Set<Entry<K, V>> entrySet() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public double getBalanceRate() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Comparator<? super K> comparator() {
+            return CustomTreeMap.this.comparator();
         }
     }
 
