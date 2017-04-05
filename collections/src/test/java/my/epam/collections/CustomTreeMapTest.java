@@ -783,9 +783,9 @@ public class CustomTreeMapTest {
     public void subMapShouldReturnValidSubMap() throws Exception {
         fillMapForSubmapping();
         Map<String, Integer> subMap = map.subMap("E", "G");
-        assertEquals(subMap.get("E"), new Integer(50));
-        assertEquals(subMap.get("F"), new Integer(60));
-        assertEquals(subMap.size(), 2);
+        assertEquals(new Integer(50), subMap.get("E"));
+        assertEquals(new Integer(60), subMap.get("F"));
+        assertEquals(2, subMap.size());
     }
 
     @Test
@@ -869,14 +869,14 @@ public class CustomTreeMapTest {
     public void subMapShouldThrowCCEIfFirstKeyCouldNotBeComparedInThisMap() throws Exception {
         fillMapForSubmapping();
         SortedMap ungenerifiedMap = map;
-        ungenerifiedMap.subMap(10, "B");
+        ungenerifiedMap.subMap(new Object(), "B");
     }
 
     @Test(expected = ClassCastException.class)
     public void subMapShouldThrowCCEIfSecondKeyCouldNotBeComparedInThisMap() throws Exception {
         fillMapForSubmapping();
         SortedMap ungenerifiedMap = map;
-        ungenerifiedMap.subMap("A", 20);
+        ungenerifiedMap.subMap("A", new Object());
     }
 
     @Test(expected = IllegalArgumentException.class)

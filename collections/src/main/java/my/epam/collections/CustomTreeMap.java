@@ -22,7 +22,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     @Override
     public SortedMap<K, V> subMap(K fromKey, K toKey) {
-        return null;
+        return new SubMap(fromKey, toKey);
     }
 
     @Override
@@ -336,6 +336,60 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         }
     }
 
+    class SubMap extends CustomTreeMap<K, V> {
+        final K fromKey;
+        final K toKey;
+
+        SubMap(K fromKey, K toKey) {
+            Objects.requireNonNull(fromKey);
+            Objects.requireNonNull(toKey);
+
+            if (CustomTreeMap.this.isEmpty()) throw new IllegalArgumentException();
+
+            if (comparator() == null) {
+                Comparable<K> fromComp = (Comparable<K>) fromKey;
+                Comparable<K> toComp = (Comparable<K>) toKey;
+
+                if (fromComp.compareTo(toKey) > 0) throw new IllegalArgumentException();
+            }
+
+            this.fromKey = fromKey;
+            this.toKey = toKey;
+        }
+
+        @Override
+        public int size() {
+            int currentSize = 0;
+            for (Entry entry : CustomTreeMap.this.entrySet()) {
+                Comparable<K> keyComp = (Comparable<K>) entry.getKey();
+                if (keyComp.compareTo(fromKey) >= 0 && keyComp.compareTo(toKey) < 0) currentSize++;
+            }
+            return currentSize;
+        }
+
+        @Override
+        public V get(Object key) {
+            Comparable<K> keyComp = (Comparable<K>) key;
+            if (keyComp.compareTo(fromKey) >= 0 && keyComp.compareTo(toKey) < 0) return CustomTreeMap.this.get(key);
+            else return null;
+        }
+
+        @Override
+        public V remove(Object key) {
+            Comparable<K> keyComp = (Comparable<K>) key;
+            if (keyComp.compareTo(fromKey) >= 0 && keyComp.compareTo(toKey) < 0) return CustomTreeMap.this.remove(key);
+            else return null;
+        }
+
+        @Override
+        public V put(K key, V value) {
+            Comparable<K> keyComp = (Comparable<K>) key;
+            if (keyComp.compareTo(fromKey) >= 0 && keyComp.compareTo(toKey) < 0)
+                return CustomTreeMap.this.put(key, value);
+            else throw new IllegalArgumentException();
+        }
+    }
+
     private void incrementSize() {
         size += size == Integer.MAX_VALUE ? 0 : 1;
     }
@@ -383,7 +437,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         return node;
     }
 
-    private CustomNodeEntry<K, V> findNodeByKey(CustomNodeEntry<K, V> node, Comparable<K> keyComp) {
+    CustomNodeEntry<K, V> findNodeByKey(CustomNodeEntry<K, V> node, Comparable<K> keyComp) {
         if (node == null) return null;
         if (keyComp.compareTo(node.getKey()) > 0) return findNodeByKey(node.right, keyComp);
         else if (keyComp.compareTo(node.getKey()) < 0) return findNodeByKey(node.left, keyComp);
