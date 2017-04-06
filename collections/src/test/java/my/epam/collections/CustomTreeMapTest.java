@@ -1,8 +1,10 @@
 package my.epam.collections;
 
+import com.codeaffine.test.ConditionalIgnoreRule;
 import junitx.framework.ComparableAssert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -12,15 +14,24 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
+import static com.codeaffine.test.ConditionalIgnoreRule.ConditionalIgnore;
+import static com.codeaffine.test.ConditionalIgnoreRule.IgnoreCondition;
+
 @FixMethodOrder
 @RunWith(Parameterized.class)
 public class CustomTreeMapTest {
+
+    @Rule
+    public ConditionalIgnoreRule rule = new ConditionalIgnoreRule();
+
     private CustomTreeMap<String, Integer> map;
 
     @Parameterized.Parameters
     public static List data() {
-        return Arrays.asList(new CustomTreeMap<String, Integer>(),
-                new CustomTreeMap<String, Integer>(new NaturalComparator<>()));
+        return Arrays.asList(//new CustomTreeMap<String, Integer>(),
+                //new CustomTreeMap<String, Integer>(new NaturalComparator<>()),
+                buildSubMap()
+        );
     }
 
     public CustomTreeMapTest(CustomTreeMap<String, Integer> map) {
@@ -34,6 +45,7 @@ public class CustomTreeMapTest {
 
     // SIZE() --------------------------------------------------------------------
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void sizeOfEmptyMapShouldBeZero() throws Exception {
         assertEquals(0, map.size());
     }
@@ -786,7 +798,7 @@ public class CustomTreeMapTest {
     // SUBMAP ---------------------------------------------
     @Test
     public void subMapShouldReturnValidSubMap() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         Map<String, Integer> subMap = map.subMap("E", "G");
         assertEquals(new Integer(50), subMap.get("E"));
         assertEquals(new Integer(60), subMap.get("F"));
@@ -795,13 +807,13 @@ public class CustomTreeMapTest {
 
     @Test
     public void subMapShouldReturnEmptyMapIfFirstKeyEqualsToSecond() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         assertTrue(map.subMap("A", "A").isEmpty());
     }
 
     @Test
     public void subMapShouldContainsLaterAddedToOriginalMapValuesIfTheirKeysAreInRange() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("A", "D");
         String key = "Core";
         Integer value = 10;
@@ -812,7 +824,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void subMapShouldNotContainsLaterAddedToOriginalMapValuesIfTheirKeysAreNotInRange() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("A", "D");
         String key = "Xiaomi";
         map.put(key, 10);
@@ -822,7 +834,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void subMapShouldNotContainsLaterRemovedFromOriginalMapValuesIfTheirKeysAreInRange() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("X", "Z");
         String key = "Y";
         map.remove(key);
@@ -832,7 +844,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void subMapShouldRemoveValuesFromOriginalMap() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("X", "Z");
         String key = "Y";
         subMap.remove(key);
@@ -842,7 +854,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void subMapShouldPutValuesToOriginalMapIfTheirKeysAreInRange() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("K", "P");
         String key = "Lower";
         subMap.put(key, 20);
@@ -852,7 +864,7 @@ public class CustomTreeMapTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void subMapShouldThrowIAEOnPuttingNewKeyWhichIsNotInRange() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("K", "P");
         String key = "Crazy";
         subMap.put(key, 20);
@@ -860,45 +872,45 @@ public class CustomTreeMapTest {
 
     @Test(expected = NullPointerException.class)
     public void subMapShouldThrowNPEIfFirstArgumentIsNull() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         map.subMap(null, "Z");
     }
 
     @Test(expected = NullPointerException.class)
     public void subMapShouldThrowNPEIfSecondArgumentIsNull() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         map.subMap("A", null);
     }
 
     @Test(expected = ClassCastException.class)
     public void subMapShouldThrowCCEIfFirstKeyCouldNotBeComparedInThisMap() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         SortedMap ungenerifiedMap = map;
         ungenerifiedMap.subMap(new Object(), "B");
     }
 
     @Test(expected = ClassCastException.class)
     public void subMapShouldThrowCCEIfSecondKeyCouldNotBeComparedInThisMap() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         SortedMap ungenerifiedMap = map;
         ungenerifiedMap.subMap("A", new Object());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void subMapShouldThrowsIAEIfFirstKeyIsGreaterThenSecond() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         map.subMap("Z", "Y");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void subMapShouldThrowsIAEIfFirstKeyIsLessThenMapMinimum() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         map.subMap("0", "Z");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void subMapShouldThrowsIAEIfSecondKeyIsGreaterThenMapMaximum() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         map.subMap("C", "^");
     }
 
@@ -910,7 +922,7 @@ public class CustomTreeMapTest {
     // FIRSTKEY ---------------------------------------------
     @Test
     public void firstKeyShouldReturnValidFirstKey() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         String[] keys = map.keySet().toArray(new String[0]);
         assertEquals(keys[0], map.firstKey());
     }
@@ -923,7 +935,7 @@ public class CustomTreeMapTest {
     // LASTKEY ---------------------------------------------
     @Test
     public void lastKeyShouldReturnValidLastKey() throws Exception {
-        fillMapForSubmapping();
+        fillMapForSubmapping(map);
         String[] keys = map.keySet().toArray(new String[0]);
         assertEquals(keys[keys.length - 1], map.lastKey());
     }
@@ -964,7 +976,7 @@ public class CustomTreeMapTest {
         }
     }
 
-    private void fillMapForSubmapping() {
+    private static void fillMapForSubmapping(Map<String, Integer> map) {
         map.put("A", 10);
         map.put("B", 20);
         map.put("C", 30);
@@ -991,5 +1003,19 @@ public class CustomTreeMapTest {
         map.put("X", 240);
         map.put("Y", 250);
         map.put("Z", 260);
+    }
+
+    private static CustomTreeMap.SubMap buildSubMap() {
+        CustomTreeMap<String, Integer> mainMap = new CustomTreeMap<>();
+        fillMapForSubmapping(mainMap);
+        return (CustomTreeMap.SubMap) mainMap.subMap("E", "W");
+    }
+
+    public class IgnoreSubMap implements IgnoreCondition {
+
+        @Override
+        public boolean isSatisfied() {
+            return map instanceof CustomTreeMap.SubMap;
+        }
     }
 }

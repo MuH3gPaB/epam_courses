@@ -418,7 +418,12 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
         @Override
         public K firstKey() {
-            throw new UnsupportedOperationException();
+            for (K key : CustomTreeMap.this.keySet()) {
+                if (compare(key, fromKey) >= 0 && compare(key, toKey) < 0) {
+                    return key;
+                }
+            }
+            throw new NoSuchElementException();
         }
 
         @Override
