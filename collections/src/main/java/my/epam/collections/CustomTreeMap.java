@@ -1,6 +1,7 @@
 package my.epam.collections;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class is educational purpose implementation of SortedMap.
@@ -371,26 +372,26 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         public int size() {
             int currentSize = 0;
             for (Entry<K, V> entry : CustomTreeMap.this.entrySet()) {
-                if (compare(entry.getKey(), fromKey) >= 0 && compare(entry.getKey(), toKey) < 0) currentSize++;
+                if (validKey(entry.getKey())) currentSize++;
             }
             return currentSize;
         }
 
         @Override
         public V get(Object key) {
-            if (compare((K) key, fromKey) >= 0 && compare((K) key, toKey) < 0) return CustomTreeMap.this.get(key);
+            if (validKey((K) key)) return CustomTreeMap.this.get(key);
             else return null;
         }
 
         @Override
         public V remove(Object key) {
-            if (compare((K) key, fromKey) >= 0 && compare((K) key, toKey) < 0) return CustomTreeMap.this.remove(key);
+            if (validKey((K) key)) return CustomTreeMap.this.remove(key);
             else return null;
         }
 
         @Override
         public V put(K key, V value) {
-            if (compare((K) key, fromKey) >= 0 && compare((K) key, toKey) < 0)
+            if (validKey(key))
                 return CustomTreeMap.this.put(key, value);
             else throw new IllegalArgumentException();
         }
@@ -413,7 +414,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         @Override
         public K firstKey() {
             for (K key : CustomTreeMap.this.keySet()) {
-                if (compare(key, fromKey) >= 0 && compare(key, toKey) < 0) {
+                if (validKey(key)) {
                     return key;
                 }
             }
@@ -422,17 +423,35 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
         @Override
         public K lastKey() {
-            throw new UnsupportedOperationException();
+            K lastValidKey = null;
+            for (K key : CustomTreeMap.this.keySet()) {
+                if (validKey(key)) {
+                    lastValidKey = key;
+                }
+            }
+            if (lastValidKey == null) throw new NoSuchElementException();
+            else return lastValidKey;
         }
 
         @Override
         public boolean containsKey(Object key) {
-            throw new UnsupportedOperationException();
+            return validKey((K) key) && CustomTreeMap.this.containsKey(key);
         }
 
         @Override
         public boolean containsValue(Object value) {
-            throw new UnsupportedOperationException();
+            Iterator<Entry<K, V>> iterator = CustomTreeMap.this.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Entry<K, V> entry = iterator.next();
+                if (validKey(entry.getKey())) {
+                    if (entry.getValue() == null) {
+                        if (value == null) return true;
+                    } else {
+                        if (entry.getValue().equals(value)) return true;
+                    }
+                }
+            }
+            return false;
         }
 
         @Override
@@ -440,7 +459,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
             Iterator<K> iterator = CustomTreeMap.this.keySet().iterator();
             while (iterator.hasNext()) {
                 K key = iterator.next();
-                if (compare(key, fromKey) >= 0 && compare(key, toKey) < 0) iterator.remove();
+                if (validKey(key)) iterator.remove();
             }
         }
 
@@ -456,7 +475,9 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
         @Override
         public Set<Entry<K, V>> entrySet() {
-            throw new UnsupportedOperationException();
+            return Collections.unmodifiableSet(CustomTreeMap.this.entrySet().stream()
+                    .filter((e) -> validKey(e.getKey()))
+                    .collect(Collectors.toSet()));
         }
 
         @Override
@@ -472,6 +493,10 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         @Override
         public boolean isEmpty() {
             return size() == 0;
+        }
+
+        private boolean validKey(K key) {
+            return compare(key, fromKey) >= 0 && compare(key, toKey) < 0;
         }
     }
 

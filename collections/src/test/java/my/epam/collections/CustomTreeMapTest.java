@@ -28,9 +28,9 @@ public class CustomTreeMapTest {
 
     @Parameterized.Parameters
     public static List data() {
-        return Arrays.asList(new CustomTreeMap<String, Integer>()//,
+        return Arrays.asList(//new CustomTreeMap<String, Integer>()//,
                 //new CustomTreeMap<String, Integer>(new NaturalComparator<>()),
-                //buildSubMap()
+                buildSubMap()
         );
     }
 
@@ -51,10 +51,10 @@ public class CustomTreeMapTest {
 
     @Test
     public void sizeShouldGrowOnPuttingNewElement() throws Exception {
-        map.put("str1", 1);
+        map.put("Str1", 1);
         int oldSize = map.size();
 
-        map.put("str2", 2);
+        map.put("Str2", 2);
         int newSize = map.size();
 
         assertEquals(1, newSize - oldSize);
@@ -62,7 +62,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void sizeShouldReduceOnRemovingElement() throws Exception {
-        String key = "str1";
+        String key = "Str1";
         map.put(key, 1);
         int oldSize = map.size();
         map.remove(key);
@@ -73,7 +73,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void sizeShouldNotGrowOnAddingExistingKeyElement() throws Exception {
-        String key = "str1";
+        String key = "Str1";
         map.put(key, 1);
         int sizeOld = map.size();
 
@@ -84,12 +84,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void sizeShouldReturnIntMaxValueIfMapSizeMoreThenIntMaxValue() throws Exception {
         Field sizeField = map.getClass().getDeclaredField("size");
         sizeField.setAccessible(true);
         sizeField.set(map, Integer.MAX_VALUE);
         assertEquals(Integer.MAX_VALUE, map.size());
-        map.put("key", 10);
+        map.put("Key", 10);
         assertEquals(Integer.MAX_VALUE, map.size());
     }
 
@@ -101,14 +102,14 @@ public class CustomTreeMapTest {
 
     @Test
     public void isEmptyShouldReturnFalseOnNotEmptyMap() throws Exception {
-        map.put("str1", 1);
+        map.put("Str1", 1);
         assertFalse(map.isEmpty());
     }
 
     // CONTAINS_KEY() --------------------------------------------------------------------
     @Test
     public void containsKeyShouldReturnTrueIfKeyPresent() throws Exception {
-        String key = "key";
+        String key = "Key";
         map.put(key, 1);
         assertTrue(map.containsKey(key));
     }
@@ -120,8 +121,8 @@ public class CustomTreeMapTest {
 
     @Test
     public void containsKeyShouldReturnFalseIfKeyAbsent() throws Exception {
-        map.put("key1", 10);
-        map.put("key2", 20);
+        map.put("Key1", 10);
+        map.put("Key2", 20);
         assertFalse(map.containsKey("absent key"));
     }
 
@@ -134,15 +135,15 @@ public class CustomTreeMapTest {
     @Test
     public void containsValueShouldReturnTrueIfValuePresentOnce() throws Exception {
         int value = 123;
-        map.put("key", value);
+        map.put("Key", value);
         assertTrue(map.containsValue(value));
     }
 
     @Test
     public void containsValueShouldReturnTrueIfValuePresentTwoTimes() throws Exception {
         int value = 123;
-        map.put("keyOne", value);
-        map.put("keyTwo", value);
+        map.put("KeyOne", value);
+        map.put("KeyTwo", value);
         assertTrue(map.containsValue(value));
     }
 
@@ -153,7 +154,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void containsValueShouldReturnTrueOnNullIfNullValuePresent() throws Exception {
-        map.put("key", null);
+        map.put("Key", null);
         assertTrue(map.containsValue(null));
     }
 
@@ -165,7 +166,7 @@ public class CustomTreeMapTest {
     // GET() --------------------------------------------------------------------
     @Test
     public void getShouldReturnValueThatMappedToKey() throws Exception {
-        String key = "key";
+        String key = "Key";
         Integer value = 1;
 
         map.put(key, value);
@@ -176,7 +177,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void getShouldReturnNullIfNoValueMappedToKey() throws Exception {
-        assertNull(map.get("key"));
+        assertNull(map.get("Key"));
     }
 
     @Test(expected = NullPointerException.class)
@@ -188,7 +189,7 @@ public class CustomTreeMapTest {
     @Test
     public void putShouldAddNewUniquePair() throws Exception {
         Integer value = 10;
-        String key = "key";
+        String key = "Key";
 
         map.put(key, value);
         assertTrue(map.containsKey(key) && map.containsValue(value));
@@ -196,7 +197,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void putShouldReplaceValueOnMappingToExistingKey() throws Exception {
-        String key = "key";
+        String key = "Key";
         Integer value = 20;
 
         map.put(key, 10);
@@ -206,7 +207,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void putShouldReturnPreviousValueIfItWasMapped() throws Exception {
-        String key = "key";
+        String key = "Key";
         Integer preValue = 20;
         map.put(key, preValue);
 
@@ -215,7 +216,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void putShouldReturnNullIfNoPreviousValueWasMapped() throws Exception {
-        assertNull(map.put("key", 10));
+        assertNull(map.put("Key", 10));
     }
 
     @Test(expected = NullPointerException.class)
@@ -237,7 +238,7 @@ public class CustomTreeMapTest {
     @Test
     public void putShouldBeOkOnAddingImplementationOfGenericsValue() throws Exception {
         Map<String, Number> map = new CustomTreeMap<>();
-        map.put("key", 1);
+        map.put("Key", 1);
         assertTrue(map.containsValue(1));
     }
 
@@ -251,9 +252,9 @@ public class CustomTreeMapTest {
     // REMOVE() --------------------------------------------------------------------
     @Test
     public void removeShouldUnmapValueForPresentKey() throws Exception {
-        String key = "key";
-        String key1 = "key1";
-        String key2 = "key2";
+        String key = "Key";
+        String key1 = "Key1";
+        String key2 = "Key2";
 
         map.put(key, 10);
         map.put(key1, 20);
@@ -265,7 +266,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void removeShouldReturnUnmappedValueForPresentKey() throws Exception {
-        String key = "key";
+        String key = "Key";
         Integer value = 10;
         map.put(key, value);
         assertEquals(value, map.remove(key));
@@ -273,7 +274,7 @@ public class CustomTreeMapTest {
 
     @Test
     public void removeShouldReturnNullForAbsentKey() throws Exception {
-        assertNull(map.remove("key"));
+        assertNull(map.remove("Key"));
     }
 
     @Test(expected = NullPointerException.class)
@@ -287,13 +288,13 @@ public class CustomTreeMapTest {
         Map<String, Integer> mapToPut = new HashMap<>();
         Integer value1 = 1;
         Integer value2 = 2;
-        mapToPut.put("key1", value1);
-        mapToPut.put("key2", value2);
+        mapToPut.put("Key1", value1);
+        mapToPut.put("Key2", value2);
 
         map.putAll(mapToPut);
 
-        assertEquals(value1, map.get("key1"));
-        assertEquals(value2, map.get("key2"));
+        assertEquals(value1, map.get("Key1"));
+        assertEquals(value2, map.get("Key2"));
     }
 
     @Test
@@ -301,21 +302,21 @@ public class CustomTreeMapTest {
         Map<String, Integer> mapToPut = new HashMap<>();
         Integer value1 = 1;
         Integer value2 = 2;
-        mapToPut.put("key1", value1);
-        mapToPut.put("key2", value2);
+        mapToPut.put("Key1", value1);
+        mapToPut.put("Key2", value2);
 
-        map.put("key1", 10);
+        map.put("Key1", 10);
 
         map.putAll(mapToPut);
 
-        assertEquals(value1, map.get("key1"));
-        assertEquals(value2, map.get("key2"));
+        assertEquals(value1, map.get("Key1"));
+        assertEquals(value2, map.get("Key2"));
     }
 
     @Test
     public void putAllShouldWorkProperlyWithNullValues() throws Exception {
         Map<String, Integer> mapToPut = new HashMap<>();
-        mapToPut.put("key1", null);
+        mapToPut.put("Key1", null);
 
         map.putAll(mapToPut);
         assertTrue(map.containsValue(null));
@@ -344,13 +345,13 @@ public class CustomTreeMapTest {
     // KEY_SET() METHOD --------------------------------------------------------------------
     @Test
     public void keySetShouldReturnSetOfMappedKeys() throws Exception {
-        map.put("keyOne", 1);
-        map.put("keyTwo", 2);
+        map.put("KeyOne", 1);
+        map.put("KeyTwo", 2);
 
         Set<String> keys = map.keySet();
 
-        assertTrue(keys.contains("keyOne"));
-        assertTrue(keys.contains("keyTwo"));
+        assertTrue(keys.contains("KeyOne"));
+        assertTrue(keys.contains("KeyTwo"));
         assertEquals(2, keys.size());
     }
 
@@ -361,10 +362,11 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void keySetShouldNotContainLaterRemovedFromMapKeys() throws Exception {
-        String keyOne = "keyOne";
+        String keyOne = "KeyOne";
         map.put(keyOne, 10);
-        map.put("keyTwo", 20);
+        map.put("KeyTwo", 20);
 
         Set<String> keys = map.keySet();
         assertTrue(keys.contains(keyOne));
@@ -373,9 +375,10 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void keySetShouldContainLaterAddedToMapKeys() throws Exception {
-        String keyOne = "keyOne";
-        map.put("keyTwo", 20);
+        String keyOne = "KeyOne";
+        map.put("KeyTwo", 20);
 
         Set<String> keys = map.keySet();
         assertFalse(keys.contains(keyOne));
@@ -386,9 +389,9 @@ public class CustomTreeMapTest {
     @Test
     public void keySetShouldSupportIterationWithIterator() throws Exception {
         List<String> keysExpected = new ArrayList<>();
-        keysExpected.add("key1");
-        keysExpected.add("key2");
-        keysExpected.add("key3");
+        keysExpected.add("Key1");
+        keysExpected.add("Key2");
+        keysExpected.add("Key3");
 
         map.put(keysExpected.get(0), 10);
         map.put(keysExpected.get(1), 20);
@@ -409,9 +412,9 @@ public class CustomTreeMapTest {
     @Test
     public void keySetShouldSupportIterationWithForEach() throws Exception {
         List<String> keysExpected = new ArrayList<>();
-        keysExpected.add("key1");
-        keysExpected.add("key2");
-        keysExpected.add("key3");
+        keysExpected.add("Key1");
+        keysExpected.add("Key2");
+        keysExpected.add("Key3");
 
         map.put(keysExpected.get(0), 10);
         map.put(keysExpected.get(1), 20);
@@ -428,12 +431,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void keySetShouldSupportRemovingElementsFromMapViaIteratorRemove() throws Exception {
-        String keyToRemove = "keyTwo";
+        String keyToRemove = "KeyTwo";
 
         map.put(keyToRemove, 20);
-        map.put("keyOne", 10);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyThree", 30);
 
         Iterator<String> iterator = map.keySet().iterator();
         while (iterator.hasNext()) {
@@ -445,12 +449,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void keySetShouldSupportRemovingElementsFromMapViaSetRemove() throws Exception {
-        String keyToRemove = "keyTwo";
+        String keyToRemove = "KeyTwo";
 
         map.put(keyToRemove, 20);
-        map.put("keyOne", 10);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyThree", 30);
 
         map.keySet().remove(keyToRemove);
 
@@ -458,12 +463,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void keySetShouldSupportRemovingElementsFromMapViaSetRemoveAll() throws Exception {
-        String keyToRemove = "keyTwo";
+        String keyToRemove = "KeyTwo";
 
         map.put(keyToRemove, 20);
-        map.put("keyOne", 10);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyThree", 30);
 
         HashSet<String> keysToRemove = new HashSet<>();
         keysToRemove.add(keyToRemove);
@@ -474,12 +480,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void keySetShouldSupportRemovingElementsFromMapViaSetRetainAll() throws Exception {
-        String keyToKeep = "keyTwo";
+        String keyToKeep = "KeyTwo";
 
         map.put(keyToKeep, 20);
-        map.put("keyOne", 10);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyThree", 30);
 
         HashSet<String> keysToKeep = new HashSet<>();
         keysToKeep.add(keyToKeep);
@@ -487,15 +494,16 @@ public class CustomTreeMapTest {
         map.keySet().retainAll(keysToKeep);
 
         assertTrue(map.containsKey(keyToKeep));
-        assertFalse(map.containsKey("keyOne"));
-        assertFalse(map.containsKey("keyThree"));
+        assertFalse(map.containsKey("KeyOne"));
+        assertFalse(map.containsKey("KeyThree"));
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void keySetShouldSupportRemovingElementsFromMapViaSetClear() throws Exception {
-        map.put("keyOne", 10);
-        map.put("keyTwo", 20);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyTwo", 20);
+        map.put("KeyThree", 30);
 
         map.keySet().clear();
         assertTrue(map.isEmpty());
@@ -503,21 +511,38 @@ public class CustomTreeMapTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void keySetShouldNotSupportAddToMapOperation() throws Exception {
-        map.keySet().add("key");
+        map.keySet().add("Key");
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void keySetShouldNotSupportAddAllToMapOperation() throws Exception {
         HashSet<String> setToAdd = new HashSet<>();
-        setToAdd.add("key");
+        setToAdd.add("Key");
         map.keySet().addAll(setToAdd);
+    }
+
+    @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
+    public void keySetIteratorShouldCorrectlyRemoveRootKey() {
+        fillMapForSubmapping(map);
+        Iterator<String> iterator = map.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            switch (key) {
+                case "P":
+                    iterator.remove();
+            }
+        }
+
+        assertFalse(map.containsKey("P"));
     }
 
     // VALUES() METHOD --------------------------------------------------------------------
     @Test
+
     public void valuesShouldReturnValuesCollection() throws Exception {
-        map.put("keyOne", 10);
-        map.put("keyTwo", 20);
+        map.put("KeyOne", 10);
+        map.put("KeyTwo", 20);
 
         Collection<Integer> values = map.values();
 
@@ -533,27 +558,30 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void valuesShouldReturnCollectionWithLaterAddedToMapValues() throws Exception {
         Collection<Integer> values = map.values();
-        map.put("key", 10);
+        map.put("Key", 10);
         assertTrue(values.contains(10));
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void valuesShouldReturnCollectionWithOutLaterRemovedFromMapValues() throws Exception {
-        map.put("key", 10);
+        map.put("Key", 10);
         Collection<Integer> values = map.values();
-        map.remove("key");
+        map.remove("Key");
         assertFalse(values.contains(10));
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void valuesShouldSupportRemovingElementsFromMapViaIteratorRemove() throws Exception {
         Integer valueToRemove = 20;
 
-        map.put("keyOne", 10);
-        map.put("keyTwo", valueToRemove);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyTwo", valueToRemove);
+        map.put("KeyThree", 30);
 
         Iterator<Integer> iterator = map.values().iterator();
         while (iterator.hasNext()) {
@@ -565,12 +593,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void valuesShouldSupportRemovingElementsFromMapViaCollectionRemove() throws Exception {
         Integer valueToRemove = 20;
 
-        map.put("keyOne", 10);
-        map.put("keyTwo", valueToRemove);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyTwo", valueToRemove);
+        map.put("KeyThree", 30);
 
         map.values().remove(valueToRemove);
 
@@ -578,12 +607,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void valuesShouldSupportRemovingElementsFromMapViaCollectionRemoveAll() throws Exception {
         Integer valueToRemove = 20;
 
-        map.put("keyOne", 10);
-        map.put("keyTwo", valueToRemove);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyTwo", valueToRemove);
+        map.put("KeyThree", 30);
 
         HashSet<Integer> valuesToRemove = new HashSet<>();
         valuesToRemove.add(valueToRemove);
@@ -594,12 +624,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void valuesShouldSupportRemovingElementsFromMapViaCollectionRetainAll() throws Exception {
         Integer valueToKeep = 20;
 
-        map.put("keyOne", 10);
-        map.put("keyTwo", valueToKeep);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyTwo", valueToKeep);
+        map.put("KeyThree", 30);
 
         HashSet<Integer> valuesToKeep = new HashSet<>();
         valuesToKeep.add(valueToKeep);
@@ -612,10 +643,11 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void valuesShouldSupportRemovingElementsFromMapViaCollectionClear() throws Exception {
-        map.put("keyOne", 10);
-        map.put("keyTwo", 20);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyTwo", 20);
+        map.put("KeyThree", 30);
 
         map.values().clear();
         assertTrue(map.isEmpty());
@@ -636,8 +668,8 @@ public class CustomTreeMapTest {
     // ENTRY_SET() METHOD --------------------------------------------------------------------
     @Test
     public void entrySetShouldReturnSetOfMapEntries() throws Exception {
-        Map.Entry<String, Integer> entryOne = map.new CustomNodeEntry<>("keyOne", 30);
-        Map.Entry<String, Integer> entryTwo = map.new CustomNodeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryOne = map.new CustomNodeEntry<>("KeyOne", 30);
+        Map.Entry<String, Integer> entryTwo = map.new CustomNodeEntry<>("KeyTwo", 20);
 
         map.put(entryOne.getKey(), entryOne.getValue());
         map.put(entryTwo.getKey(), entryTwo.getValue());
@@ -654,10 +686,11 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void entrySetShouldNotContainLaterRemovedFromMapEntries() throws Exception {
-        Map.Entry<String, Integer> entry = map.new CustomNodeEntry<>("keyOne", 30);
+        Map.Entry<String, Integer> entry = map.new CustomNodeEntry<>("KeyOne", 30);
         map.put(entry.getKey(), entry.getValue());
-        map.put("keyTwo", 20);
+        map.put("KeyTwo", 20);
 
         Set<Map.Entry<String, Integer>> entries = map.entrySet();
 
@@ -667,10 +700,11 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void entrySetShouldContainLaterAddedToMapKeys() throws Exception {
-        Map.Entry<String, Integer> entry = map.new CustomNodeEntry<>("keyOne", 30);
+        Map.Entry<String, Integer> entry = map.new CustomNodeEntry<>("KeyOne", 30);
 
-        map.put("keyTwo", 20);
+        map.put("KeyTwo", 20);
 
         Set<Map.Entry<String, Integer>> entries = map.entrySet();
 
@@ -680,12 +714,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void entrySetShouldSupportRemovingElementsFromMapViaIteratorRemove() throws Exception {
-        Map.Entry<String, Integer> entryToRemove = map.new CustomNodeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToRemove = map.new CustomNodeEntry<>("KeyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
-        map.put("keyOne", 10);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyThree", 30);
 
         Iterator<Map.Entry<String, Integer>> iterator = map.entrySet().iterator();
 
@@ -698,12 +733,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRemove() throws Exception {
-        Map.Entry<String, Integer> entryToRemove = map.new CustomNodeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToRemove = map.new CustomNodeEntry<>("KeyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
-        map.put("keyOne", 10);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyThree", 30);
 
         map.entrySet().remove(entryToRemove);
 
@@ -711,12 +747,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRemoveAll() throws Exception {
-        Map.Entry<String, Integer> entryToRemove = map.new CustomNodeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToRemove = map.new CustomNodeEntry<>("KeyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
-        map.put("keyOne", 10);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyThree", 30);
 
         HashSet<Map.Entry> entriesToRemove = new HashSet<>();
         entriesToRemove.add(entryToRemove);
@@ -727,12 +764,13 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRetainAll() throws Exception {
-        Map.Entry<String, Integer> entryToKeep = map.new CustomNodeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToKeep = map.new CustomNodeEntry<>("KeyTwo", 20);
 
         map.put(entryToKeep.getKey(), entryToKeep.getValue());
-        map.put("keyOne", 10);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyThree", 30);
 
         HashSet<Map.Entry> entriesToKeep = new HashSet<>();
         entriesToKeep.add(entryToKeep);
@@ -740,41 +778,43 @@ public class CustomTreeMapTest {
         map.entrySet().retainAll(entriesToKeep);
 
         assertTrue(map.containsKey(entryToKeep.getKey()));
-        assertFalse(map.containsKey("keyOne"));
-        assertFalse(map.containsKey("keyThree"));
+        assertFalse(map.containsKey("KeyOne"));
+        assertFalse(map.containsKey("KeyThree"));
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void entrySetShouldSupportRemovingElementsFromMapViaSetClear() throws Exception {
-        map.put("keyOne", 10);
-        map.put("keyTwo", 20);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyTwo", 20);
+        map.put("KeyThree", 30);
 
         map.entrySet().clear();
         assertTrue(map.isEmpty());
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void entrySetShouldSupportSetValueToMapOperation() throws Exception {
-        map.put("keyOne", 10);
-        map.put("keyThree", 30);
+        map.put("KeyOne", 10);
+        map.put("KeyThree", 30);
 
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            if (entry.getKey().equals("keyOne")) entry.setValue(20);
+            if (entry.getKey().equals("KeyOne")) entry.setValue(20);
         }
 
-        assertEquals(new Integer(20), map.get("keyOne"));
+        assertEquals(new Integer(20), map.get("KeyOne"));
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void entrySetShouldNotSupportAddToMapOperation() throws Exception {
-        Map.Entry<String, Integer> entryToTry = map.new CustomNodeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToTry = map.new CustomNodeEntry<>("KeyTwo", 20);
         map.entrySet().add(entryToTry);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void entrySetShouldNotSupportAddAllToMapOperation() throws Exception {
-        Map.Entry<String, Integer> entryToTry = map.new CustomNodeEntry<>("keyTwo", 20);
+        Map.Entry<String, Integer> entryToTry = map.new CustomNodeEntry<>("KeyTwo", 20);
         HashSet<Map.Entry<String, Integer>> setToAdd = new HashSet<>();
         setToAdd.add(entryToTry);
         map.entrySet().addAll(setToAdd);
@@ -796,6 +836,7 @@ public class CustomTreeMapTest {
 
     // SUBMAP ---------------------------------------------
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldReturnValidSubMap() throws Exception {
         fillMapForSubmapping(map);
         Map<String, Integer> subMap = map.subMap("E", "G");
@@ -805,12 +846,14 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldReturnEmptyMapIfFirstKeyEqualsToSecond() throws Exception {
         fillMapForSubmapping(map);
         assertTrue(map.subMap("A", "A").isEmpty());
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldContainsLaterAddedToOriginalMapValuesIfTheirKeysAreInRange() throws Exception {
         fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("A", "D");
@@ -822,6 +865,7 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldNotContainsLaterAddedToOriginalMapValuesIfTheirKeysAreNotInRange() throws Exception {
         fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("A", "D");
@@ -832,6 +876,7 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldNotContainsLaterRemovedFromOriginalMapValuesIfTheirKeysAreInRange() throws Exception {
         fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("X", "Z");
@@ -842,6 +887,7 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldRemoveValuesFromOriginalMap() throws Exception {
         fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("X", "Z");
@@ -852,6 +898,7 @@ public class CustomTreeMapTest {
     }
 
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldPutValuesToOriginalMapIfTheirKeysAreInRange() throws Exception {
         fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("K", "P");
@@ -862,6 +909,7 @@ public class CustomTreeMapTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldThrowIAEOnPuttingNewKeyWhichIsNotInRange() throws Exception {
         fillMapForSubmapping(map);
         SortedMap<String, Integer> subMap = map.subMap("K", "P");
@@ -870,18 +918,21 @@ public class CustomTreeMapTest {
     }
 
     @Test(expected = NullPointerException.class)
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldThrowNPEIfFirstArgumentIsNull() throws Exception {
         fillMapForSubmapping(map);
         map.subMap(null, "Z");
     }
 
     @Test(expected = NullPointerException.class)
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldThrowNPEIfSecondArgumentIsNull() throws Exception {
         fillMapForSubmapping(map);
         map.subMap("A", null);
     }
 
     @Test(expected = ClassCastException.class)
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldThrowCCEIfFirstKeyCouldNotBeComparedInThisMap() throws Exception {
         fillMapForSubmapping(map);
         SortedMap ungenerifiedMap = map;
@@ -889,6 +940,7 @@ public class CustomTreeMapTest {
     }
 
     @Test(expected = ClassCastException.class)
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldThrowCCEIfSecondKeyCouldNotBeComparedInThisMap() throws Exception {
         fillMapForSubmapping(map);
         SortedMap ungenerifiedMap = map;
@@ -896,30 +948,35 @@ public class CustomTreeMapTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldThrowsIAEIfFirstKeyIsGreaterThenSecond() throws Exception {
         fillMapForSubmapping(map);
         map.subMap("Z", "Y");
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldThrowsIAEIfFirstKeyIsLessThenMapMinimum() throws Exception {
         fillMapForSubmapping(map);
         map.subMap("0", "Z");
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldThrowsIAEIfSecondKeyIsGreaterThenMapMaximum() throws Exception {
         fillMapForSubmapping(map);
         map.subMap("C", "^");
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void subMapShouldThrowsIAEOnEmptyMap() throws Exception {
         map.subMap("a", "b");
     }
 
     // FIRSTKEY ---------------------------------------------
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void firstKeyShouldReturnValidFirstKey() throws Exception {
         fillMapForSubmapping(map);
         String[] keys = map.keySet().toArray(new String[0]);
@@ -933,6 +990,7 @@ public class CustomTreeMapTest {
 
     // LASTKEY ---------------------------------------------
     @Test
+    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void lastKeyShouldReturnValidLastKey() throws Exception {
         fillMapForSubmapping(map);
         String[] keys = map.keySet().toArray(new String[0]);
@@ -1018,23 +1076,5 @@ public class CustomTreeMapTest {
         }
     }
 
-    @Test
-    public void someTest() {
-        fillMapForSubmapping(map);
-        Iterator<String> iterator = map.keySet().iterator();
-        while (iterator.hasNext()) {
-            String key = iterator.next();
-            switch (key) {
-                case "K":
-                case "L":
-                case "M":
-                case "N":
-                case "O":
-                case "P":
-                    iterator.remove();
-            }
-        }
 
-        map.keySet().forEach(System.out::println);
-    }
 }
