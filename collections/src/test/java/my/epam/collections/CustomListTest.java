@@ -7,21 +7,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.lang.reflect.Field;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @FixMethodOrder
 @RunWith(Parameterized.class)
 public class CustomListTest extends Assert {
 
-    private List<Integer> list;
+    private CustomList<Integer> list;
 
     @Parameterized.Parameters
     public static Object[] params() {
         return new Object[]{new CustomArrayList<Integer>(), new CustomLinkedList<Integer>()};
     }
 
-    public CustomListTest(List<Integer> list) {
+    public CustomListTest(CustomList<Integer> list) {
         this.list = list;
     }
 
@@ -30,8 +33,170 @@ public class CustomListTest extends Assert {
         list.clear();
     }
 
+    // SIZE ----------------------------------
     @Test
-    public void firstTest() throws Exception {
-        assertTrue(list != null);
+    public void sizeOfEmptyMapShouldBeZero() throws Exception {
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    public void sizeShouldGrowOnAddingNewElement() throws Exception {
+        list.add(1);
+        int oldSize = list.size();
+
+        list.add(2);
+        int newSize = list.size();
+
+        assertEquals(1, newSize - oldSize);
+    }
+
+    @Test
+    public void sizeShouldReduceOnRemovingElement() throws Exception {
+        list.add(10);
+        int oldSize = list.size();
+        list.remove(new Integer(10));
+        int newSize = list.size();
+
+        assertEquals(1, oldSize - newSize);
+    }
+
+    @Test
+    public void sizeShouldReturnIntMaxValueIfMapSizeMoreThenIntMaxValue() throws Exception {
+        Field sizeField = list.getClass().getDeclaredField("size");
+        sizeField.setAccessible(true);
+        sizeField.set(list, Integer.MAX_VALUE);
+        assertEquals(Integer.MAX_VALUE, list.size());
+        list.add(10);
+        assertEquals(Integer.MAX_VALUE, list.size());
+    }
+
+    // IS_EMPTY ----------------------------------
+    @Test
+    public void isEmptyShouldReturnTrueOnEmptyList() throws Exception {
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void isEmptyShouldReturnFalseOnNotEmptyList() throws Exception {
+        list.add(10);
+        assertFalse(list.isEmpty());
+    }
+
+    // CONTAINS ----------------------------------
+    @Test
+    public void containsShouldReturnFalseOnEmptyList() throws Exception {
+        assertFalse(list.contains(10));
+    }
+
+    @Test
+    public void containsShouldReturnTrueIfElementWasAdded() throws Exception {
+        list.add(110);
+        list.add(123);
+        list.add(0);
+
+        assertTrue(list.contains(110));
+    }
+
+    @Test
+    public void containsShouldReturnFalseOnNullIfNullWasNotAdded() throws Exception {
+        assertFalse(list.contains(null));
+    }
+
+    @Test
+    public void containsShouldReturnTrueOnNullIfNullWasAdded() throws Exception {
+        list.add(null);
+        assertTrue(list.contains(null));
+    }
+
+    // ITERATOR ----------------------------------
+    @Test
+    public void iteratorShouldSupportForEachIteration() throws Exception {
+        int[] expected = new int[]{10, 20, 30, 40};
+        for (int i : expected) {
+            list.add(expected[i]);
+        }
+
+        int i = 0;
+
+        for (Integer value : list) {
+            assertEquals(new Integer(expected[i++]), value);
+        }
+    }
+
+    @Test
+    public void iteratorShouldSupportRemoveValues() throws Exception {
+        int[] values = new int[]{10, 20, 30, 40};
+        for (int i : values) {
+            list.add(values[i]);
+        }
+
+        Iterator<Integer> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            iterator.next();
+            iterator.remove();
+        }
+
+        assertTrue(list.isEmpty());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void iteratorNextShouldThrowNSEOnEmptyList() throws Exception {
+        list.iterator().next();
+    }
+
+    // ADD ----------------------------------
+    @Test
+    public void addShould() throws Exception {
+
+
+    }
+
+    // REMOVE ----------------------------------
+    @Test
+    public void removeShould() throws Exception {
+
+
+    }
+
+    // CLEAR ----------------------------------
+    @Test
+    public void clearShould() throws Exception {
+
+
+    }
+
+    // GET ----------------------------------
+    @Test
+    public void getShould() throws Exception {
+
+
+    }
+
+    // SET ----------------------------------
+    @Test
+    public void setShould() throws Exception {
+
+
+    }
+
+    // ADD_TO_INDEX ----------------------------------
+    @Test
+    public void addToIndexShould() throws Exception {
+
+
+    }
+
+    // REMOVE_BY_INDEX ----------------------------------
+    @Test
+    public void removeByIndexShould() throws Exception {
+
+
+    }
+
+    // INDEX_OF ----------------------------------
+    @Test
+    public void indexOfShould() throws Exception {
+
+
     }
 }
