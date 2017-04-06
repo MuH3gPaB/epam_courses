@@ -45,7 +45,6 @@ public class CustomTreeMapTest {
 
     // SIZE() --------------------------------------------------------------------
     @Test
-    @ConditionalIgnore(condition = IgnoreSubMap.class)
     public void sizeOfEmptyMapShouldBeZero() throws Exception {
         assertEquals(0, map.size());
     }
