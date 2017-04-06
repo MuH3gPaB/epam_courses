@@ -1007,16 +1007,25 @@ public class CustomTreeMapTest {
     public void if15OrderedElementsWasAddedBalanceShouldBeCloseTo1() {
         fillMapOrdered(15);
         double error = Math.abs(map.getBalanceRate() - 1);
-        ComparableAssert.assertLesser(0.01, error);
+        ComparableAssert.assertLesser(0.001, error);
+    }
+
+    @Test
+    public void if31OrderedElementsWasAddedAndThen10WasRemovedBalanceShouldBeCloseTo1() {
+        fillMapOrdered(31);
+        for (int i = 0; i < 10; i++) {
+            map.remove("Key1" + i);
+        }
+        double error = Math.abs(map.getBalanceRate() - 1);
+        ComparableAssert.assertLesser(0.001, error);
     }
 
     private void fillMapOrdered(int count) {
         for (int i = 0; i < count; i++) {
-            map.put(String.valueOf(i), i);
+            map.put("Key" + i, i);
         }
     }
 
-    // Last character comparator for testing.
     private class LastCharacterComparator implements Comparator<String> {
         @Override
         public int compare(String o1, String o2) {

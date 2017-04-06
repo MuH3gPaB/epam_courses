@@ -497,11 +497,6 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         }
 
         @Override
-        public double getBalanceRate() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public Comparator<? super K> comparator() {
             return CustomTreeMap.this.comparator();
         }
@@ -552,6 +547,11 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
                 }
             }
         }
+
+        if (!isRed(node.left) && isRed(node.right)) node = rotateLeft(node);
+        if (isRed(node.left) && isRed(node.left.left)) node = rotateRight(node);
+        if (isRed(node.left) && isRed(node.right)) node = flipColors(node);
+
         return node;
     }
 
