@@ -28,7 +28,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     private int size = 0;
 
     /**
-     * Create ney map, ordered by given Comparator<Key>.
+     * Create ney map, ordered by given Comparator{@literal <}Key{@literal >}.
      *
      * @param comparator comparator
      */
@@ -39,7 +39,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     /**
      * Create new map, ordered by Comparable.compareTo.
      * <p>
-     * Keys should implement Comparable<Key>
+     * Keys should implement Comparable{@literal <}Key{@literal >}
      */
     public CustomTreeMap() {
         this(null);
@@ -48,7 +48,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     /**
      * Get comparator of this map.
      *
-     * @return comparator, or null is using Comparable<Key>
+     * @return comparator, or null is using Comparable{@literal <}Key{@literal >}
      */
     @Override
     public Comparator<? super K> comparator() {
@@ -66,9 +66,9 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
      * Given bounds(fromKey, toKey) should be in range of keys, represented
      * in this map.
      * It's means that:
-     * fromKey >= map.firstKey()
-     * toKey <= map.lastKey()
-     * fromKey < toKey
+     * fromKey {@literal >}= map.firstKey()
+     * toKey {@literal <}= map.lastKey()
+     * fromKey {@literal <} toKey
      * <p>
      * If some of this conditions is not correct IllegalArgumentException will be thrown.
      * <p>
@@ -78,7 +78,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
      * @param toKey   end exclusive key
      * @return subMap for given bounds
      * @throws IllegalArgumentException if any wrong arguments
-     * @throws ClassCastException if given keys could not be compared in this map
+     * @throws ClassCastException       if given keys could not be compared in this map
      * @see SubMap
      */
     @Override
@@ -156,7 +156,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     /**
      * Check if this map contains given key.
-     *
+     * <p>
      * Key should not be null.
      *
      * @param key key to be checked
@@ -171,7 +171,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     /**
      * Check if this map contains given value.
-     *
+     * <p>
      * Value may be null.
      *
      * @param value value to be checked
@@ -184,7 +184,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     /**
      * Get mapped value by given key.
-     *
+     * <p>
      * Key should not be null.
      *
      * @param key key to be find
@@ -200,13 +200,13 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     /**
      * Map given value to given key.
-     *
+     * <p>
      * Key should not be null.
      * Value may be null.
-     *
+     * <p>
      * If another value was already mapped to given key,
      * old value will be override to new one.
-     *
+     * <p>
      * In this case, old value will be returned.
      *
      * @param key   key to be mapped
@@ -224,10 +224,10 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     /**
      * Unmap given key if was mapped.
-     *
+     * <p>
      * Key should not be null.
      * Return null if no value was mapped, otherwise - value was mapped.
-     *
+     * <p>
      * It's no way to check if null value was mapped, or no value.
      *
      * @param key key to be unmapped
@@ -244,9 +244,9 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     /**
      * Put all values from given map to current.
-     *
+     * <p>
      * Given map should not contains null keys.
-     *
+     * <p>
      * If given map contains keys that already mapped in current map,
      * mapped value will be override by values from given map.
      *
@@ -303,15 +303,15 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     /**
      * Get balance rate of inner tree of this map.
-     *
+     * <p>
      * Balance rate shows proportion of count of left and right children of tree nodes.
-     *
+     * <p>
      * Children of upper level (closure to root node) are most weight in balance rate.
-     *
+     * <p>
      * Balance rate of balanced tree is close to 1.
      * If balance rate is close to 0, it means that left children count is greater then right.
      * If balance rate is more than 1, it means that right children count is greater then left.
-     *
+     * <p>
      * Balance rate for empty tree is 1.
      *
      * @return balance rate.

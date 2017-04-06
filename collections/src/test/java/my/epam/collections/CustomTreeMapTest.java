@@ -1078,7 +1078,6 @@ public class CustomTreeMapTest {
     }
 
     public class IgnoreSubMap implements IgnoreCondition {
-
         @Override
         public boolean isSatisfied() {
             return map instanceof CustomTreeMap.SubMap;
