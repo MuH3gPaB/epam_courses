@@ -4,9 +4,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * This class is educational purpose implementation of SortedMap.
+ * This class is implementation of SortedMap in educational purpose .
  * <p>
- * It stores key-value pairs into balanced red black tree.
+ * It stores key-value pairs into balanced red-black tree.
+ * <p>
+ * In case of educational purpose of this class, not complete
+ * functionality of general TreeMap is supported.
+ * <p>
+ * For example, map returned by subMap method have unmodifiable,
+ * and not backed to original map entrySet, keySet and values.
+ * <p>
+ * Some other features of original TreeMap may not be supported.
+ * <p>
+ * Null values is supported.
+ * Null keys not allowed.
  *
  * @param <K> key type
  * @param <V> value type
@@ -16,67 +27,170 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     private Comparator<K> comparator;
     private int size = 0;
 
+    /**
+     * Create ney map, ordered by given Comparator<Key>.
+     *
+     * @param comparator comparator
+     */
     public CustomTreeMap(Comparator<K> comparator) {
         this.comparator = comparator;
     }
 
+    /**
+     * Create new map, ordered by Comparable.compareTo.
+     * <p>
+     * Keys should implement Comparable<Key>
+     */
     public CustomTreeMap() {
         this(null);
     }
 
+    /**
+     * Get comparator of this map.
+     *
+     * @return comparator, or null is using Comparable<Key>
+     */
     @Override
     public Comparator<? super K> comparator() {
         return comparator;
     }
 
+    /**
+     * Get subMap of this map by given bounds.
+     * <p>
+     * SubMap have unmodifiable and not backed to original map
+     * entrySet, keySet, values.
+     * <p>
+     * SubMap is modifiable and backed to original map.
+     * <p>
+     * Given bounds(fromKey, toKey) should be in range of keys, represented
+     * in this map.
+     * It's means that:
+     * fromKey >= map.firstKey()
+     * toKey <= map.lastKey()
+     * fromKey < toKey
+     * <p>
+     * If some of this conditions is not correct IllegalArgumentException will be thrown.
+     * <p>
+     * If fromKey.equals(toKey) the empty map will be returned.
+     *
+     * @param fromKey start inclusive key
+     * @param toKey   end exclusive key
+     * @return subMap for given bounds
+     * @throws IllegalArgumentException if any wrong arguments
+     * @throws ClassCastException if given keys could not be compared in this map
+     * @see SubMap
+     */
     @Override
     public SortedMap<K, V> subMap(K fromKey, K toKey) {
         return new SubMap(fromKey, toKey);
     }
 
+    /**
+     * Get submap of (map.firstKey, toKey)
+     *
+     * @param toKey end exclusive key
+     * @return subMap bounded by firstKey and toKey
+     * @see CustomTreeMap.SubMap
+     */
     @Override
     public SortedMap<K, V> headMap(K toKey) {
         return new SubMap(firstKey(), toKey);
     }
 
+    /**
+     * Get submap of (fromKey, map.lastKey)
+     *
+     * @param fromKey start inclusive key
+     * @return subMap bounded by fromKey and lastKey
+     * @see CustomTreeMap.SubMap
+     */
     @Override
     public SortedMap<K, V> tailMap(K fromKey) {
         return new SubMap(fromKey, lastKey());
     }
 
+    /**
+     * Get first key of this map.
+     *
+     * @return first key
+     * @throws NoSuchElementException if map is empty
+     */
     @Override
     public K firstKey() {
         if (isEmpty()) throw new NoSuchElementException();
         return findMin(root).getKey();
     }
 
+    /**
+     * Get last key of this map.
+     *
+     * @return last key
+     * @throws NoSuchElementException if map is empty
+     */
     @Override
     public K lastKey() {
         if (isEmpty()) throw new NoSuchElementException();
         return findMax(root).getKey();
     }
 
+    /**
+     * Git size of this map.
+     *
+     * @return size, or Integer.MAX_VALUE if more elements was putted
+     */
     @Override
     public int size() {
         return size;
     }
 
+    /**
+     * Check empty.
+     *
+     * @return true if map is empty, otherwise - false
+     */
     @Override
     public boolean isEmpty() {
         return size() == 0;
     }
 
+    /**
+     * Check if this map contains given key.
+     *
+     * Key should not be null.
+     *
+     * @param key key to be checked
+     * @return true if map contains given key, otherwise - false
+     * @throws NullPointerException if give key is null
+     */
     @Override
     public boolean containsKey(Object key) {
         Objects.requireNonNull(key);
         return findNodeByKey(root, (K) key) != null;
     }
 
+    /**
+     * Check if this map contains given value.
+     *
+     * Value may be null.
+     *
+     * @param value value to be checked
+     * @return true if map contains value, otherwise - false
+     */
     @Override
     public boolean containsValue(Object value) {
         return findNodeByValue(root, value) != null;
     }
 
+    /**
+     * Get mapped value by given key.
+     *
+     * Key should not be null.
+     *
+     * @param key key to be find
+     * @return value, mapped to given key, or null if absent
+     * @throws NullPointerException if key is null
+     */
     @Override
     public V get(Object key) {
         Objects.requireNonNull(key);
@@ -84,6 +198,21 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         return nodeByKey == null ? null : nodeByKey.getValue();
     }
 
+    /**
+     * Map given value to given key.
+     *
+     * Key should not be null.
+     * Value may be null.
+     *
+     * If another value was already mapped to given key,
+     * old value will be override to new one.
+     *
+     * In this case, old value will be returned.
+     *
+     * @param key   key to be mapped
+     * @param value value to be mapped
+     * @return null, or old value if was mapped
+     */
     @Override
     public V put(K key, V value) {
         Objects.requireNonNull(key);
@@ -93,6 +222,17 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         return oldValContainer.getValue();
     }
 
+    /**
+     * Unmap given key if was mapped.
+     *
+     * Key should not be null.
+     * Return null if no value was mapped, otherwise - value was mapped.
+     *
+     * It's no way to check if null value was mapped, or no value.
+     *
+     * @param key key to be unmapped
+     * @return value that was mapped, or null if no value was mapped.
+     */
     @Override
     public V remove(Object key) {
         Objects.requireNonNull(key);
@@ -102,6 +242,17 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         return oldValContainer.getValue();
     }
 
+    /**
+     * Put all values from given map to current.
+     *
+     * Given map should not contains null keys.
+     *
+     * If given map contains keys that already mapped in current map,
+     * mapped value will be override by values from given map.
+     *
+     * @param m map with values
+     * @throws NullPointerException if given map contains null keys
+     */
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         Objects.requireNonNull(m);
@@ -111,30 +262,63 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         }
     }
 
+    /**
+     * Unmap all values from current map.
+     */
     @Override
     public void clear() {
         size = 0;
         root = null;
     }
 
+    /**
+     * Get set of keys of the current map.
+     *
+     * @return keySet
+     */
     @Override
     public Set<K> keySet() {
         return new KeySet<>();
     }
 
+    /**
+     * Get values collection.
+     *
+     * @return values
+     */
     @Override
     public Collection<V> values() {
         return new Values<>();
     }
 
+    /**
+     * Get set of entries.
+     *
+     * @return entries set
+     */
     @Override
     public Set<Entry<K, V>> entrySet() {
         return new EntrySet<>();
     }
 
+    /**
+     * Get balance rate of inner tree of this map.
+     *
+     * Balance rate shows proportion of count of left and right children of tree nodes.
+     *
+     * Children of upper level (closure to root node) are most weight in balance rate.
+     *
+     * Balance rate of balanced tree is close to 1.
+     * If balance rate is close to 0, it means that left children count is greater then right.
+     * If balance rate is more than 1, it means that right children count is greater then left.
+     *
+     * Balance rate for empty tree is 1.
+     *
+     * @return balance rate.
+     */
     public double getBalanceRate() {
-        double left = 0;
-        double right = 0;
+        double left = 1;
+        double right = 1;
         for (Entry<K, V> entry : entrySet()) {
             CustomNodeEntry nodeEntry = (CustomNodeEntry) entry;
             if (nodeEntry.left != null) left += getNodeWeight(nodeEntry);
