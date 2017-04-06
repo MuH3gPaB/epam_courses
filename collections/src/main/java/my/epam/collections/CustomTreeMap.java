@@ -465,19 +465,35 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
         @Override
         public Set<K> keySet() {
-            throw new UnsupportedOperationException();
+            TreeSet<K> set = new TreeSet<>(CustomTreeMap.this::compare);
+
+            CustomTreeMap.this.entrySet().stream()
+                    .filter((e) -> validKey(e.getKey()))
+                    .map(Entry::getKey)
+                    .forEach(set::add);
+
+            return Collections.unmodifiableSet(set);
         }
 
         @Override
         public Collection<V> values() {
-            throw new UnsupportedOperationException();
+            List<V> values = entrySet()
+                    .stream()
+                    .map(Entry::getValue)
+                    .collect(Collectors.toList());
+
+            return Collections.unmodifiableList(values);
         }
 
         @Override
         public Set<Entry<K, V>> entrySet() {
-            return Collections.unmodifiableSet(CustomTreeMap.this.entrySet().stream()
+            TreeSet<Entry<K, V>> set = new TreeSet<>((o1, o2) -> CustomTreeMap.this.compare(o1.getKey(), o2.getKey()));
+
+            CustomTreeMap.this.entrySet().stream()
                     .filter((e) -> validKey(e.getKey()))
-                    .collect(Collectors.toSet()));
+                    .forEach(set::add);
+
+            return Collections.unmodifiableSet(set);
         }
 
         @Override
@@ -612,7 +628,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     }
 
     private int compare(K keyOne, K keyTwo) {
-        if (comparator == null) {
+        if (comparator() == null) {
             // Cast both for checking.
             Comparable<K> keyOneComp = (Comparable<K>) keyOne;
             Comparable<K> keyTwoComp = (Comparable<K>) keyTwo;

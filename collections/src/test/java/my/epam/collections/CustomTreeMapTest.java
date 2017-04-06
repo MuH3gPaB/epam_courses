@@ -228,7 +228,7 @@ public class CustomTreeMapTest {
     public void putShouldAcceptMoreThan100Elements() throws Exception {
         int elementsCount = 100;
         for (int i = 0; i < elementsCount; i++) {
-            map.put("" + i, i);
+            map.put("Key" + i, i);
         }
 
         assertTrue(map.containsValue(elementsCount - 1));
