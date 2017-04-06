@@ -88,6 +88,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         Objects.requireNonNull(key);
         CustomNodeEntry<K, V> oldValContainer = new CustomNodeEntry<>(null, null);
         root = putToNode(root, key, value, oldValContainer);
+        root.parent = null;
         return oldValContainer.getValue();
     }
 
@@ -96,6 +97,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         Objects.requireNonNull(key);
         CustomNodeEntry<K, V> oldValContainer = new CustomNodeEntry<>(null, null);
         root = removeNode(root, (K) key, oldValContainer);
+        if (root != null) root.parent = null;
         return oldValContainer.getValue();
     }
 
@@ -273,10 +275,6 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
     class KeySetIterator<IK> extends EntrySetIterator<IK> {
 
-        KeySetIterator() {
-
-        }
-
         @Override
         public IK next() {
             lastReturned = this.current;
@@ -289,10 +287,6 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     }
 
     class ValuesIterator<IV> extends EntrySetIterator<IV> {
-
-        ValuesIterator() {
-
-        }
 
         @Override
         public IV next() {
@@ -443,7 +437,11 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
         @Override
         public void clear() {
-            throw new UnsupportedOperationException();
+            Iterator<K> iterator = CustomTreeMap.this.keySet().iterator();
+            while (iterator.hasNext()) {
+                K key = iterator.next();
+                if (compare(key, fromKey) >= 0 && compare(key, toKey) < 0) iterator.remove();
+            }
         }
 
         @Override
@@ -470,6 +468,11 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         public Comparator<? super K> comparator() {
             return CustomTreeMap.this.comparator();
         }
+
+        @Override
+        public boolean isEmpty() {
+            return size() == 0;
+        }
     }
 
     private void incrementSize() {
@@ -483,15 +486,18 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         else {
             size--;
             oldVal.setValue(node.getValue());
-            boolean leftExist = !(node.left == null);
-            boolean rightExist = !(node.right == null);
+            boolean leftExist = node.left != null;
+            boolean rightExist = node.right != null;
 
             if (leftExist) {
                 if (rightExist) {
-                    CustomNodeEntry<K, V> tmp = node;
-                    node = findMin(tmp);
-                    node.right = removeMin(tmp);
-                    node.left = tmp.left;
+                    CustomNodeEntry<K, V> tmp = findMin(node.right);
+                    tmp.right = removeMin(node.right);
+                    if (tmp.right != null) tmp.right.parent = tmp;
+                    tmp.left = node.left;
+                    if (tmp.left != null) tmp.left.parent = tmp;
+                    tmp.parent = node.parent;
+                    node = tmp;
                 } else {
                     node.left.parent = node.parent;
                     return node.left;
@@ -519,8 +525,11 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     }
 
     private CustomNodeEntry<K, V> removeMin(CustomNodeEntry<K, V> node) {
-        if (node.left == null) return node.right;
-        node.left = removeMin(node.left);
+        if (node.left == null) {
+            return node.right;
+        } else {
+            node.left = removeMin(node.left);
+        }
         return node;
     }
 

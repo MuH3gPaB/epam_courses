@@ -28,9 +28,9 @@ public class CustomTreeMapTest {
 
     @Parameterized.Parameters
     public static List data() {
-        return Arrays.asList(//new CustomTreeMap<String, Integer>(),
+        return Arrays.asList(new CustomTreeMap<String, Integer>()//,
                 //new CustomTreeMap<String, Integer>(new NaturalComparator<>()),
-                buildSubMap()
+                //buildSubMap()
         );
     }
 
@@ -336,7 +336,7 @@ public class CustomTreeMapTest {
     // CLEAR() --------------------------------------------------------------------
     @Test
     public void clearShouldRemoveAllElementsFromMap() throws Exception {
-        map.put("key", 10);
+        map.put("K", 10);
         map.clear();
         assertTrue(map.isEmpty());
     }
@@ -1007,7 +1007,7 @@ public class CustomTreeMapTest {
     private static CustomTreeMap.SubMap buildSubMap() {
         CustomTreeMap<String, Integer> mainMap = new CustomTreeMap<>();
         fillMapForSubmapping(mainMap);
-        return (CustomTreeMap.SubMap) mainMap.subMap("E", "W");
+        return (CustomTreeMap.SubMap) mainMap.subMap("B", "Y");
     }
 
     public class IgnoreSubMap implements IgnoreCondition {
@@ -1016,5 +1016,25 @@ public class CustomTreeMapTest {
         public boolean isSatisfied() {
             return map instanceof CustomTreeMap.SubMap;
         }
+    }
+
+    @Test
+    public void someTest() {
+        fillMapForSubmapping(map);
+        Iterator<String> iterator = map.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            switch (key) {
+                case "K":
+                case "L":
+                case "M":
+                case "N":
+                case "O":
+                case "P":
+                    iterator.remove();
+            }
+        }
+
+        map.keySet().forEach(System.out::println);
     }
 }
