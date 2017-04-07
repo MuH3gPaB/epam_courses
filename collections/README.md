@@ -27,8 +27,22 @@ All methods of SortedMap implemented and tested.
 _Note: SubMap is backed, but submap's entrySet, keySet, values are not backed 
 and unmodifiable._
 
-ArrayList [(source)]() [(test)]()
+ArrayList [(source)](https://github.com/MuH3gPaB/epam_courses/blob/master/collections/src/main/java/my/epam/collections/CustomArrayList.java) [(test)](https://github.com/MuH3gPaB/epam_courses/blob/master/collections/src/test/java/my/epam/collections/CustomListTest.java)
 ----------
+Very simple variation of ArrayList.
 
-LinkedList [(source)]() [(test)]()
+[CustomArrayList](https://github.com/MuH3gPaB/epam_courses/blob/master/collections/src/main/java/my/epam/collections/CustomArrayList.java) class implements [CustomList](https://github.com/MuH3gPaB/epam_courses/blob/master/collections/src/main/java/my/epam/collections/CustomList.java) interface, 
+that contains 12 most popular methods of java.util.List interface.
+
+Here we have: add, get, set, remove, contains, clear, isEmpty, size, 
+iterator (with removing), indexOf, add (by index), remove (by index) methods.
+
+Initial capacity is 10 and could not be changed on creating instance.
+
+LinkedList [(source)](https://github.com/MuH3gPaB/epam_courses/blob/master/collections/src/main/java/my/epam/collections/CustomLinkedList.java) [(test)](https://github.com/MuH3gPaB/epam_courses/blob/master/collections/src/test/java/my/epam/collections/CustomListTest.java)
 ----------
+Very simple, like previous task, class - variation of LinkedList.
+ 
+Implements [CustomList](https://github.com/MuH3gPaB/epam_courses/blob/master/collections/src/main/java/my/epam/collections/CustomList.java), so have 12 methods, listed before.
+
+Based on one-sided list.
