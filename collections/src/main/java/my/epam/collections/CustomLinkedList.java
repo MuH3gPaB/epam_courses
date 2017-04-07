@@ -19,6 +19,11 @@ public class CustomLinkedList<E> implements CustomList<E> {
 
     @Override
     public boolean contains(Object o) {
+        Node<E> node = head;
+        while (node.hasNext()) {
+            node = node.next;
+            if (checkEquality(o, node.value)) return true;
+        }
         return false;
     }
 
@@ -47,7 +52,11 @@ public class CustomLinkedList<E> implements CustomList<E> {
     @Override
     public E get(int index) {
         rangeCheck(index, false);
-        return null;
+        Node<E> node = head.next;
+        for (int i = 0; i < index; i++) {
+            node = node.next;
+        }
+        return node.value;
     }
 
     @Override
@@ -59,6 +68,17 @@ public class CustomLinkedList<E> implements CustomList<E> {
     @Override
     public void add(int index, E element) {
         rangeCheck(index, true);
+        Node<E> prev = head;
+        Node<E> node = prev.next;
+        for (int i = 0; i < index; i++) {
+            prev = node;
+            node = node.next;
+        }
+
+        Node<E> newNode = new Node<>(element);
+        prev.next = newNode;
+        newNode.next = node;
+
         incrementSize();
     }
 
