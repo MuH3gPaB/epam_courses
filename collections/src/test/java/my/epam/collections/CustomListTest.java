@@ -218,6 +218,26 @@ public class CustomListTest extends Assert {
         assertFalse(list.remove(null));
     }
 
+    @Test
+    public void removeShouldPlaceNextElementOnPositionOfRemoved() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        list.remove(new Integer(20));
+        assertEquals(new Integer(30), list.get(1));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void afterRemovingLastElementGettingOnItIndexShouldThrowIOOB() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        list.remove(30);
+        list.get(2);
+    }
+
     // CLEAR ----------------------------------
     @Test
     public void clearShouldMakeListEmpty() throws Exception {
@@ -236,14 +256,46 @@ public class CustomListTest extends Assert {
         assertTrue(list.isEmpty());
     }
 
-    // GET ----------------------------------
+    // GET_BY_INDEX ----------------------------------
     @Test
-    public void getShould() throws Exception {
+    public void getShouldReturnElementByIndex() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
 
-
+        assertEquals(new Integer(20), list.get(1));
     }
 
-    // SET ----------------------------------
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void getShouldThrowIOOBOnEmptyList() throws Exception {
+        list.get(0);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void getShouldThrowIOOBOnIndexGreaterThenListSize() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        list.get(4);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void getShouldThrowIOOBOnIndexEqualsToListSize() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        list.get(3);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void getShouldThrowIOOBOnNegativeIndex() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        list.get(-4);
+    }
+
+    // SET_BY_INDEX ----------------------------------
     @Test
     public void setShould() throws Exception {
 
