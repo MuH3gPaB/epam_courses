@@ -19,12 +19,7 @@ public class CustomLinkedList<E> implements CustomList<E> {
 
     @Override
     public boolean contains(Object o) {
-        Node<E> node = head;
-        while (node.hasNext()) {
-            node = node.next;
-            if (checkEquality(o, node.value)) return true;
-        }
-        return false;
+        return indexOf(o) != -1;
     }
 
     @Override
@@ -40,6 +35,18 @@ public class CustomLinkedList<E> implements CustomList<E> {
 
     @Override
     public boolean remove(Object o) {
+        Node<E> prev = head;
+        Node<E> node = head.next;
+        for (int i = 0; i < size(); i++) {
+            if (checkEquality(o, node.value)) {
+                prev.next = node.next;
+                size--;
+                return true;
+            }
+
+            prev = node;
+            node = node.next;
+        }
         return false;
     }
 
@@ -62,7 +69,13 @@ public class CustomLinkedList<E> implements CustomList<E> {
     @Override
     public E set(int index, E element) {
         rangeCheck(index, false);
-        return null;
+        Node<E> node = head.next;
+        for (int i = 0; i < index; i++) {
+            node = node.next;
+        }
+        E tmp = node.value;
+        node.value = element;
+        return tmp;
     }
 
     @Override
@@ -85,12 +98,25 @@ public class CustomLinkedList<E> implements CustomList<E> {
     @Override
     public E remove(int index) {
         rangeCheck(index, false);
+        Node<E> prev = head;
+        Node<E> node = head.next;
+        for (int i = 0; i < index; i++) {
+            prev = node;
+            node = node.next;
+        }
+
+        prev.next = node.next;
         size--;
-        return null;
+        return node.value;
     }
 
     @Override
     public int indexOf(Object o) {
+        Node<E> node = head;
+        for (int i = 0; i < size(); i++) {
+            node = node.next;
+            if (checkEquality(o, node.value)) return i;
+        }
         return -1;
     }
 

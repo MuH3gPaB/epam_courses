@@ -20,10 +20,7 @@ public class CustomArrayList<E> implements CustomList<E> {
 
     @Override
     public boolean contains(Object o) {
-        for (int i = 0; i < size(); i++) {
-            if (checkEquality(o, data[i])) return true;
-        }
-        return false;
+        return indexOf(o) != -1;
     }
 
     @Override
