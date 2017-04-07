@@ -15,8 +15,8 @@ public class CustomListTest extends Assert {
 
     @Parameterized.Parameters
     public static Object[] params() {
-        return new Object[]{new CustomArrayList<Integer>()};//,
-//                new CustomLinkedList<Integer>()};
+        return new Object[]//{new CustomArrayList<Integer>()};//,
+                {new CustomLinkedList<Integer>()};
     }
 
     public CustomListTest(CustomList<Integer> list) {
@@ -109,7 +109,7 @@ public class CustomListTest extends Assert {
     @Test
     public void iteratorShouldSupportForEachIteration() throws Exception {
         Integer[] expected = new Integer[]{10, 20, 30, 40};
-        for(Integer value : expected){
+        for (Integer value : expected) {
             list.add(value);
         }
 
@@ -123,7 +123,7 @@ public class CustomListTest extends Assert {
     @Test
     public void iteratorShouldSupportRemoveValues() throws Exception {
         Integer[] expected = new Integer[]{10, 20, 30, 40};
-        for(Integer value : expected){
+        for (Integer value : expected) {
             list.add(value);
         }
 
@@ -531,7 +531,7 @@ public class CustomListTest extends Assert {
     }
 
     @Test
-    public void indexOfShouldFoundIndexOfNullElementIfItWasAdded(){
+    public void indexOfShouldFoundIndexOfNullElementIfItWasAdded() {
         list.add(10);
         list.add(20);
         list.add(null);
@@ -541,7 +541,7 @@ public class CustomListTest extends Assert {
     }
 
     @Test
-    public void indexOfShouldReturnNegative1OnNullIfItWasNotAdded(){
+    public void indexOfShouldReturnNegative1OnNullIfItWasNotAdded() {
         list.add(10);
         list.add(20);
         list.add(30);
