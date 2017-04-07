@@ -1,21 +1,34 @@
 package my.epam.collections;
 
 import java.util.Iterator;
+import java.util.Objects;
 
-public class CustomArrayList<T> implements CustomList<T>{
+public class CustomArrayList<T> implements CustomList<T> {
+    private static final int DEFAULT_INITIAL_CAPACITY = 10;
+    private int size;
+    private Object[] data = new Object[DEFAULT_INITIAL_CAPACITY];
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size() == 0;
     }
 
     @Override
     public boolean contains(Object o) {
+        for (int i = 0; i < size(); i++) {
+            if (o == null) {
+                if (data[i] == null) {
+                    return true;
+                }
+            } else if (o.equals(data[i])) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -26,11 +39,27 @@ public class CustomArrayList<T> implements CustomList<T>{
 
     @Override
     public boolean add(T t) {
-        return false;
+        ensureCapacity(size + 1);
+        data[size] = t;
+        incrementSize();
+        return true;
+    }
+
+    private void ensureCapacity(int capacity) {
+        if (data.length < capacity) {
+            Object[] tmp = new Object[Math.max((data.length * 2) / 3, capacity)];
+            System.arraycopy(data, 0, tmp, 0, size);
+            data = tmp;
+        }
+    }
+
+    private void incrementSize() {
+        size++;
     }
 
     @Override
     public boolean remove(Object o) {
+        size--;
         return false;
     }
 

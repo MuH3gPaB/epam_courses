@@ -15,7 +15,8 @@ public class CustomListTest extends Assert {
 
     @Parameterized.Parameters
     public static Object[] params() {
-        return new Object[]{new CustomArrayList<Integer>(), new CustomLinkedList<Integer>()};
+        return new Object[]{new CustomArrayList<Integer>()};//,
+//                new CustomLinkedList<Integer>()};
     }
 
     public CustomListTest(CustomList<Integer> list) {
