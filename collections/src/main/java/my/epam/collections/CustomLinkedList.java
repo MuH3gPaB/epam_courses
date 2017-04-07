@@ -154,7 +154,7 @@ public class CustomLinkedList<E> implements CustomList<E> {
 
         @Override
         public E next() {
-            if (!hasNext()) throw new NoSuchElementException();
+            if (!hasNext()) throw new NoSuchElementException("No more elements for iteration.");
             previous = lastReturned;
             lastReturned = current;
             current = current.next;
@@ -178,9 +178,9 @@ public class CustomLinkedList<E> implements CustomList<E> {
 
     private void rangeCheck(int index, boolean sizeOk) {
         if (sizeOk) {
-            if (index < 0 || index > size) throw new IndexOutOfBoundsException();
+            if (index < 0 || index > size) throw new IndexOutOfBoundsException("Index : " + index + ", Size : " + size);
         } else {
-            if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
+            if (index < 0 || index >= size) throw new IndexOutOfBoundsException("Index : " + index + ", Size : " + size);
         }
     }
 

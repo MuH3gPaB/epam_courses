@@ -256,7 +256,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         Objects.requireNonNull(m);
-        if (m.containsKey(null)) throw new NullPointerException();
+        if (m.containsKey(null)) throw new NullPointerException("Map should not contain null keys.");
         for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
             this.put(entry.getKey(), entry.getValue());
         }
@@ -465,7 +465,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
             lastReturned = this.current;
             this.current = getNextEntry(this.current);
             if (lastReturned == null) {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException("No more elements for iteration");
             }
             return (IK) lastReturned.getKey();
         }
@@ -478,7 +478,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
             lastReturned = this.current;
             this.current = getNextEntry(this.current);
             if (lastReturned == null) {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException("No more elements for iteration");
             }
             return (IV) lastReturned.getValue();
         }
@@ -502,7 +502,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         public IE next() {
             lastReturned = this.current;
             if (lastReturned == null) {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException("No more elements for iteration");
             }
             this.current = getNextEntry(this.current);
             return (IE) lastReturned;
@@ -539,13 +539,14 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
             Objects.requireNonNull(fromKey);
             Objects.requireNonNull(toKey);
 
-            if (CustomTreeMap.this.isEmpty()) throw new IllegalArgumentException();
+            if (CustomTreeMap.this.isEmpty()) throw new IllegalArgumentException("Map is empty.");
 
-            if (CustomTreeMap.this.compare(fromKey, toKey) > 0) throw new IllegalArgumentException();
+            if (CustomTreeMap.this.compare(fromKey, toKey) > 0)
+                throw new IllegalArgumentException("Fromkey : " + fromKey + " is greater then toKey : " + toKey + ".");
             if (CustomTreeMap.this.compare(fromKey, CustomTreeMap.this.firstKey()) < 0)
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Fromkey : " + fromKey + " is less then firstKey : " + CustomTreeMap.this.firstKey() + ".");
             if (CustomTreeMap.this.compare(toKey, CustomTreeMap.this.lastKey()) > 0)
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("ToKey : " + toKey + " is greater then lastKey : " + CustomTreeMap.this.lastKey() + ".");
 
 
             this.fromKey = fromKey;
@@ -582,7 +583,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
         @Override
         public SortedMap<K, V> subMap(K fromKey, K toKey) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Submap doesnt support submapping.");
         }
 
         @Override

@@ -231,7 +231,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         Objects.requireNonNull(m);
-        if (m.containsKey(null)) throw new NullPointerException();
+        if (m.containsKey(null)) throw new NullPointerException("Map should not contain null keys.");
         for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
             this.put(entry.getKey(), entry.getValue());
         }
@@ -419,7 +419,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
             lastReturned = this.current;
             this.current = getNextEntry(this.current);
             if (lastReturned == null) {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException("No more elements for iteration.");
             }
             return (IK) lastReturned.getKey();
         }
@@ -436,7 +436,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
             lastReturned = this.current;
             this.current = getNextEntry(this.current);
             if (lastReturned == null) {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException("No more elements for iteration.");
             }
             return (IV) lastReturned.getValue();
         }
@@ -461,7 +461,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
             lastReturned = this.current;
             this.current = getNextEntry(this.current);
             if (lastReturned == null) {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException("No more elements for iteration.");
             }
             return (IE) lastReturned;
         }
