@@ -33,9 +33,7 @@ public class CustomArrayList<T> implements CustomList<T> {
 
     @Override
     public boolean add(T t) {
-        ensureCapacity(size + 1);
-        data[size] = t;
-        incrementSize();
+        add(size(), t);
         return true;
     }
 
@@ -70,13 +68,13 @@ public class CustomArrayList<T> implements CustomList<T> {
 
     @Override
     public T get(int index) {
-        rangeCheck(index);
+        rangeCheck(index, false);
         return (T) data[index];
     }
 
     @Override
     public T set(int index, T element) {
-        rangeCheck(index);
+        rangeCheck(index, false);
         T tmp = (T) data[index];
         data[index] = element;
         return tmp;
@@ -84,16 +82,16 @@ public class CustomArrayList<T> implements CustomList<T> {
 
     @Override
     public void add(int index, T element) {
-        rangeCheck(index);
-    }
-
-    private void rangeCheck(int index) {
-        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
+        rangeCheck(index, true);
+        ensureCapacity(size + 1);
+        System.arraycopy(data, index, data, index + 1, size - index);
+        data[index] = element;
+        incrementSize();
     }
 
     @Override
     public T remove(int index) {
-        rangeCheck(index);
+        rangeCheck(index, false);
         T element = get(index);
         System.arraycopy(data, index + 1, data, index, size() - index);
         size--;
@@ -113,6 +111,14 @@ public class CustomArrayList<T> implements CustomList<T> {
             return o2 == null;
         } else {
             return o1.equals(o2);
+        }
+    }
+
+    private void rangeCheck(int index, boolean sizeOk) {
+        if (sizeOk) {
+            if (index < 0 || index > size) throw new IndexOutOfBoundsException();
+        } else {
+            if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
         }
     }
 }
