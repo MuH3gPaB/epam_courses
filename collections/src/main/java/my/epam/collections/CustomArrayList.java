@@ -1,9 +1,9 @@
 package my.epam.collections;
 
 import java.util.Iterator;
-import java.util.Objects;
+import java.util.NoSuchElementException;
 
-public class CustomArrayList<T> implements CustomList<T> {
+public class CustomArrayList<E> implements CustomList<E> {
     private static final int DEFAULT_INITIAL_CAPACITY = 10;
     private int size;
     private Object[] data = new Object[DEFAULT_INITIAL_CAPACITY];
@@ -27,26 +27,14 @@ public class CustomArrayList<T> implements CustomList<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return null;
+    public Iterator<E> iterator() {
+        return new CustomListIterator();
     }
 
     @Override
-    public boolean add(T t) {
+    public boolean add(E t) {
         add(size(), t);
         return true;
-    }
-
-    private void ensureCapacity(int capacity) {
-        if (data.length < capacity) {
-            Object[] tmp = new Object[Math.max((data.length * 2) / 3, capacity)];
-            System.arraycopy(data, 0, tmp, 0, size);
-            data = tmp;
-        }
-    }
-
-    private void incrementSize() {
-        size++;
     }
 
     @Override
@@ -67,21 +55,21 @@ public class CustomArrayList<T> implements CustomList<T> {
     }
 
     @Override
-    public T get(int index) {
+    public E get(int index) {
         rangeCheck(index, false);
-        return (T) data[index];
+        return (E) data[index];
     }
 
     @Override
-    public T set(int index, T element) {
+    public E set(int index, E element) {
         rangeCheck(index, false);
-        T tmp = (T) data[index];
+        E tmp = (E) data[index];
         data[index] = element;
         return tmp;
     }
 
     @Override
-    public void add(int index, T element) {
+    public void add(int index, E element) {
         rangeCheck(index, true);
         ensureCapacity(size + 1);
         System.arraycopy(data, index, data, index + 1, size - index);
@@ -90,9 +78,9 @@ public class CustomArrayList<T> implements CustomList<T> {
     }
 
     @Override
-    public T remove(int index) {
+    public E remove(int index) {
         rangeCheck(index, false);
-        T element = get(index);
+        E element = get(index);
         System.arraycopy(data, index + 1, data, index, size() - index);
         size--;
         return element;
@@ -104,6 +92,26 @@ public class CustomArrayList<T> implements CustomList<T> {
             if (checkEquality(o, data[i])) return i;
         }
         return -1;
+    }
+
+    private class CustomListIterator implements Iterator<E> {
+        int cursor = 0;
+
+        @Override
+        public boolean hasNext() {
+            return cursor < size();
+        }
+
+        @Override
+        public E next() {
+            if (!hasNext()) throw new NoSuchElementException();
+            return (E) data[cursor++];
+        }
+
+        @Override
+        public void remove() {
+            CustomArrayList.this.remove(--cursor);
+        }
     }
 
     private boolean checkEquality(Object o1, Object o2) {
@@ -120,5 +128,17 @@ public class CustomArrayList<T> implements CustomList<T> {
         } else {
             if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
         }
+    }
+
+    private void ensureCapacity(int capacity) {
+        if (data.length < capacity) {
+            Object[] tmp = new Object[Math.max((data.length * 2) / 3, capacity)];
+            System.arraycopy(data, 0, tmp, 0, size);
+            data = tmp;
+        }
+    }
+
+    private void incrementSize() {
+        size++;
     }
 }
