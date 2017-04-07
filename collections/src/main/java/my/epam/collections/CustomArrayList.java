@@ -3,6 +3,15 @@ package my.epam.collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * Custom simple implementation of ArrayList.
+ * <p>
+ * This class stores elements as generic array.
+ *
+ * @param <E> type of stored elements
+ * @see CustomList
+ */
+
 public class CustomArrayList<E> implements CustomList<E> {
     private static final int DEFAULT_INITIAL_CAPACITY = 10;
     private int size;
@@ -136,6 +145,6 @@ public class CustomArrayList<E> implements CustomList<E> {
     }
 
     private void incrementSize() {
-        size++;
+        this.size += (this.size == Integer.MAX_VALUE) ? 0 : 1;
     }
 }

@@ -3,6 +3,15 @@ package my.epam.collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * Custom simple implementation of LinkedList.
+ * <p>
+ * This class stores elements as generic one way linked list.
+ *
+ * @param <E> type of stored elements
+ * @see CustomList
+ */
+
 public class CustomLinkedList<E> implements CustomList<E> {
     private Node<E> head = new Node<>(null);
     private int size;
@@ -176,6 +185,6 @@ public class CustomLinkedList<E> implements CustomList<E> {
     }
 
     private void incrementSize() {
-        size++;
+        this.size += (this.size == Integer.MAX_VALUE) ? 0 : 1;
     }
 }
