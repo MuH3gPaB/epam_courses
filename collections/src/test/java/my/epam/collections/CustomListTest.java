@@ -146,23 +146,94 @@ public class CustomListTest extends Assert {
 
     // ADD ----------------------------------
     @Test
-    public void addShould() throws Exception {
+    public void addShouldAddValidElement() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
 
+        assertTrue(list.contains(10));
+        assertTrue(list.contains(20));
+        assertTrue(list.contains(30));
+    }
 
+    @Test
+    public void addShouldReturnTrueAfterAdding() throws Exception {
+        assertTrue(list.add(10));
+    }
+
+    @Test
+    public void addShouldSupportAdding100ElementsOneByOne() throws Exception {
+        for (int i = 0; i < 100; i++) {
+            list.add(i);
+        }
+
+        assertEquals(100, list.size());
     }
 
     // REMOVE ----------------------------------
     @Test
-    public void removeShould() throws Exception {
+    public void removeShouldRemoveElementFromList() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
 
+        list.remove(new Integer(20));
 
+        assertFalse(list.contains(20));
+    }
+
+    @Test
+    public void removeShouldRemoveOnlyFirstOccuranceOfGivenElementFromList() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        list.add(20);
+
+        list.remove(new Integer(20));
+
+        assertTrue(list.contains(20));
+        assertEquals(3, list.size());
+    }
+
+    @Test
+    public void removeShouldReturnTrueIfElementWasRemoved() throws Exception {
+        list.add(10);
+        assertTrue(list.remove(new Integer(10)));
+    }
+
+    @Test
+    public void removeShouldReturnFalseIfElementWasNotFound() throws Exception {
+        assertFalse(list.remove(new Integer(10)));
+    }
+
+    @Test
+    public void removeShouldSupportRemovingNullFromList() throws Exception {
+        list.add(null);
+        assertTrue(list.remove(null));
+        assertFalse(list.contains(null));
+    }
+
+    @Test
+    public void removeShouldReturnFalseOnNullIfItWasNotAdded() throws Exception {
+        assertFalse(list.remove(null));
     }
 
     // CLEAR ----------------------------------
     @Test
-    public void clearShould() throws Exception {
+    public void clearShouldMakeListEmpty() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
 
+        list.clear();
 
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void clearShouldBeOkOnEmptyList() throws Exception {
+        list.clear();
+        assertTrue(list.isEmpty());
     }
 
     // GET ----------------------------------
