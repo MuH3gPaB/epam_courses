@@ -53,34 +53,47 @@ public class CustomArrayList<T> implements CustomList<T> {
 
     @Override
     public boolean remove(Object o) {
-
-        size--;
-        return false;
+        int index = indexOf(o);
+        if (index != -1) {
+            remove(index);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public void clear() {
-
+        data = new Object[DEFAULT_INITIAL_CAPACITY];
+        size = 0;
     }
 
     @Override
     public T get(int index) {
-        if(isEmpty()) throw new IndexOutOfBoundsException();
+        rangeCheck(index);
         return (T) data[index];
     }
 
     @Override
     public T set(int index, T element) {
-        return null;
+        rangeCheck(index);
+        T tmp = (T) data[index];
+        data[index] = element;
+        return tmp;
     }
 
     @Override
     public void add(int index, T element) {
+        rangeCheck(index);
+    }
 
+    private void rangeCheck(int index) {
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
     }
 
     @Override
     public T remove(int index) {
+        rangeCheck(index);
         T element = get(index);
         System.arraycopy(data, index + 1, data, index, size() - index);
         size--;
