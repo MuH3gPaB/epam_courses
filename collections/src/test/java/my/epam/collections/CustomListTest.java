@@ -297,10 +297,72 @@ public class CustomListTest extends Assert {
 
     // SET_BY_INDEX ----------------------------------
     @Test
-    public void setShould() throws Exception {
+    public void setShouldReplaceElementOnGivenPosition() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
 
-
+        list.set(1, 40);
+        assertEquals(new Integer(40), list.get(1));
     }
+
+    @Test
+    public void setShouldReturnReplacedElement() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        assertEquals(new Integer(20), list.set(1, 40));
+    }
+
+    @Test
+    public void setShouldBeOkOnSettingNull() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        list.set(1, null);
+        assertNull(list.get(1));
+    }
+
+    @Test
+    public void setShouldBeOkOnReturningNull() throws Exception {
+        list.add(10);
+        list.add(null);
+        list.add(30);
+
+        assertNull(list.set(1, 20));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void setShouldThrowIOOBOnEmptyList() throws Exception {
+        list.set(0, 10);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void setShouldThrowIOOBOnIndexGreaterThenListSize() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        list.set(4, 10);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void setShouldThrowIOOBOnIndexEqualsToListSize() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        list.set(3, 10);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void setShouldThrowIOOBOnNegativeIndex() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        list.set(-4, 2);
+    }
+
 
     // ADD_TO_INDEX ----------------------------------
     @Test
