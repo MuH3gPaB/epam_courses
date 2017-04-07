@@ -24,7 +24,7 @@ public class CustomLinkedList<E> implements CustomList<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return null;
+        return new LinkedIterator();
     }
 
     @Override
@@ -120,16 +120,42 @@ public class CustomLinkedList<E> implements CustomList<E> {
         return -1;
     }
 
-    private class Node<E> {
-        Node<E> next;
-        E value;
+    private class Node<T> {
+        Node<T> next;
+        T value;
 
-        public Node(E value) {
+        public Node(T value) {
             this.value = value;
         }
 
         private boolean hasNext() {
             return next != null;
+        }
+    }
+
+    private class LinkedIterator implements Iterator<E> {
+        Node<E> current = head.next;
+        Node<E> lastReturned = head;
+        Node<E> previous = head;
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public E next() {
+            if (!hasNext()) throw new NoSuchElementException();
+            previous = lastReturned;
+            lastReturned = current;
+            current = current.next;
+            return lastReturned.value;
+        }
+
+        @Override
+        public void remove() {
+            previous.next = current;
+            size--;
         }
     }
 
