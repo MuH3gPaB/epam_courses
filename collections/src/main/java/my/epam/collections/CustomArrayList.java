@@ -21,13 +21,7 @@ public class CustomArrayList<T> implements CustomList<T> {
     @Override
     public boolean contains(Object o) {
         for (int i = 0; i < size(); i++) {
-            if (o == null) {
-                if (data[i] == null) {
-                    return true;
-                }
-            } else if (o.equals(data[i])) {
-                return true;
-            }
+            if (checkEquality(o, data[i])) return true;
         }
         return false;
     }
@@ -59,6 +53,7 @@ public class CustomArrayList<T> implements CustomList<T> {
 
     @Override
     public boolean remove(Object o) {
+
         size--;
         return false;
     }
@@ -70,7 +65,8 @@ public class CustomArrayList<T> implements CustomList<T> {
 
     @Override
     public T get(int index) {
-        return null;
+        if(isEmpty()) throw new IndexOutOfBoundsException();
+        return (T) data[index];
     }
 
     @Override
@@ -85,11 +81,25 @@ public class CustomArrayList<T> implements CustomList<T> {
 
     @Override
     public T remove(int index) {
-        return null;
+        T element = get(index);
+        System.arraycopy(data, index + 1, data, index, size() - index);
+        size--;
+        return element;
     }
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        for (int i = 0; i < size(); i++) {
+            if (checkEquality(o, data[i])) return i;
+        }
+        return -1;
+    }
+
+    private boolean checkEquality(Object o1, Object o2) {
+        if (o1 == null) {
+            return o2 == null;
+        } else {
+            return o1.equals(o2);
+        }
     }
 }

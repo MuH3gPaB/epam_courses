@@ -434,6 +434,17 @@ public class CustomListTest extends Assert {
     }
 
     @Test
+    public void removeByIndexShouldRemoveLastElementByGivenIndex() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        list.remove(2);
+
+        assertFalse(list.contains(30));
+    }
+
+    @Test
     public void removeByIndexShouldShiftNextElementsToLeftPosition() throws Exception {
         list.add(10);
         list.add(20);
