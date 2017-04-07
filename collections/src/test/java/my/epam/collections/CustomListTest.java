@@ -504,8 +504,39 @@ public class CustomListTest extends Assert {
 
     // INDEX_OF ----------------------------------
     @Test
-    public void indexOfShould() throws Exception {
+    public void indexOfShouldReturnIndexOfFirstOccuranceOfGivenElement() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        list.add(20);
 
+        assertEquals(1, list.indexOf(20));
+    }
 
+    @Test
+    public void indexOfShouldReturnNegative1IfElementNotFound() throws Exception {
+        list.add(10);
+        list.add(20);
+
+        assertEquals(-1, list.indexOf(30));
+    }
+
+    @Test
+    public void indexOfShouldFoundIndexOfNullElementIfItWasAdded(){
+        list.add(10);
+        list.add(20);
+        list.add(null);
+        list.add(30);
+
+        assertEquals(2, list.indexOf(null));
+    }
+
+    @Test
+    public void indexOfShouldReturnNegative1OnNullIfItWasNotAdded(){
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        assertEquals(-1, list.indexOf(null));
     }
 }
