@@ -425,9 +425,81 @@ public class CustomListTest extends Assert {
 
     // REMOVE_BY_INDEX ----------------------------------
     @Test
-    public void removeByIndexShould() throws Exception {
+    public void removeByIndexShouldRemoveElementByGivenIndex() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
 
+        list.remove(1);
 
+        assertFalse(list.contains(20));
+    }
+
+    @Test
+    public void removeByIndexShouldShiftNextElementsToLeftPosition() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        list.remove(1);
+
+        assertEquals(new Integer(30), list.get(1));
+    }
+
+    @Test
+    public void removeByIndexShouldBeOkOnRemovingNull() throws Exception {
+        list.add(10);
+        list.add(null);
+
+        list.remove(1);
+        assertFalse(list.contains(null));
+    }
+
+    @Test
+    public void removeByIndexShouldReturnRemovedElement() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+
+        assertEquals(new Integer(20), list.remove(1));
+    }
+
+    @Test
+    public void removeByIndexShouldBeOkOnReturningNull() throws Exception {
+        list.add(10);
+        list.add(null);
+        list.add(30);
+
+        assertNull(list.remove(1));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void removeByIndexShouldThrowIOOBOnEmptyList() throws Exception {
+        list.remove(1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void removeByIndexShouldThrowIOOBOnIndexGreaterThenListSize() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        list.remove(4);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void removeByIndexShouldThrowIOOBOnIndexEqualsToListSize() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        list.remove(3);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void removeByIndexShouldThrowIOOBOnNegativeIndex() throws Exception {
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        list.remove(-4);
     }
 
     // INDEX_OF ----------------------------------
