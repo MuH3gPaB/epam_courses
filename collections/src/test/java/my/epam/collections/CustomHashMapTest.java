@@ -609,8 +609,8 @@ public class CustomHashMapTest {
     // ENTRY_SET() METHOD --------------------------------------------------------------------
     @Test
     public void entrySetShouldReturnSetOfMapEntries() throws Exception {
-        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryOne = map.new CustomEntry<>("keyOne", 30);
-        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryTwo = map.new CustomEntry<>("keyTwo", 20);
+        CustomHashMap<String, Integer>.CustomEntry entryOne = map.new CustomEntry("keyOne", 30);
+        CustomHashMap<String, Integer>.CustomEntry entryTwo = map.new CustomEntry("keyTwo", 20);
 
         map.put(entryOne.getKey(), entryOne.getValue());
         map.put(entryTwo.getKey(), entryTwo.getValue());
@@ -628,7 +628,7 @@ public class CustomHashMapTest {
 
     @Test
     public void entrySetShouldNotContainLaterRemovedFromMapEntries() throws Exception {
-        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entry = map.new CustomEntry<>("keyOne", 30);
+        CustomHashMap<String, Integer>.CustomEntry entry = map.new CustomEntry("keyOne", 30);
         map.put(entry.getKey(), entry.getValue());
         map.put("keyTwo", 20);
 
@@ -641,7 +641,7 @@ public class CustomHashMapTest {
 
     @Test
     public void entrySetShouldContainLaterAddedToMapKeys() throws Exception {
-        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entry = map.new CustomEntry<>("keyOne", 30);
+        CustomHashMap<String, Integer>.CustomEntry entry = map.new CustomEntry("keyOne", 30);
 
         map.put("keyTwo", 20);
 
@@ -654,7 +654,7 @@ public class CustomHashMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaIteratorRemove() throws Exception {
-        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToRemove = map.new CustomEntry<>("keyTwo", 20);
+        CustomHashMap<String, Integer>.CustomEntry entryToRemove = map.new CustomEntry("keyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
         map.put("keyOne", 10);
@@ -672,7 +672,7 @@ public class CustomHashMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRemove() throws Exception {
-        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToRemove = map.new CustomEntry<>("keyTwo", 20);
+        CustomHashMap<String, Integer>.CustomEntry entryToRemove = map.new CustomEntry("keyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
         map.put("keyOne", 10);
@@ -685,7 +685,7 @@ public class CustomHashMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRemoveAll() throws Exception {
-        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToRemove = map.new CustomEntry<>("keyTwo", 20);
+        CustomHashMap<String, Integer>.CustomEntry entryToRemove = map.new CustomEntry("keyTwo", 20);
 
         map.put(entryToRemove.getKey(), entryToRemove.getValue());
         map.put("keyOne", 10);
@@ -701,7 +701,7 @@ public class CustomHashMapTest {
 
     @Test
     public void entrySetShouldSupportRemovingElementsFromMapViaSetRetainAll() throws Exception {
-        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToKeep = map.new CustomEntry<>("keyTwo", 20);
+        CustomHashMap<String, Integer>.CustomEntry entryToKeep = map.new CustomEntry("keyTwo", 20);
 
         map.put(entryToKeep.getKey(), entryToKeep.getValue());
         map.put("keyOne", 10);
@@ -741,13 +741,13 @@ public class CustomHashMapTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void entrySetShouldNotSupportAddToMapOperation() throws Exception {
-        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToTry = map.new CustomEntry<>("keyTwo", 20);
+        CustomHashMap<String, Integer>.CustomEntry entryToTry = map.new CustomEntry("keyTwo", 20);
         map.entrySet().add(entryToTry);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void entrySetShouldNotSupportAddAllToMapOperation() throws Exception {
-        CustomHashMap<String, Integer>.CustomEntry<String, Integer> entryToTry = map.new CustomEntry<>("keyTwo", 20);
+        CustomHashMap<String, Integer>.CustomEntry entryToTry = map.new CustomEntry("keyTwo", 20);
         HashSet<Map.Entry<String, Integer>> setToAdd = new HashSet<>();
         setToAdd.add(entryToTry);
         map.entrySet().addAll(setToAdd);

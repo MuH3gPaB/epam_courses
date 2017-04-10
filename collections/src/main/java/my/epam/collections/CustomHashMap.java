@@ -1,5 +1,6 @@
 package my.epam.collections;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -18,7 +19,7 @@ import java.util.*;
 public class CustomHashMap<K, V> implements Map<K, V> {
 
     private static final int DEFAULT_BUCKETS_COUNT = 16;
-    private CustomEntry<K, V>[] bucketsHeads;
+    private CustomEntry[] bucketsHeads;
 
     private int capacity;
     private final float loadFactor = 0.75F;
@@ -26,7 +27,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     /**
      * Default constructor creates default empty Map.
-     *
+     * <p>
      * Default capacity = 16.
      */
     public CustomHashMap() {
@@ -66,7 +67,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     /**
      * Check if current map contains given key.
-     *
+     * <p>
      * Key should not be null.
      *
      * @param key key for check
@@ -76,7 +77,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     public boolean containsKey(Object key) {
         Objects.requireNonNull(key);
         int bucketNumber = getBucketNumber(key);
-        CustomEntry<K, V> node = bucketsHeads[bucketNumber];
+        CustomEntry node = bucketsHeads[bucketNumber];
         if (node.hasNext()) {
             do {
                 node = node.next;
@@ -90,12 +91,12 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     /**
      * Check if current map contains given value.
-     *
+     * <p>
      * Iterate over hole map, and checks every value on
      * equals to given.
-     *
+     * <p>
      * On first founded equals value returns true.
-     *
+     * <p>
      * Accept null value.
      *
      * @param value value to be checked
@@ -103,8 +104,8 @@ public class CustomHashMap<K, V> implements Map<K, V> {
      */
     @Override
     public boolean containsValue(Object value) {
-        for (CustomEntry<K, V> bucketsHead : bucketsHeads) {
-            CustomEntry<K, V> node = bucketsHead;
+        for (CustomEntry bucketsHead : bucketsHeads) {
+            CustomEntry node = bucketsHead;
             if (node.hasNext()) {
                 do {
                     node = node.next;
@@ -121,7 +122,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     /**
      * Get value mapped to given key.
-     *
+     * <p>
      * Given key should not be null.
      *
      * @param key key to be found
@@ -131,7 +132,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     public V get(Object key) {
         Objects.requireNonNull(key);
         int bucketNumber = getBucketNumber(key);
-        CustomEntry<K, V> node = bucketsHeads[bucketNumber];
+        CustomEntry node = bucketsHeads[bucketNumber];
         if (node.hasNext()) {
             do {
                 node = node.next;
@@ -145,13 +146,13 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     /**
      * Map given value to given key.
-     *
+     * <p>
      * Key should not be null.
      * Value may be null.
-     *
+     * <p>
      * If another value was already mapped to given key,
      * old value will be override to new one.
-     *
+     * <p>
      * In this case, old value will be returned.
      *
      * @param key   key to be mapped
@@ -164,12 +165,12 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
         checkOverflow();
         int bucketNumber = getBucketNumber(key);
-        CustomEntry<K, V> head = bucketsHeads[bucketNumber];
+        CustomEntry head = bucketsHeads[bucketNumber];
 
         if (!head.hasNext()) {
-            head.next = new CustomEntry<>(key, value);
+            head.next = new CustomEntry(key, value);
         } else {
-            CustomEntry<K, V> node = head;
+            CustomEntry node = head;
 
             do {
                 node = node.next;
@@ -180,7 +181,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
                 }
             } while (node.hasNext());
 
-            node.next = new CustomEntry<>(key, value);
+            node.next = new CustomEntry(key, value);
         }
         incrementSize();
         return null;
@@ -188,10 +189,10 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     /**
      * Unmap given key if was mapped.
-     *
+     * <p>
      * Key should not be null.
      * Return null if no value was mapped, otherwise - value was mapped.
-     *
+     * <p>
      * It's no way to check if null value was mapped, or no value.
      *
      * @param key key to be unmapped
@@ -201,9 +202,9 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     public V remove(Object key) {
         Objects.requireNonNull(key);
         int bucketNumber = getBucketNumber(key);
-        CustomEntry<K, V> head = bucketsHeads[bucketNumber];
+        CustomEntry head = bucketsHeads[bucketNumber];
         if (head.hasNext()) {
-            CustomEntry<K, V> node = head;
+            CustomEntry node = head;
             do {
                 if (node.next.key.equals(key)) {
                     V tmp = node.next.value;
@@ -219,9 +220,9 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
     /**
      * Put all values from given map to current.
-     *
+     * <p>
      * Given map should not contains null keys.
-     *
+     * <p>
      * If given map contains keys that already mapped in current map,
      * mapped value will be override by values from given map.
      *
@@ -276,13 +277,13 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         return new EntrySet<>();
     }
 
-    class CustomEntry<EK, EV> implements Map.Entry<EK, EV> {
-        private CustomEntry<EK, EV> next;
+    class CustomEntry implements Map.Entry<K, V> {
+        private CustomEntry next;
 
-        private final EK key;
-        private EV value;
+        private final K key;
+        private V value;
 
-        public CustomEntry(EK key, EV value) {
+        public CustomEntry(K key, V value) {
             this.key = key;
             this.value = value;
         }
@@ -292,18 +293,18 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
-        public EK getKey() {
+        public K getKey() {
             return key;
         }
 
         @Override
-        public EV getValue() {
+        public V getValue() {
             return value;
         }
 
         @Override
-        public EV setValue(EV value) {
-            EV tmp = this.value;
+        public V setValue(V value) {
+            V tmp = this.value;
             this.value = value;
             return tmp;
         }
@@ -313,7 +314,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            CustomEntry<?, ?> that = (CustomEntry<?, ?>) o;
+            CustomEntry that = (CustomEntry) o;
 
             if (key != null ? !key.equals(that.key) : that.key != null) return false;
             return value != null ? value.equals(that.value) : that.value == null;
@@ -443,8 +444,8 @@ public class CustomHashMap<K, V> implements Map<K, V> {
     }
 
     class EntrySetIterator<IE> implements Iterator<IE> {
-        CustomEntry<K, V> current;
-        CustomEntry<K, V> lastReturned;
+        CustomEntry current;
+        CustomEntry lastReturned;
         int currentBucket = 0;
 
         EntrySetIterator() {
@@ -471,7 +472,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
             CustomHashMap.this.remove(lastReturned.getKey());
         }
 
-        CustomEntry<K, V> getNextEntry(CustomEntry<K, V> entry) {
+        CustomEntry getNextEntry(CustomEntry entry) {
             if (entry.hasNext()) {
                 return entry.next;
             } else {
@@ -493,10 +494,11 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         this.size += (this.size == Integer.MAX_VALUE) ? 0 : 1;
     }
 
-    private CustomEntry<K, V>[] produceBuckets(int bucketsCount) {
-        CustomEntry<K, V>[] entries = new CustomEntry[bucketsCount];
+    @SuppressWarnings(value = "unchecked")
+    private CustomEntry[] produceBuckets(int bucketsCount) {
+        CustomEntry[] entries = (CustomEntry[]) Array.newInstance(CustomEntry.class, bucketsCount);
         for (int i = 0; i < bucketsCount; i++) {
-            entries[i] = new CustomEntry<>(null, null);
+            entries[i] = new CustomEntry(null, null);
         }
         return entries;
     }
@@ -508,11 +510,13 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
+    @SuppressWarnings(value = "unchecked")
     private void rebuildMap(int capacity) {
-        CustomEntry<K, V>[] entries = entrySet().toArray(new CustomEntry[0]);
+        Object[] entries = entrySet().toArray();
         bucketsHeads = produceBuckets(capacity);
         size = 0;
-        for (CustomEntry<K, V> entry : entries) {
+        for (Object obj : entries) {
+            Entry<K, V> entry = (Entry<K, V>) obj;
             put(entry.getKey(), entry.getValue());
         }
     }
