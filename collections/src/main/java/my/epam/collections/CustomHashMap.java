@@ -344,7 +344,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
         @Override
         public Iterator<K> iterator() {
-            return CustomHashMap.this.new KeySetIterator<>();
+            return CustomHashMap.this.new KeySetIterator();
         }
 
         @Override
@@ -362,7 +362,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
 
         @Override
         public Iterator<V> iterator() {
-            return new ValuesIterator<>();
+            return new ValuesIterator();
         }
 
         @Override
@@ -409,41 +409,41 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    class KeySetIterator<IK> extends EntrySetIterator<IK> {
+    class KeySetIterator extends EntrySetIterator<K> {
 
         KeySetIterator() {
             current = getNextEntry(CustomHashMap.this.bucketsHeads[currentBucket]);
         }
 
         @Override
-        public IK next() {
+        public K next() {
             lastReturned = this.current;
             this.current = getNextEntry(this.current);
             if (lastReturned == null) {
                 throw new NoSuchElementException("No more elements for iteration.");
             }
-            return (IK) lastReturned.getKey();
+            return (K) lastReturned.getKey();
         }
     }
 
-    class ValuesIterator<IV> extends EntrySetIterator<IV> {
+    class ValuesIterator extends EntrySetIterator<V> {
 
         ValuesIterator() {
             current = getNextEntry(CustomHashMap.this.bucketsHeads[currentBucket]);
         }
 
         @Override
-        public IV next() {
+        public V next() {
             lastReturned = this.current;
             this.current = getNextEntry(this.current);
             if (lastReturned == null) {
                 throw new NoSuchElementException("No more elements for iteration.");
             }
-            return (IV) lastReturned.getValue();
+            return (V) lastReturned.getValue();
         }
     }
 
-    class EntrySetIterator<IE> implements Iterator<IE> {
+    class EntrySetIterator<T> implements Iterator<T> {
         CustomEntry current;
         CustomEntry lastReturned;
         int currentBucket = 0;
@@ -458,13 +458,13 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
-        public IE next() {
+        public T next() {
             lastReturned = this.current;
             this.current = getNextEntry(this.current);
             if (lastReturned == null) {
                 throw new NoSuchElementException("No more elements for iteration.");
             }
-            return (IE) lastReturned;
+            return (T) lastReturned;
         }
 
         @Override
