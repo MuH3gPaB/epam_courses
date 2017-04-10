@@ -254,7 +254,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
      */
     @Override
     public Set<K> keySet() {
-        return new KeySet<>();
+        return new KeySet();
     }
 
     /**
@@ -264,7 +264,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
      */
     @Override
     public Collection<V> values() {
-        return new Values<>();
+        return new Values();
     }
 
     /**
@@ -274,7 +274,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
      */
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return new EntrySet<>();
+        return new EntrySet();
     }
 
     class CustomEntry implements Map.Entry<K, V> {
@@ -329,7 +329,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    class KeySet<KK> extends AbstractSet<KK> {
+    class KeySet extends AbstractSet<K> {
 
         @Override
         public boolean contains(Object o) {
@@ -343,7 +343,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
-        public Iterator<KK> iterator() {
+        public Iterator<K> iterator() {
             return CustomHashMap.this.new KeySetIterator<>();
         }
 
@@ -353,7 +353,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    class Values<VV> extends AbstractCollection<VV> {
+    class Values extends AbstractCollection<V> {
 
         @Override
         public boolean contains(Object o) {
@@ -361,7 +361,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
-        public Iterator<VV> iterator() {
+        public Iterator<V> iterator() {
             return new ValuesIterator<>();
         }
 
@@ -371,7 +371,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    class EntrySet<EK> extends AbstractSet<EK> {
+    class EntrySet extends AbstractSet<Map.Entry<K, V>> {
 
         @Override
         public boolean contains(Object o) {
@@ -399,7 +399,7 @@ public class CustomHashMap<K, V> implements Map<K, V> {
         }
 
         @Override
-        public Iterator<EK> iterator() {
+        public Iterator<Map.Entry<K, V>> iterator() {
             return CustomHashMap.this.new EntrySetIterator<>();
         }
 
