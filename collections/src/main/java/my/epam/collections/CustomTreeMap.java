@@ -393,7 +393,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
         @Override
         public Iterator<K> iterator() {
-            return CustomTreeMap.this.new KeySetIterator<>();
+            return CustomTreeMap.this.new KeySetIterator();
         }
 
         @Override
@@ -411,7 +411,7 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
 
         @Override
         public Iterator<V> iterator() {
-            return new ValuesIterator<>();
+            return new ValuesIterator();
         }
 
         @Override
@@ -458,33 +458,33 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         }
     }
 
-    class KeySetIterator<IK> extends EntrySetIterator<IK> {
+    class KeySetIterator extends EntrySetIterator<K> {
 
         @Override
-        public IK next() {
+        public K next() {
             lastReturned = this.current;
             this.current = getNextEntry(this.current);
             if (lastReturned == null) {
                 throw new NoSuchElementException("No more elements for iteration");
             }
-            return (IK) lastReturned.getKey();
+            return lastReturned.getKey();
         }
     }
 
-    class ValuesIterator<IV> extends EntrySetIterator<IV> {
+    class ValuesIterator extends EntrySetIterator<V> {
 
         @Override
-        public IV next() {
+        public V next() {
             lastReturned = this.current;
             this.current = getNextEntry(this.current);
             if (lastReturned == null) {
                 throw new NoSuchElementException("No more elements for iteration");
             }
-            return (IV) lastReturned.getValue();
+            return lastReturned.getValue();
         }
     }
 
-    class EntrySetIterator<IE> implements Iterator<IE> {
+    class EntrySetIterator<T> implements Iterator<T> {
         CustomNodeEntry current;
         CustomNodeEntry lastReturned;
 
@@ -499,13 +499,13 @@ public class CustomTreeMap<K, V> implements SortedMap<K, V> {
         }
 
         @Override
-        public IE next() {
+        public T next() {
             lastReturned = this.current;
             if (lastReturned == null) {
                 throw new NoSuchElementException("No more elements for iteration");
             }
             this.current = getNextEntry(this.current);
-            return (IE) lastReturned;
+            return (T) lastReturned;
         }
 
         @Override
