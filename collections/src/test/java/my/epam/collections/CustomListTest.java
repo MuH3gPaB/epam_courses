@@ -8,20 +8,21 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 @FixMethodOrder
-@RunWith(Parameterized.class)
+//@RunWith(Parameterized.class)
 public class CustomListTest extends Assert {
 
-    private CustomList<Integer> list;
+    private CustomList<Integer> list = new SkipList<>();
 
     @Parameterized.Parameters
     public static Object[] params() {
-        return new Object[]{new CustomArrayList<Integer>(),
-                new CustomLinkedList<Integer>()};
+        return new Object[]{//new CustomArrayList<Integer>(),
+                //new CustomLinkedList<Integer>(),
+                new SkipList<Integer>()};
     }
 
-    public CustomListTest(CustomList<Integer> list) {
-        this.list = list;
-    }
+//    public CustomListTest(CustomList<Integer> list) {
+//        this.list = list;
+//    }
 
     @Before
     public void setUp() {
@@ -30,7 +31,7 @@ public class CustomListTest extends Assert {
 
     // SIZE ----------------------------------
     @Test
-    public void sizeOfEmptyMapShouldBeZero() throws Exception {
+    public void sizeOfEmptyListShouldBeZero() throws Exception {
         assertEquals(0, list.size());
     }
 
@@ -163,6 +164,7 @@ public class CustomListTest extends Assert {
     public void addShouldSupportAdding100ElementsOneByOne() throws Exception {
         for (int i = 0; i < 100; i++) {
             list.add(i);
+            assertTrue(list.contains(i));
         }
 
         assertEquals(100, list.size());
